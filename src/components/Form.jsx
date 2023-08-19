@@ -21,12 +21,12 @@ const Form = ({ userIn }) => {
     const handleInput = () => {
         const inputName = event.target.name;
         const inputValue = (event.target.value)
-        setUser(prev => ({ ...prev, [inputName]: inputValue.replace(/[^\sa-zA-Z]/g, '') }));
+        setUser(prev => ({ ...prev, [inputName]: inputValue}));
     }
     const handleSubmit = async () => {
         event.preventDefault();
 
-        const newProductName = user.name.toLowerCase();
+        const newProductName = user.name;
         try {
             const querySnapshot = await getDocs(query(collection(db, 'users4'), where('email', '==', userIn.email)));
             const market = querySnapshot.docs[0]?.data().markeList || []

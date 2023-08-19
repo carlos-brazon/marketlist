@@ -31,7 +31,7 @@ const SingIn = ({ userIn}) => {
 
     return (
         <div className={`flex flex-col gap-4 p-3 items-center ${userIn ? '': ''}`}>
-            <form className='flex gap-2 p-3' onSubmit={handleSubmit}>
+            <form className='flex flex-col gap-2 p-3' onSubmit={handleSubmit}>
                 <input className='border p-2' type="text" name='email' onChange={handleInput} value={user.email || ''} placeholder='email' />
                 <input className='border p-2' type="password" name='password' minLength="6" onChange={handleInput} value={user.password || ''} placeholder='password' />
                 <input className='border p-2' type="submit" value={'Iniciar sesión'} />
