@@ -234,7 +234,7 @@ const MarketList = ({ userIn }) => {
   return (
       <div>
         <h1 className='text-center text-3xl'>Artículos</h1>
-        <ul className='flex flex-col gap-1 text-2xl p-3'>
+        <ul className='flex flex-col text-2xl'>
           {marketData.map((item, index) => (
             <li
               className={`list-disc ${item.isDone ? 'line-through' : ''}`}

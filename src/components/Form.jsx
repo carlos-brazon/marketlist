@@ -56,7 +56,7 @@ const Form = ({ userIn }) => {
         <div className={userIn ? 'flex flex-col gap-2' : 'hidden'}>
             <form className='flex gap-2 pt-4' onSubmit={handleSubmit}>
                 <input className={`rounded border border-red-700 w-48 p-1 hover:border-red-900 outline-red-400`} type="text" name='name' onChange={handleInput} value={user.name || ''} placeholder='Producto' required />
-                <input className={`border p-1 rounded-md bg-red-50 hover:bg-red-400`} type="submit" />
+                <input className={`border p-1 rounded-md bg-red-50 hover:bg-red-400`} type="submit" value={'Agregar'} />
             </form>
             <div>
                 <p className={`h-9 rounded flex w-fit items-center ${message.includes('Agregado') ? 'bg-green-500 p-1' : message.includes('está') ? 'bg-red-700 text-white p-1' :''}`}>{message}</p>
