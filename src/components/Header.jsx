@@ -4,16 +4,17 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../utils/firebase';
 
 const Header = ({ userIn }) => {
-
     return (
-        <div className=' flex flex-col items-center p-2 w-fit gap-2'>
-            <h1>Lista de compras</h1>
-            <header className="flex items-center relative gap-10 p-4 text-white">
-                <Link to={'/'} className={`py-3 px-6 font-semibold text-sm leading-4 rounded bg-slate-400 text-white`}>{'Inicio'} </Link>
-                <Link to={'singin'} className={`py-3 px-6 font-semibold text-sm leading-4 rounded bg-slate-400 text-white ${!userIn ? '' : 'hidden'}`}>{'Iniciar sesión'} </Link>
-                {!userIn ? <button className={`${!userIn ? 'hidden' : ''}`}>Log In</button> : <button className={`bg-slate-400 text-white py-3 px-6 font-semibold text-sm leading-4 rounded ${!userIn ? '' : ''}`} onClick={() => signOut(auth)}>Cerrar sesión</button>}
+        <div className=' flex flex-col items-center p-2 h-screen w-fit gap-2'>
+            <h1 className='text-2xl font-bold'>Lista de compras</h1>
+            <header className="flex items-center relative gap-10 p-1 text-white">
+                <Link to={'/'} className={'py-3 px-6 font-semibold text-sm leading-4 rounded  text-white hover:bg-slate-700  bg-slate-600 hover:shadow-blue-800 shadow-md shadow-blue-950'}>{'Inicio'} </Link>
+
+                <Link to={'singin'} className={`py-3 px-6 font-semibold text-sm leading-4 rounded  text-white hover:bg-slate-700  bg-slate-600 hover:shadow-blue-800 shadow-md shadow-blue-950 ${!userIn ? '' : 'hidden'}`}>{'Iniciar sesión'} </Link>
+
+                {!userIn || <Link to={''} className={`py-3 px-6 font-semibold text-sm leading-4 rounded  text-white hover:bg-slate-700  bg-slate-600 hover:shadow-blue-800 shadow-md shadow-blue-950`} onClick={() => signOut(auth)}>Cerrar sesión</Link>}
             </header>
-            <p className='text-black'>{userIn?.email}</p>
+            <p className='text-black text-lg'>{userIn ? `Hola, ${userIn?.nombre?.charAt(0).toUpperCase() + userIn?.nombre?.slice(1)} bienvenido` : ''}</p>
             <Outlet />
         </div>
     )
