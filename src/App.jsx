@@ -1,34 +1,60 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useEffect, useState } from 'react'
 import './App.css'
+import SingIn from './components/SingIn'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import CheckIn from './components/CheckIn'
+import Header from './components/Header'
+import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { collection, getDocs, query, where } from 'firebase/firestore'
+import { db } from './utils/firebase'
+import Form from './components/Form'
+import Contex from './components/Contex'
+
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [userIn, setUserIn] = useState([]);
+  const [userLoaded, setUserLoaded] = useState(false);
+
+  useEffect(() => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        console.log(user);
+        const uid = user.uid;
+        const userFirebase = await getDocs(query(collection(db, 'users4'), where('email', '==', user.email)))
+        console.log(userFirebase);
+        let userReal;
+        userFirebase.forEach(user => {
+          userReal = user.data()
+        });
+        setUserIn({ ...userReal, uid: uid })
+        setUserLoaded(true);
+
+
+      } else {
+        console.log(userIn);
+        setUserIn(null)
+      }
+    });
+  }, []);
+
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+
+    <div className='flex items-center justify-center p-2'>
+      <Contex userIn={userIn}>
+        <BrowserRouter>
+          <Routes>
+            <Route path='/' element={<Header userIn={userIn} />}>
+              <Route index element={<Form userIn={userIn} />} />
+              {/* <Route index element={<MarketList />}/> */}
+              <Route path='singin' element={<SingIn userIn={userIn} />} />
+              <Route path='checkIn' element={<CheckIn />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </Contex>
+    </div>
   )
 }
 
