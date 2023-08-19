@@ -50,7 +50,7 @@ const Form = ({ userIn }) => {
         } catch (error) {
             console.error('Error al realizar la consulta:', error);
         }
-        
+        setUser(prev => ({ ...prev, name: '' }))
     }
     return (
         <div className={userIn ? 'flex flex-col gap-2' : 'hidden'}>
