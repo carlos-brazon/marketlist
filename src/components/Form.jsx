@@ -8,7 +8,7 @@ import MarketList from './MarketList';
 const Form = ({ userIn }) => {
     const [user, setUser] = useState([]);
     const [message, setMessage] = useState('')
-    const { list, setList } = useContext(AllItemsContext);
+    const { setList } = useContext(AllItemsContext);
 
     const showMessage = (text, duration) => {
         setMessage(text);

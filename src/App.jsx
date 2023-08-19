@@ -10,7 +10,6 @@ import { db } from './utils/firebase'
 import Form from './components/Form'
 import Contex from './components/Contex'
 
-
 function App() {
   const [userIn, setUserIn] = useState([]);
   const [userLoaded, setUserLoaded] = useState(false);
@@ -34,7 +33,6 @@ function App() {
       }
     });
   }, []);
-
 
   return (
 

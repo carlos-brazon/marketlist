@@ -2,17 +2,26 @@ import React, { useState } from 'react'
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../utils/firebase.js';
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 
 const CheckIn = () => {
+    const history = useNavigate(); // Importa useNavigate
     const [user, setUser] = useState({});
 
     const handleInput = () => {
         const inputName = event.target.name;
-        setUser(prev => ({ ...prev, [inputName]: event.target.value }));
+        const inputValue = event.target.value;
+        if (inputName === 'email') {
+            const cleanedValue = inputValue.replace(/[^a-zA-Z0-9@.\-_]/g, '');
+            setUser((prev) => ({ ...prev, [inputName]: cleanedValue }));
+        }
+        else {
+            setUser((prev) => ({ ...prev, [inputName]: inputValue }));
+        }
     }
     const handleSubmit = async () => {
         event.preventDefault();
-        const user3 = { ...user, markeList : [], password : ''};
+        const user3 = { ...user, markeList : [], password : '', email:(user.email).toLowerCase()};
 
         const auth = getAuth();
         createUserWithEmailAndPassword(auth, user.email, user.password)
@@ -24,6 +33,7 @@ const CheckIn = () => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
             });
+            history('/', {replace: true});
     }
 
     return (
