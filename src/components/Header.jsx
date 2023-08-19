@@ -4,7 +4,6 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../utils/firebase';
 
 const Header = ({ userIn }) => {
-    console.log(userIn);
 
     return (
         <div className=' flex flex-col items-center p-2 w-fit gap-2'>

@@ -9,7 +9,6 @@ const Form = ({ userIn }) => {
     const [user, setUser] = useState([]);
     const [message, setMessage] = useState('')
     const { list, setList } = useContext(AllItemsContext);
-    console.log(list);
 
     const showMessage = (text, duration) => {
         setMessage(text);
@@ -39,11 +38,9 @@ const Form = ({ userIn }) => {
                 await updateDoc(doc(db, 'users4', userIn.uid), {
                     markeList: arrayUnion({ ...user, isDone: false, id: newId })
                 });
-                console.log('Producto agregado al markeList.');
                 showMessage('Agregado a tu lista de compras', 2000)
 
             } else {
-                console.log('El producto ya existe en el markeList.');
                 showMessage('Ya está en tu lista de compras', 2000)
 
             }

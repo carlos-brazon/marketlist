@@ -19,10 +19,8 @@ function App() {
     const auth = getAuth();
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        console.log(user);
         const uid = user.uid;
         const userFirebase = await getDocs(query(collection(db, 'users4'), where('email', '==', user.email)))
-        console.log(userFirebase);
         let userReal;
         userFirebase.forEach(user => {
           userReal = user.data()
@@ -32,7 +30,6 @@ function App() {
 
 
       } else {
-        console.log(userIn);
         setUserIn(null)
       }
     });

@@ -167,7 +167,6 @@ const MarketList = ({ userIn }) => {
 
   const handleClick = async (objitem) => {
     const currentTime = new Date().getTime();
-    console.log(currentTime);
     const timeSinceLastTap = currentTime - lastTapTime;
 
     if (timeSinceLastTap < 300) {
