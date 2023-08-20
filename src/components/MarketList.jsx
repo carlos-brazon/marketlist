@@ -100,7 +100,6 @@ const MarketList = ({ userIn }) => {
 
   return (
       <div>
-        {danger ? <Danger /> : ''}
         <h1 className='text-center text-xl'>Artículos</h1>
         <ul className='flex flex-col text-xl'>
           {marketData.map((item, index) => (

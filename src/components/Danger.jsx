@@ -3,8 +3,8 @@ import { AllItemsContext } from './Contex'
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../utils/firebase';
 
-const Danger = () => {
-    const {setDanger, userIn} = useContext(AllItemsContext);
+const Danger = ({setDanger, userIn}) => {
+    // const {userIn} = useContext(AllItemsContext);
 
       const handleClick = async () =>  {
         const userDocRef = doc(db, 'users4', userIn.uid);
@@ -19,7 +19,6 @@ const Danger = () => {
         }
         setDanger(false)
       }
-        
     
     return (
         <div className='p-3 flex flex-col bg-white absolute h-40 w-72 border-4 rounded-lg border-red-600 items-center justify-center gap-4 shadow-xl shadow-gray-900'>

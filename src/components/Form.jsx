@@ -51,7 +51,7 @@ const Form = ({ userIn }) => {
         setUser(prev => ({ ...prev, name: '' }))
     }
     return (
-        <div className={userIn ? 'flex flex-col gap-2' : 'hidden'}>
+        <div className={userIn ? 'flex flex-col pt-2 gap-2' : 'hidden'}>
             <form className='flex items-center gap-2' onSubmit={handleSubmit}>
             <Input
                 type={'text'} 
