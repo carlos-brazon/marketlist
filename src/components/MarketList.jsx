@@ -2,9 +2,10 @@ import React, { useContext, useEffect, useState } from 'react';
 import { collection, query, where, getDocs, getDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../utils/firebase';
 import { AllItemsContext } from './Contex';
+import Danger from './Danger';
 
 const MarketList = ({ userIn }) => {
-  const { list, setList } = useContext(AllItemsContext);
+  const { list, setList, danger } = useContext(AllItemsContext);
   const [marketData, setMarketData] = useState([]);
   const [lastTapTime, setLastTapTime] = useState(0);
 
@@ -95,10 +96,11 @@ const MarketList = ({ userIn }) => {
     };
 
     fetchMarketData();
-  }, [list, userIn]);
+  }, [list, userIn, danger]);
 
   return (
       <div>
+        {danger ? <Danger /> : ''}
         <h1 className='text-center text-xl'>Artículos</h1>
         <ul className='flex flex-col text-xl'>
           {marketData.map((item, index) => (

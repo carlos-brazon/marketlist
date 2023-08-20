@@ -2,8 +2,10 @@ import React, { useContext, useState } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 import { signOut } from 'firebase/auth';
 import { auth } from '../utils/firebase';
+import { AllItemsContext } from './Contex';
 
 const Header = ({ userIn }) => {
+    const { setDanger} = useContext(AllItemsContext)
     return (
         <div className=' flex flex-col items-center p-2 h-screen w-fit gap-2'>
             <h1 className='text-2xl font-bold'>Lista de compras</h1>
@@ -16,6 +18,7 @@ const Header = ({ userIn }) => {
             </header>
             <p className='text-black text-lg'>{userIn ? `Hola, ${userIn?.nombre?.charAt(0).toUpperCase() + userIn?.nombre?.slice(1)} bienvenido` : ''}</p>
             <Outlet />
+            <button onClick={() => setDanger(true)} className='p-2 font-semibold text-base leading-4 bg-red-600 text-white rounded absolute bottom-1'>Eliminar todos los productos</button>
         </div>
     )
 }

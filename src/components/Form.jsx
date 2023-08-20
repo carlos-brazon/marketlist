@@ -52,7 +52,7 @@ const Form = ({ userIn }) => {
     }
     return (
         <div className={userIn ? 'flex flex-col gap-2' : 'hidden'}>
-            <form className='flex gap-2' onSubmit={handleSubmit}>
+            <form className='flex items-center gap-2' onSubmit={handleSubmit}>
             <Input
                 type={'text'} 
                 name={'name'}
@@ -62,7 +62,7 @@ const Form = ({ userIn }) => {
                 required
                  />
                  <Input
-                 className={'w-fit text-white font-semibold text-base bg-slate-500 hover:bg-slate-700 hover:shadow-blue-800 shadow-md shadow-blue-950'}
+                 className={'w-fit px-2 h-9 py-0 text-white font-semibold text-base bg-slate-500 hover:bg-slate-700 hover:shadow-blue-800 shadow-md shadow-blue-950'}
                 type={'submit'}
                 value={'Agregar'}
                 required
