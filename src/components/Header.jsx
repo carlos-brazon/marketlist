@@ -1,8 +1,8 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import { AllItemsContext } from './Contex';
-import UserConected from "../assets/user-add-svgrepo-com.svg";
-import UserDisconected from "../assets/user-delete-svgrepo-com.svg";
+import UserConected from "../assets/user-svgrepo-com-green.svg";
+import UserDisconected from "../assets/user-svgrepo-com-red.svg";
 import ChevronUpWhite from "../assets/chevron-up-dot-svgrepo-com.svg";
 import { signOut } from 'firebase/auth';
 import { auth } from '../utils/firebase';

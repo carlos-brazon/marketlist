@@ -39,7 +39,7 @@ function App() {
 
   return (
 
-    <div className='flex items-center justify-center h-screen w-screen bg-gray-300'>
+    <div className='flex relative items-start justify-center min-h-screen w-screen bg-gray-300'>
       {danger ? <Danger setDanger={setDanger} userIn={userIn} /> : ''}
       <Contex userIn={userIn}>
         <BrowserRouter>
@@ -53,7 +53,7 @@ function App() {
           </Routes>
         </BrowserRouter>
       </Contex>
-      <button onClick={() => setDanger(true)} className={`p-2 font-semibold text-base leading-4 bg-red-600 text-white rounded absolute bottom-1 ${userIn ? '' : 'hidden'}`}>Eliminar todos los productos</button>
+      <button onClick={() => setDanger(true)} className={`p-2 font-semibold text-base leading-4 bg-red-600 text-white rounded absolute bottom-0 mb-3 ${userIn ? '' : 'hidden'}`}>Eliminar todos los productos</button>
     </div>
   )
 }
