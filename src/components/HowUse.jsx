@@ -9,7 +9,8 @@ const HowUse = () => {
             </div>
 
             <div>
-                <p><span className='font-semibold'>Recomendaciones</span>: Puedes utilizar el mismo usuario simultaneamente en dos dispositivos diferentes</p>
+                <p><span className='font-semibold'>Nota</span>: Puedes utilizar el mismo usuario simultaneamente en dos dispositivos diferentes</p>
+                <p><span className='font-semibold'>Nota</span>: Desde el navegador puedes agregar el link a tu pantalla de inicio en el movil para facicilar el acceso a al app</p>
 
             </div>
         </div>

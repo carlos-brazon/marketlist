@@ -8,7 +8,7 @@ const Contex = ({ children, userIn }) => {
   const [danger, setDanger] = useState(false)
 
   return (
-    <AllItemsContext.Provider value={{ list, setList, marketData, setMarketData, danger, setDanger, userIn }}>
+    <AllItemsContext.Provider value={{ list, setList, marketData, setMarketData, userIn }}>
       {children}
     </AllItemsContext.Provider>
   );

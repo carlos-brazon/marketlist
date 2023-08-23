@@ -5,9 +5,10 @@ import { AllItemsContext } from './Contex';
 import Danger from './Danger';
 
 const MarketList = ({ userIn }) => {
-  const { list, setList, danger } = useContext(AllItemsContext);
+  const { list, setList } = useContext(AllItemsContext);
   const [marketData, setMarketData] = useState([]);
   const [lastTapTime, setLastTapTime] = useState(0);
+  const [danger, setDanger] = useState(false)
 
   const updateIsDoneInFirestore = async (userId, itemId, newIsDoneValue) => {
     try {
@@ -99,8 +100,9 @@ const MarketList = ({ userIn }) => {
   }, [list, userIn, danger]);
 
   return (
-      <div>
+      <div className='flex flex-col relative gap-3 min-h-[500px] pb-10 border border-red-500'>
         <h1 className='text-center text-xl'>Artículos</h1>
+        {danger ? <Danger setDanger={setDanger} userIn={userIn} /> : ''}
         <ul className='flex flex-col text-xl'>
           {marketData.map((item, index) => (
             <li
@@ -113,6 +115,7 @@ const MarketList = ({ userIn }) => {
             </li>
           ))}
         </ul>
+        <button onClick={() => setDanger(true)} className={`p-2 font-semibold text-base leading-4 bg-red-600 text-white rounded absolute bottom-0 right-7 ${userIn ? '' : 'hidden'}`}>Eliminar todos los productos</button>
       </div>
   );
 };

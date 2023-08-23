@@ -1,10 +1,8 @@
-import React, { useContext } from 'react'
-import { AllItemsContext } from './Contex'
+import React from 'react'
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../utils/firebase';
 
 const Danger = ({setDanger, userIn}) => {
-    // const {userIn} = useContext(AllItemsContext);
 
       const handleClick = async () =>  {
         const userDocRef = doc(db, 'users4', userIn.uid);
