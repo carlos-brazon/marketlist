@@ -13,7 +13,6 @@ import HowUse from './components/HowUse'
 
 function App() {
   const [userIn, setUserIn] = useState([]);
-  const [userLoaded, setUserLoaded] = useState(false);
 
   useEffect(() => {
     const auth = getAuth();
@@ -26,7 +25,6 @@ function App() {
           userReal = user.data()
         });
         setUserIn({ ...userReal, uid: uid })
-        setUserLoaded(true);
       } else {
         setUserIn(null)
       }

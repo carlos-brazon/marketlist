@@ -19,7 +19,7 @@ const Danger = ({setDanger, userIn}) => {
       }
     
     return (
-        <div className='p-3 flex flex-col bg-white absolute h-40 w-72 border-4 rounded-lg border-red-600 items-center justify-center gap-4 shadow-xl shadow-gray-900'>
+        <div className='p-3 flex flex-col bg-white absolute top-0 -right-2 h-40 w-72 border-4 rounded-lg border-red-600 items-center justify-center gap-4 shadow-xl shadow-gray-900'>
             <h1 className='font-bold text-xl text-center'>¿Deseas borrar toda la lista de productos?</h1>
             <div className='flex gap-4'>
                 <button onClick={() => handleClick()} className='py-3 px-6 font-semibold text-sm leading-4 rounded  text-white hover:bg-slate-500  bg-slate-400 hover:shadow-blue-800 shadow-md shadow-blue-950'>SI</button>
