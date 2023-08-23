@@ -42,7 +42,7 @@ const Header = ({ userIn }) => {
             <img onClick={() => setIconUser(prev => !prev)} className='static z-10 w-9 h-9' ref={iconRef} src={!userIn ? UserDisconected : UserConected} alt='Aquí va un icono de usuario' />
           </div>
 
-          <div className={`flex flex-col items-end absolute w-40 h-40 top-8 -right-1 rounded-md text-black ${iconUser ? '' : 'hidden'}`} ref={divRef}>
+          <div className={`flex flex-col z-10 items-end absolute w-40 h-40 top-8 -right-1 rounded-md text-black ${iconUser ? '' : 'hidden'}`} ref={divRef}>
             <div className='pr-2'>
               <img className='w-7 h-7' src={ChevronUpWhite} alt="" />
             </div>
