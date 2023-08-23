@@ -100,7 +100,7 @@ const MarketList = ({ userIn }) => {
   }, [list, userIn, danger]);
 
   return (
-      <div className='flex flex-col relative gap-3 min-h-[500px] pb-10 border border-red-500'>
+      <div className='flex flex-col relative gap-3 min-h-[650px] pb-10'>
         <h1 className='text-center text-xl'>Artículos</h1>
         {danger ? <Danger setDanger={setDanger} userIn={userIn} /> : ''}
         <ul className='flex flex-col text-xl'>
