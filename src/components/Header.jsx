@@ -8,10 +8,17 @@ import { auth } from '../utils/firebase';
 
 const Header = ({ userIn }) => {
   const [iconUser, setIconUser] = useState(false);
+  const [by, setBy] = useState(true)
   const divRef = useRef(null);
   const iconRef = useRef(null);
 
+  const showMessage = () => {
+    setTimeout(() => {
+        setBy(false);
+    }, 3000);
+};
   useEffect(() => {
+    showMessage();
     const handleClickOutside = (event) => {
       if (
         divRef.current &&
@@ -61,7 +68,7 @@ const Header = ({ userIn }) => {
         </div>
       </header>
       <Outlet />
-      <p className='w-full text-right mb-2 mr-8'><span className='font-bold'>by:</span> Carlos Brazon</p>
+      <p className={`w-full text-right mb-2 mr-8 ${by ? '' : 'hidden'}`}><span className='font-bold'>by:</span> Carlos Brazon</p>
     </div>
   );
 }
