@@ -39,7 +39,7 @@ const MarketList = ({ userIn }) => {
     const timeSinceLastTap = currentTime - lastTapTime;
 
     if (timeSinceLastTap < 300) {
-      
+
       const userDocRef = doc(db, 'users4', userIn.uid);
       const userDocSnapshot = await getDoc(userDocRef);
 
@@ -100,23 +100,23 @@ const MarketList = ({ userIn }) => {
   }, [list, userIn, danger]);
 
   return (
-      <div className='flex flex-col relative gap-3 min-h-[650px] pb-10 border border-red-500'>
-        <h1 className='text-center text-xl'>Artículos</h1>
-        {danger ? <Danger setDanger={setDanger} userIn={userIn} /> : ''}
-        <ul className='flex flex-col text-xl'>
-          {marketData.map((item, index) => (
-            <li
-              className={`list-disc ${item.isDone ? 'line-through' : ''}`}
-              onClick={() => handleClick(item)}
-              onDoubleClick={() => deleteProduct(item.id)}
-              key={index}
+    <div className='flex flex-col items-center relative gap-3 min-h-[650px] pb-10'>
+      <h1 className='text-center text-xl'>Artículos</h1>
+      {danger ? <Danger setDanger={setDanger} userIn={userIn} /> : ''};
+      <ul className='flex flex-col w-full text-xl'>
+        {marketData.map((item, index) => (
+          <li
+            className={`list-disc ${item.isDone ? 'line-through' : ''}`}
+            onClick={() => handleClick(item)}
+            onDoubleClick={() => deleteProduct(item.id)}
+            key={index}
             >
-              {item.name}
-            </li>
-          ))}
-        </ul>
-        <button onClick={() => setDanger(true)} className={`p-2 font-semibold text-base leading-4 bg-red-600 text-white rounded absolute bottom-0 right-9 ${userIn ? '' : 'hidden'}`}>Eliminar todos los productos</button>
-      </div>
+            {item.name}
+          </li>
+        ))};
+      </ul>
+      <button onClick={() => setDanger(true)} className={`p-2 font-semibold text-base leading-4 bg-red-600 text-white rounded absolute bottom-0 ${userIn ? '' : 'hidden'}`}>Eliminar todos los productos</button>
+    </div>
   );
 };
 

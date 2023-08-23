@@ -5,9 +5,8 @@ import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { useNavigate } from 'react-router';
 import Input from './Input.jsx';
 
-
 const CheckIn = () => {
-    const history = useNavigate(); // Importa useNavigate
+    const history = useNavigate();
     const [user, setUser] = useState({});
     const [passwordError, setPasswordError] = useState('');
 
@@ -47,48 +46,47 @@ const CheckIn = () => {
     return (
         <form className='flex flex-col gap-2 p-5 items-center' onSubmit={handleSubmit}>
             <Input
-                type={'text'} 
+                type={'text'}
                 name={'nombre'}
                 onChange={handleInput}
                 value={user.nombre || ''}
                 placeholder={'Nombre'}
                 required
-                 />
+            />
             <Input
-                type={'text'} 
+                type={'text'}
                 name={'apellido'}
                 onChange={handleInput}
                 value={user.apellido || ''}
                 placeholder={'Apellido'}
                 required
-                 />
+            />
             <Input
-                type={'text'} 
+                type={'text'}
                 name={'email'}
                 onChange={handleInput}
                 value={user.email || ''}
                 placeholder={'Email'}
                 required
-                 />
+            />
             <Input
-                type={'password'} 
+                type={'password'}
                 name={'password'}
                 onChange={handleInput}
                 value={user.password || ''}
                 placeholder={'Password'}
                 minLength={'6'}
                 required
-                 />
+            />
             {passwordError && <p className='text-red-600'>{passwordError}</p>}
 
             <Input
-                 className={'w-fit text-white font-semibold text-base bg-slate-500 hover:bg-slate-700 hover:shadow-blue-800 shadow-md shadow-blue-950'}
+                className={'w-fit text-white font-semibold text-base bg-slate-500 hover:bg-slate-700 hover:shadow-blue-800 shadow-md shadow-blue-950'}
                 type={'submit'}
                 value={'Registrarse'}
                 required
-                 />
+            />
         </form>
     )
 }
-
 export default CheckIn;

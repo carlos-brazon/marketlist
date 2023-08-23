@@ -1,6 +1,5 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { Link, Outlet } from 'react-router-dom';
-import { AllItemsContext } from './Contex';
 import UserConected from "../assets/user-svgrepo-com-green.svg";
 import UserDisconected from "../assets/user-svgrepo-com-red.svg";
 import ChevronUpWhite from "../assets/chevron-up-dot-svgrepo-com.svg";
@@ -8,7 +7,6 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../utils/firebase';
 
 const Header = ({ userIn }) => {
-//   const { setDanger } = useContext(AllItemsContext);
   const [iconUser, setIconUser] = useState(false);
   const divRef = useRef(null);
   const iconRef = useRef(null);
@@ -24,7 +22,6 @@ const Header = ({ userIn }) => {
         setIconUser(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
@@ -64,7 +61,6 @@ const Header = ({ userIn }) => {
         </div>
       </header>
       <Outlet />
-      {/* <button onClick={() => setDanger(true)} className={`p-2 font-semibold text-base leading-4 bg-red-600 text-white rounded absolute bottom-1 ${userIn ? '' : 'hidden'}`}>Eliminar todos los productos</button> */}
     </div>
   );
 }

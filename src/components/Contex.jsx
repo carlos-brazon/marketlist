@@ -5,7 +5,6 @@ export const AllItemsContext = createContext();
 const Contex = ({ children, userIn }) => {
   const [list, setList] = useState([]);
   const [marketData, setMarketData] = useState([]);
-  const [danger, setDanger] = useState(false)
 
   return (
     <AllItemsContext.Provider value={{ list, setList, marketData, setMarketData, userIn }}>

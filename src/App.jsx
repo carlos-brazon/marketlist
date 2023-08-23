@@ -33,7 +33,7 @@ function App() {
 
   return (
 
-    <div className='flex relative items-start justify-center min-h-screen w-screen bg-gray-300'>
+    <div className='flex items-start justify-center min-h-screen w-screen bg-gray-300'>
       <Contex userIn={userIn}>
         <BrowserRouter>
           <Routes>
