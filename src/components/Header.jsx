@@ -37,8 +37,8 @@ const Header = ({ userIn }) => {
   }, []);
 
   return (
-    <div className='flex flex-col gap-2 items-center h-full'>
-      <header className="flex items-center justify-between relative text-white bg-neutral-800 py-5 px-3 w-screen">
+    <div className='flex flex-col gap-2 items-center h-full w-full'>
+      <header className="flex items-center justify-between relative text-white bg-neutral-800 py-5 px-3 w-full">
         <Link onClick={() => setIconUser(false)} to={'/'} className={'py-2 px-2 font-semibold text-sm leading-4 rounded  text-white hover:bg-slate-700  bg-slate-600 hover:shadow-blue-800 shadow-md shadow-blue-950'}>{'Inicio'} </Link>
 
         <div className='flex relative gap-3 items-center'>
@@ -68,7 +68,7 @@ const Header = ({ userIn }) => {
         </div>
       </header>
       <Outlet />
-      <p className={`w-full text-right mb-2 mr-8 ${by ? '' : 'hidden'}`}><span className='font-bold'>by:</span> Carlos Brazon</p>
+      <p className={`w-full text-right mb-2 mr-8 ${by && !userIn ? '' : 'hidden'}`}><span className='font-bold'>by:</span> Carlos Brazon</p>
     </div>
   );
 }

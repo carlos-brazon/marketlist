@@ -99,13 +99,13 @@ const MarketList = ({ userIn }) => {
     fetchMarketData();
   }, [list, userIn, danger]);
   return (
-    <div className='flex flex-col items-center relative gap-3 min-h-[580px] pb-10'>
+    <div className='flex flex-col items-center relative gap-3 min-h-[580px] w-[300px] pb-10'>
       <h1 className='text-center text-xl'>Artículos</h1>
       {danger ? <Danger setDanger={setDanger} userIn={userIn} /> : ''}
-      <ul className='flex flex-col w-full text-xl'>
+      <ul className='flex flex-col text-xl w-full'>
         {marketData.map((item, index) => (
           <li
-            className={`list-disc ${item.isDone ? 'line-through' : ''}`}
+            className={`list-disc break-all ${item.isDone ? 'line-through' : ''}`}
             onClick={() => handleClick(item)}
             onDoubleClick={() => deleteProduct(item.id)}
             key={index}
