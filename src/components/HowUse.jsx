@@ -12,7 +12,7 @@ const HowUse = () => {
                 <span className='font-semibold'>Nota:</span>
                 <ul className='flex flex-col gap-2 pt-2 pl-5'>
                     <li className='list-disc'> Puedes utilizar el mismo usuario simultaneamente en dos dispositivos compartiendo la información de tu lista de compras.</li>
-                    <li className='list-disc'> Desde la configuración del navegador puedes agregar el link a tu pantalla de inicio en el móvil para facicilar el acceso a la app.</li>
+                    <li className='list-disc'> Desde la configuración del navegador puedes agregar el link a tu pantalla de inicio en el móvil para facilitar el acceso a la app.</li>
 
                 </ul>
 

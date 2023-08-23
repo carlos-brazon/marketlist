@@ -102,10 +102,10 @@ const MarketList = ({ userIn }) => {
     <div className='flex flex-col items-center relative gap-3 min-h-[580px] w-[300px] pb-10'>
       <h1 className='text-center text-xl'>Artículos</h1>
       {danger ? <Danger setDanger={setDanger} userIn={userIn} /> : ''}
-      <ul className='flex flex-col text-xl w-full'>
+      <ul className='flex flex-col gap-0.5 text-xl w-full'>
         {marketData.map((item, index) => (
           <li
-            className={`list-disc break-all ${item.isDone ? 'line-through' : ''}`}
+            className={`list-disc list-inside break-all rounded py-0.5 px-2 ${item.isDone ? 'line-through' : ''} ${index%2 ===0 ? 'bg-blue-200' : 'bg-slate-50'}`}
             onClick={() => handleClick(item)}
             onDoubleClick={() => deleteProduct(item.id)}
             key={index}

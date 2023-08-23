@@ -54,7 +54,7 @@ const SingIn = ({ userIn }) => {
                     required
                 />
             </form>
-            <p className='font-normal text-sm leading-4'>Sino estás registrado <Link className='font-semibold text-sm leading-4 underline' to={'/CheckIn'}> pulsa aquí </Link></p>
+            <p className='font-normal text-sm leading-4'>Si no estás registrado <Link className='font-semibold text-sm leading-4 underline' to={'/CheckIn'}> pulsa aquí </Link></p>
         </div>
     )
 }
