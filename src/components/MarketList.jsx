@@ -98,7 +98,6 @@ const MarketList = ({ userIn }) => {
 
     fetchMarketData();
   }, [list, userIn, danger]);
-console.log(marketData);
   return (
     <div className='flex flex-col items-center relative gap-3 min-h-[580px] pb-10'>
       <h1 className='text-center text-xl'>Artículos</h1>

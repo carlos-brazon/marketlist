@@ -9,13 +9,16 @@ const CheckIn = () => {
     const history = useNavigate();
     const [user, setUser] = useState({});
     const [passwordError, setPasswordError] = useState('');
-
+    const [emailError, setEmailError] = useState('')
     const handleInput = () => {
         const inputName = event.target.name;
         const inputValue = event.target.value;
         if (inputName === 'email') {
             const cleanedValue = inputValue.replace(/[^a-zA-Z0-9@.\-_]/g, '');
             setUser((prev) => ({ ...prev, [inputName]: cleanedValue }));
+            if (cleanedValue.includes('@')) {
+                setEmailError(false)
+            }
         }
         else {
             setUser((prev) => ({ ...prev, [inputName]: inputValue }));
@@ -26,8 +29,14 @@ const CheckIn = () => {
             setPasswordError('');
         }
     }
+
     const handleSubmit = async () => {
         event.preventDefault();
+        if (!user.email || !user.email.includes('@')) {
+            setEmailError('Formato de correo invalido, debe contener @.')
+            return;
+        }
+
         const user3 = { ...user, markeList: [], password: '', email: (user.email).toLowerCase() };
 
         const auth = getAuth();
@@ -40,6 +49,7 @@ const CheckIn = () => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
             });
+
         history('/', { replace: true });
     }
 
@@ -68,7 +78,8 @@ const CheckIn = () => {
                 value={user.email || ''}
                 placeholder={'Email'}
                 required
-            />
+                />
+                {emailError && <p className='text-red-600'>{emailError}</p>}
             <Input
                 type={'password'}
                 name={'password'}
