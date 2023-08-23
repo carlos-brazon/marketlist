@@ -8,9 +8,13 @@ const HowUse = () => {
                 <p> 2 - Dos clicks elimina el producto de la lista de compras</p>
             </div>
 
-            <div>
-                <p><span className='font-semibold'>Nota</span>: Puedes utilizar el mismo usuario simultaneamente en dos dispositivos diferentes</p>
-                <p><span className='font-semibold'>Nota</span>: Desde el navegador puedes agregar el link a tu pantalla de inicio en el movil para facicilar el acceso a al app</p>
+            <div className='flex flex-col'>
+                <span className='font-semibold'>Nota:</span>
+                <ul className='flex flex-col gap-2 pt-2 pl-5'>
+                    <li className='list-disc'> Puedes utilizar el mismo usuario simultaneamente en dos dispositivos diferentes compartiendo la información</li>
+                    <li className='list-disc'> Desde la configuración del navegador puedes agregar el link a tu pantalla de inicio en el móvil para facicilar el acceso a la app</li>
+
+                </ul>
 
             </div>
         </div>
