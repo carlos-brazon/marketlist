@@ -3,12 +3,12 @@ import { collection, query, where, getDocs, getDoc, doc, updateDoc } from 'fireb
 import { db } from '../utils/firebase';
 import { AllItemsContext } from './Contex';
 import Danger from './Danger';
+import Tags from '../Tags';
 
 const MarketList = ({ userIn }) => {
-  const { list, setList } = useContext(AllItemsContext);
-  const [marketData, setMarketData] = useState([]);
+  const { list, setList, marketData, setMarketData, button, setButton  } = useContext(AllItemsContext);
   const [lastTapTime, setLastTapTime] = useState(0);
-  const [danger, setDanger] = useState(false)
+  const [danger, setDanger] = useState(false);
 
   const updateIsDoneInFirestore = async (userId, itemId, newIsDoneValue) => {
     try {
@@ -98,12 +98,16 @@ const MarketList = ({ userIn }) => {
 
     fetchMarketData();
   }, [list, userIn, danger]);
+
+const itemsCompra = marketData.filter( item => item.tags === button)
+console.log(itemsCompra);
   return (
     <div className='flex flex-col items-center relative gap-3 min-h-[580px] w-[300px] pb-10'>
+      {userIn?.email==='carlosbrazon.sp2@gmail.com' ? <Tags /> :null}
       <h1 className='text-center text-xl'>Artículos</h1>
       {danger ? <Danger setDanger={setDanger} userIn={userIn} /> : ''}
       <ul className='flex flex-col gap-0.5 text-xl w-full'>
-        {marketData.map((item, index) => (
+        {itemsCompra.map((item, index) => (
           <li
             className={`list-disc list-inside break-all rounded py-0.5 px-2 ${item.isDone ? 'line-through' : ''} ${index%2 ===0 ? 'bg-blue-200' : 'bg-slate-50'}`}
             onClick={() => handleClick(item)}
