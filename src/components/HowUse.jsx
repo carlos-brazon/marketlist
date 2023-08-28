@@ -4,8 +4,9 @@ const HowUse = () => {
     return (
         <div className='flex flex-col gap-3 p-4'>
             <div>
-                <p> 1 - Un click tacha el producto agregado.</p>
-                <p> 2 - Doble click elimina el producto de la lista de compras.</p>
+                <p> 1 -. Un click tacha el producto agregado.</p>
+                <p> 2 -. Doble click elimina el producto de la lista de compras.</p>
+                <p> 3 -. En el signo (+) puedes desplegar un nuevo campo para iniciar una nueva lista o actividad</p>
             </div>
 
             <div className='flex flex-col'>
