@@ -6,9 +6,10 @@ import Danger from './Danger';
 import Tags from '../Tags';
 
 const MarketList = ({ userIn }) => {
-  const { list, setList, marketData, setMarketData, button, setButton  } = useContext(AllItemsContext);
+  const { list, setList, marketData, setMarketData, button, setControlTags  } = useContext(AllItemsContext);
   const [lastTapTime, setLastTapTime] = useState(0);
   const [danger, setDanger] = useState(false);
+  console.log(button);
 
   const updateIsDoneInFirestore = async (userId, itemId, newIsDoneValue) => {
     try {
@@ -46,9 +47,11 @@ const MarketList = ({ userIn }) => {
       if (userDocSnapshot.exists()) {
         const userData = userDocSnapshot.data();
         const updatedMarkeList = userData.markeList.filter(item => item.id !== objitem.id);
-
+        
         await updateDoc(userDocRef, { markeList: updatedMarkeList });
         console.log('Producto eliminado de Firestore correctamente.');
+        console.log(updatedMarkeList);
+        updatedMarkeList.length===0 ? setControlTags(false) : ''
 
         setList(prev => prev.filter(item => item.id !== objitem.id));
         setMarketData(prevMarketData => prevMarketData.filter(item => item.id !== objitem.id));
@@ -79,6 +82,7 @@ const MarketList = ({ userIn }) => {
       });
       return updatedMarketData;
     });
+    console.log(marketData);
   };
 
   useEffect(() => {
@@ -110,7 +114,6 @@ const itemsCompra = marketData.filter( item => item.tags === button)
           <li
             className={`list-disc list-inside break-all rounded py-0.5 px-2 ${item.isDone ? 'line-through' : ''} ${index%2 ===0 ? 'bg-blue-200' : 'bg-slate-50'}`}
             onClick={() => handleClick(item)}
-            onDoubleClick={() => deleteProduct(item.id)}
             key={index}
             >
             {item.name}

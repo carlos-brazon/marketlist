@@ -7,7 +7,7 @@ import MarketList from './MarketList';
 import Input from './Input';
 
 const Form = ({ userIn }) => {
-    const { setList, controltags, setControlTags } = useContext(AllItemsContext);
+    const { setList, controltags, setButton, marketData } = useContext(AllItemsContext);
     const [user, setUser] = useState({});
     const [message, setMessage] = useState('')
 
@@ -33,6 +33,7 @@ const Form = ({ userIn }) => {
             const productExists = market.some(item => item.name === newProductName);
 
             if (!productExists) {
+                console.log(controltags);
                 const newId = doc(collection(db, 'dummy')).id;
                 setList(prev => [...prev, { ...user, isDone: false, id: newId, name: user.name.toLowerCase() }])
                 await updateDoc(doc(db, 'users4', userIn.uid), {
@@ -47,7 +48,8 @@ const Form = ({ userIn }) => {
         } catch (error) {
             console.error('Error al realizar la consulta:', error);
         }
-        setUser(prev => ({ ...prev, name: '' }))
+        setUser(prev => ({ ...prev, name: '', tags: controltags ? user.tags : '' }));
+        setButton(controltags ? user.tags : 'Compras')
     }
     return (
         <div className={userIn ? 'flex flex-col items-center pt-2 gap-2' : 'hidden'}>
@@ -66,7 +68,7 @@ const Form = ({ userIn }) => {
                     onChange={handleInput}
                     value={user.tags || ''}
                     placeholder={'Nueva lista'}
-                    className={controltags || 'hidden'}
+                    className={controltags && marketData.length || 'hidden'}
                 />
                 <Input
                     className={'w-fit px-2 h-9 py-0 text-white font-semibold text-base bg-slate-500 hover:bg-slate-700 hover:shadow-blue-800 shadow-md shadow-blue-950'}

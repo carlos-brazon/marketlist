@@ -22,7 +22,9 @@ const Danger = ({ setDanger, userIn }) => {
         }
         return acc
     }, [])
-    tags.length === 1 ? setButton(tags[0]) : ''
+    if (tags.length === 1) {
+      setButton(tags[0])
+    }
     }
     setDanger(false);
   }
