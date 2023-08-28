@@ -100,10 +100,9 @@ const MarketList = ({ userIn }) => {
   }, [list, userIn, danger]);
 
 const itemsCompra = marketData.filter( item => item.tags === button)
-console.log(itemsCompra);
   return (
     <div className='flex flex-col items-center relative gap-3 min-h-[580px] w-[300px] pb-10'>
-      {userIn?.email==='carlosbrazon.sp2@gmail.com' ? <Tags /> :null}
+      <Tags />
       <h1 className='text-center text-xl'>Artículos</h1>
       {danger ? <Danger setDanger={setDanger} userIn={userIn} /> : ''}
       <ul className='flex flex-col gap-0.5 text-xl w-full'>
