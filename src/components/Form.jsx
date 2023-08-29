@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react';
 import { AllItemsContext } from './Contex';
 import { useContext } from 'react';
 import { arrayUnion, doc, updateDoc, collection, getDocs, query, where } from 'firebase/firestore';
@@ -7,9 +7,17 @@ import MarketList from './MarketList';
 import Input from './Input';
 
 const Form = ({ userIn }) => {
-    const { setList, controltags, setButton, marketData } = useContext(AllItemsContext);
+    const { setList, controltags, button, setButton, marketData } = useContext(AllItemsContext);
     const [user, setUser] = useState({});
-    const [message, setMessage] = useState('')
+    const [message, setMessage] = useState('');
+    useEffect(() => {
+        setUser(prev => {
+            return {
+                ...prev,
+                tags: marketData.length ? button : 'Compras'
+            };
+        });
+    }, [button]);
 
     const showMessage = (text, duration) => {
         setMessage(text);
@@ -20,9 +28,10 @@ const Form = ({ userIn }) => {
 
     const handleInput = () => {
         const inputName = event.target.name;
-        const inputValue = (event.target.value)
+        const inputValue = event.target.value;
         setUser(prev => ({ ...prev, [inputName]: inputValue }));
     }
+
     const handleSubmit = async () => {
         event.preventDefault();
 
@@ -33,24 +42,22 @@ const Form = ({ userIn }) => {
             const productExists = market.some(item => item.name === newProductName);
 
             if (!productExists) {
-                console.log(controltags);
                 const newId = doc(collection(db, 'dummy')).id;
-                setList(prev => [...prev, { ...user, isDone: false, id: newId, name: user.name.toLowerCase() }])
+                setList(prev => [...prev, { ...user, isDone: false, id: newId, name: user.name.toLowerCase() }]);
                 await updateDoc(doc(db, 'users4', userIn.uid), {
-                    markeList: arrayUnion({ ...user, isDone: false, id: newId, tags: controltags ? user.tags : 'Compras'})
+                    markeList: arrayUnion({ ...user, isDone: false, id: newId })
                 });
-                showMessage('Agregado', 2000)
-
+                showMessage('Agregado', 2000);
+                setUser(prev => ({ ...prev, name: '' }));
+                setButton(prev => user.tags);
             } else {
-                showMessage('Repetido', 2000)
-
+                showMessage('Repetido', 2000);
             }
         } catch (error) {
             console.error('Error al realizar la consulta:', error);
         }
-        setUser(prev => ({ ...prev, name: '', tags: controltags ? user.tags : '' }));
-        setButton(controltags ? user.tags : 'Compras')
     }
+
     return (
         <div className={userIn ? 'flex flex-col items-center pt-2 gap-2' : 'hidden'}>
             <form className={`flex items-center gap-2 ${controltags ? 'flex-col' : ''}`} onSubmit={handleSubmit}>
@@ -62,13 +69,14 @@ const Form = ({ userIn }) => {
                     placeholder={'Producto'}
                     required
                 />
-                <Input 
+                <Input
                     type={'text'}
                     name={'tags'}
                     onChange={handleInput}
                     value={user.tags || ''}
                     placeholder={'Nueva lista'}
-                    className={controltags && marketData.length || 'hidden'}
+                    className={controltags && marketData.length ? '' : 'hidden'} // Ajusta la lógica aquí
+                    required
                 />
                 <Input
                     className={'w-fit px-2 h-9 py-0 text-white font-semibold text-base bg-slate-500 hover:bg-slate-700 hover:shadow-blue-800 shadow-md shadow-blue-950'}
@@ -82,7 +90,7 @@ const Form = ({ userIn }) => {
             </div>
             <MarketList userIn={userIn} />
         </div>
-    )
+    );
 }
 
-export default Form
+export default Form;

@@ -6,10 +6,9 @@ import Danger from './Danger';
 import Tags from '../Tags';
 
 const MarketList = ({ userIn }) => {
-  const { list, setList, marketData, setMarketData, button, setControlTags  } = useContext(AllItemsContext);
+  const { list, setList, marketData, setMarketData, button, setControlTags, setButton } = useContext(AllItemsContext);
   const [lastTapTime, setLastTapTime] = useState(0);
   const [danger, setDanger] = useState(false);
-  console.log(button);
 
   const updateIsDoneInFirestore = async (userId, itemId, newIsDoneValue) => {
     try {
@@ -47,11 +46,13 @@ const MarketList = ({ userIn }) => {
       if (userDocSnapshot.exists()) {
         const userData = userDocSnapshot.data();
         const updatedMarkeList = userData.markeList.filter(item => item.id !== objitem.id);
-        
+
         await updateDoc(userDocRef, { markeList: updatedMarkeList });
         console.log('Producto eliminado de Firestore correctamente.');
-        console.log(updatedMarkeList);
-        updatedMarkeList.length===0 ? setControlTags(false) : ''
+        if (updatedMarkeList.length === 0 ) {
+          setControlTags(false)
+          setButton('Compras')
+        }
 
         setList(prev => prev.filter(item => item.id !== objitem.id));
         setMarketData(prevMarketData => prevMarketData.filter(item => item.id !== objitem.id));
@@ -82,13 +83,12 @@ const MarketList = ({ userIn }) => {
       });
       return updatedMarketData;
     });
-    console.log(marketData);
   };
 
   useEffect(() => {
     const fetchMarketData = async () => {
       try {
-        const querySnapshot = await getDocs(query(collection(db, 'users4'), where('email', '==', userIn.email)));
+        const querySnapshot = await getDocs(query(collection(db, 'users4'), where('email', '==', userIn?.email)));
         if (!querySnapshot.empty) {
           const market = querySnapshot.docs[0].data().markeList || [];
           setMarketData(market.sort((a, b) => a.name.localeCompare(b.name)));
@@ -103,26 +103,28 @@ const MarketList = ({ userIn }) => {
     fetchMarketData();
   }, [list, userIn, danger]);
 
-const itemsCompra = marketData.filter( item => item.tags === button)
+  const itemsCompra = marketData.filter(item => item.tags === button)
   return (
     <div className='flex flex-col items-center relative gap-3 min-h-[580px] w-[300px] pb-10'>
       <Tags />
-      <h1 className='text-center text-xl'>Artículos</h1>
+      <h1 className='text-center text-xl'>Lista</h1>
       {danger ? <Danger setDanger={setDanger} userIn={userIn} /> : ''}
       <ul className='flex flex-col gap-0.5 text-xl w-full'>
-        {itemsCompra.map((item, index) => (
-          <li
-            className={`list-disc list-inside break-all rounded py-0.5 px-2 ${item.isDone ? 'line-through' : ''} ${index%2 ===0 ? 'bg-blue-200' : 'bg-slate-50'}`}
-            onClick={() => handleClick(item)}
-            key={index}
+        {marketData.length ?
+          itemsCompra.map((item, index) => (
+            <li
+              className={`list-disc list-inside break-all rounded py-0.5 px-2 ${item.isDone ? 'line-through' : ''} ${index % 2 === 0 ? 'bg-blue-200' : 'bg-slate-50'}`}
+              onClick={() => handleClick(item)}
+              key={index}
             >
-            {item.name}
-          </li>
-        ))}
+              {item.name}
+            </li>
+          ))
+          : <p className='text-base'>Lista vacia</p>}
       </ul>
-      {marketData.length 
-      ? <button onClick={() => setDanger(true)} className={`p-2 font-semibold text-base leading-4 bg-red-600 text-white rounded absolute bottom-0 ${userIn ? '' : 'hidden'}`}>Eliminar todos los productos</button>
-    :''}
+      {marketData.length
+        ? <button onClick={() => setDanger(true)} className={`p-2 font-semibold text-base leading-4 bg-red-600 text-white rounded absolute bottom-0 ${userIn ? '' : 'hidden'}`}>Eliminar todos los productos</button>
+        : ''}
     </div>
   );
 };

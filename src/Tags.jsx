@@ -15,13 +15,10 @@ const Tags = () => {
     }, []);
 
     useEffect(() => {
-    
-            if (tags.length === 1) {
-                setButton(tags[0]);
-            }
-        
-    }, [tags])
-    console.log(tags);
+        if (tags.length === 1) {
+            setButton(tags[0]);
+        }
+    }, [tags]);
     return (
         <div className='flex gap-2 justify-center'>
             <p onClick={() => setControlTags(prev => !prev)} className={`rounded-full w-8 h-8 bg-aquainput flex place-items-center border justify-center shadow-md shadow-gray-950 ${marketData.length == 0 ? 'hidden' : ''}`}>+</p>
