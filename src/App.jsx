@@ -118,7 +118,7 @@ function App() {
           <div>Cargando...</div>
         </div>
       ) : (
-        <div className='animate-fade flex items-start justify-center min-h-screen min-w-min bg-gray-300'>
+        <div className='animate-fade flex items-start relative justify-center min-h-screen min-w-min bg-gray-300'>
           <Contex userIn={userIn}>
             <BrowserRouter>
               <Routes>

@@ -85,7 +85,7 @@ const MarketList = () => {
         {list?.length ?
           itemsCompra?.map((item, index) => (
             <li
-              className={`list-disc list-inside break-all rounded py-0.5 px-2 ${item.isDone ? 'line-through' : ''} ${index % 2 === 0 ? 'bg-blue-200' : 'bg-slate-50'}`}
+              className={`list-disc list-inside break-normal rounded py-0.5 px-2 ${item.isDone ? 'line-through' : ''} ${index % 2 === 0 ? 'bg-blue-200' : 'bg-slate-50'}`}
               onClick={() => handleClick(item)}
               key={index}
             >
