@@ -1,4 +1,4 @@
-import React, { Children, createContext, useEffect, useState } from 'react'
+import React, { Children, createContext, useState } from 'react'
 
 export const AllItemsContext = createContext();
 
