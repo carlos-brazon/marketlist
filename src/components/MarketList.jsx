@@ -7,9 +7,9 @@ import Tags from '../Tags';
 import { firstLetterUpperCase } from '../utils/util';
 
 const MarketList = () => {
-  const { userIn, list, setList, button, setControlTags, setButton } = useContext(AllItemsContext);
+  const { userIn, list, setList, button, setControlTags, setButton, danger, setDanger } = useContext(AllItemsContext);
   const [lastTapTime, setLastTapTime] = useState(0);
-  const [danger, setDanger] = useState(false);
+  
 
   const updateIsDoneInFirestore = async (userId, itemId, newIsDoneValue) => {
     try {
@@ -58,12 +58,12 @@ const MarketList = () => {
 
         await updateDoc(doc(db, 'users4', userIn.uid), { markeList: updatedMarkeList });
         console.log('Producto eliminado de Firestore correctamente.');
-        if (updatedMarkeList.length === 0) {
+        if (updatedMarkeList.length === 0 || list.length===0) {
           setControlTags(false)
           setButton('Compras')
         }
         setList(updatedMarkeList);
-        setButton(updatedMarkeList[0].tags)
+        setButton(updatedMarkeList[0]?.tags);
       } else {
         console.log('El documento no existe en Firestore.');
       }
@@ -80,7 +80,7 @@ const MarketList = () => {
     <div className='flex flex-col items-center relative gap-3 min-h-[580px] w-screen px-3 pb-10'>
       <Tags />
       <h1 className='text-center text-xl'>Lista</h1>
-      {danger ? <Danger setDanger={setDanger} userIn={userIn} /> : ''}
+      {danger ? <Danger userIn={userIn} /> : ''}
       <ul className='flex flex-col gap-0.5 text-xl w-full'>
         {list?.length ?
           itemsCompra?.map((item, index) => (

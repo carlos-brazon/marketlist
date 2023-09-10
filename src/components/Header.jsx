@@ -9,7 +9,7 @@ import { AllItemsContext } from './Contex';
 import { firstLetterUpperCase } from "../utils/util.js";
 
 const Header = () => {
-  const { userIn } = useContext(AllItemsContext);
+  const { userIn, danger } = useContext(AllItemsContext);
   const [iconUser, setIconUser] = useState(false);
   const [by, setBy] = useState(true);
   const iconRef = useRef(null);
@@ -38,7 +38,7 @@ const Header = () => {
   }, []);
 
   return (
-    <div className='flex flex-col gap-2 items-center h-full w-full'>
+    <div className='relative flex flex-col gap-2 items-center h-full w-full'>
       <header className="flex items-center justify-between relative text-white bg-neutral-800 py-5 px-3 w-full">
         <Link to={'/'} className={'py-2 px-2 font-semibold text-sm leading-4 rounded  text-white hover:bg-slate-700  bg-slate-600 hover:shadow-blue-800 shadow-md shadow-blue-950'}>{'Inicio'} </Link>
 
@@ -53,14 +53,15 @@ const Header = () => {
           <div className={`animate-fade-up animate-duration-[600ms] flex flex-col z-10 items-end absolute w-40 h-40 top-8 -right-1 rounded-md text-black ${iconUser || 'hidden'}`} ref={divRef}>
             <img className='pr-2 w-7 h-7' src={ChevronUpWhite} alt="" />
             <div className={`flex flex-col rounded-md items-end gap-2 p-2 w-auto h-auto border border-stone-400 shadow-md shadow-gray-700 bg-white`}>
-                <p className={`flex w-full items-end hover:bg-slate-200 p-1 flex-col gap-2 ${userIn ||'hidden'}`}>{userIn?.email}</p>
-                <Link to={'HowToUse'} onClick={() => setIconUser(false)} className='flex w-full items-end hover:bg-slate-200 p-1 flex-col gap-2'>Como usar</Link >
-                <p onClick={() => { signOut(auth); setIconUser(false); }} className={`flex w-full items-end hover:bg-slate-200 p-1 flex-col gap-2 ${userIn || 'hidden'}`}>Cerrar sesión</p>
+              <p className={`flex w-full items-end hover:bg-slate-200 p-1 flex-col gap-2 ${userIn || 'hidden'}`}>{userIn?.email}</p>
+              <Link to={'HowToUse'} onClick={() => setIconUser(false)} className='flex w-full items-end hover:bg-slate-200 p-1 flex-col gap-2'>Como usar</Link >
+              <p onClick={() => { signOut(auth); setIconUser(false); }} className={`flex w-full items-end hover:bg-slate-200 p-1 flex-col gap-2 ${userIn || 'hidden'}`}>Cerrar sesión</p>
             </div>
           </div>
         </div>
       </header>
       <Outlet />
+      <div className={`${danger ? 'h-full backdrop-blur-xs w-full bg-neutral-500/40 absolute z-40' : ''}`}></div>
       <p className={`w-full text-right mb-2 mr-8 ${by && !userIn || 'hidden'}`}><span className='font-bold'>by:</span> Carlos Brazon</p>
     </div>
   );

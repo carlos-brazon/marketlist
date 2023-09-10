@@ -64,56 +64,60 @@ const CheckIn = () => {
     }
 
     return (
-        <form className='flex flex-col gap-2 p-5 items-center' onSubmit={handleSubmit}>
-           <div className='flex gap-2'>
-           <Input
-           className={'w-28'}
-                type={'text'}
-                name={'nombre'}
-                onChange={handleInput}
-                value={user.nombre || ''}
-                placeholder={'Nombre'}
-                required
-            />
-            <Input
-            className={'w-28'}
-                type={'text'}
-                name={'apellido'}
-                onChange={handleInput}
-                value={user.apellido || ''}
-                placeholder={'Apellido'}
-                required
-            />
-           </div>
-            <Input
-            className={'w-[232px]'}
-                type={'text'}
-                name={'email'}
-                onChange={handleInput}
-                value={user.email || ''}
-                placeholder={'Email'}
-                required
-            />
-            <Input
-            className={'w-[232px]'}
-                type={'password'}
-                name={'password'}
-                onChange={handleInput}
-                value={user.password || ''}
-                placeholder={'Password'}
-                minLength={'6'}
-                required
-            />
-            <p>{messageLogIn}</p>
-            {passwordError && <p className='text-red-600'>{passwordError}</p>}
-            {emailError && <p className='text-red-600'>{emailError}</p>}
-            <Input
-                className={'w-fit text-white font-semibold text-base bg-slate-500 hover:bg-slate-700 hover:shadow-blue-800 shadow-md shadow-blue-950'}
-                type={'submit'}
-                value={'Registrarse'}
-                required
-            />
-        </form>
+        <div className='flex flex-col gap-4 p-3'>
+            <h1 className='font-semibold text-xl'>Crea tu cuenta</h1>
+
+            <form className='flex flex-col gap-2 items-center' onSubmit={handleSubmit}>
+                <div className='flex gap-2'>
+                    <Input
+                        className={'w-28'}
+                        type={'text'}
+                        name={'nombre'}
+                        onChange={handleInput}
+                        value={user.nombre || ''}
+                        placeholder={'Nombre'}
+                        required
+                    />
+                    <Input
+                        className={'w-28'}
+                        type={'text'}
+                        name={'apellido'}
+                        onChange={handleInput}
+                        value={user.apellido || ''}
+                        placeholder={'Apellido'}
+                        required
+                    />
+                </div>
+                <Input
+                    className={'w-[232px]'}
+                    type={'text'}
+                    name={'email'}
+                    onChange={handleInput}
+                    value={user.email || ''}
+                    placeholder={'Email'}
+                    required
+                />
+                <Input
+                    className={'w-[232px]'}
+                    type={'password'}
+                    name={'password'}
+                    onChange={handleInput}
+                    value={user.password || ''}
+                    placeholder={'Establecer contraseña'}
+                    minLength={'6'}
+                    required
+                />
+                <p>{messageLogIn}</p>
+                {passwordError && <p className='text-red-600'>{passwordError}</p>}
+                {emailError && <p className='text-red-600'>{emailError}</p>}
+                <Input
+                    className={'w-fit text-white font-semibold text-base bg-slate-500 hover:bg-slate-700 hover:shadow-blue-800 shadow-md shadow-blue-950'}
+                    type={'submit'}
+                    value={'Registrarse'}
+                    required
+                />
+            </form>
+        </div>
     )
 }
 export default CheckIn;

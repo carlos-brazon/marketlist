@@ -37,12 +37,12 @@ const Form = () => {
             const productExists = market.some(item => item.name === user.name.trim());
 
             if (!productExists) {
+                showMessage('Agregado');
                 const newId = doc(collection(db, 'dummy')).id;
                 setList(prev => [...prev, { ...user, isDone: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }].sort((a, b) => a.name.localeCompare(b.name)));
                 await updateDoc(doc(db, 'users4', userIn.uid), {
                     markeList: arrayUnion({ ...user, tags: user.tags.trim(), isDone: false, id: newId })
                 });
-                showMessage('Agregado');
                 setUser(prev => ({ ...prev, name: '' }));
                 setButton(prev => user.tags.trim());
             } else {
@@ -71,7 +71,7 @@ const Form = () => {
                     onChange={handleInput}
                     value={user.tags || ''}
                     placeholder={'Nueva lista'}
-                    className={controltags && list?.length ? 'w-28' : 'hidden'}
+                    className={controltags  ? 'w-28' : 'hidden'}
                     maxLength="15"
                     required
                 />

@@ -6,6 +6,9 @@ export default {
   ],
   theme: {
     extend: {
+      blur: {
+        xs: '1px',
+      },
       colors : {
         'aquainput' : '#5cebdf',
         'blueinput' : '#054861'

@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { AllItemsContext } from './components/Contex'
 import { firstLetterUpperCase } from './utils/util';
+import  Add  from "./assets/add-black.svg";
 
 const Tags = () => {
     const { list, setControlTags, button, setButton } = useContext(AllItemsContext);
@@ -20,10 +21,10 @@ const Tags = () => {
         }
     }, [tags]);
     return (
-        <div className='flex gap-2 justify-center flex-wrap break-all'>
-            <p onClick={() => setControlTags(prev => !prev)} className={`rounded-full w-8 h-8 bg-aquainput flex place-items-center border justify-center shadow-md shadow-gray-950 ${list?.length == 0 ? 'hidden' : ''}`}>+</p>
+        <div className='w-full flex gap-2 flex-wrap break-all'>
+            <img onClick={() => setControlTags(prev => !prev)} className='w-8 h-8' src={Add} alt="Aquí va la imagen de un Add" />
 
-            {tags?.map((string, i) => <button key={i} onClick={() => setButton(tags.length === 1 ? tags[0] : string)} className={`p-1 font-semibold text-base rounded-md ${button === string ? 'bg-blue-800 text-white hover:shadow-blue-800 shadow-md shadow-blue-950' : 'bg-blue-400 hover:shadow-blue-400 shadow-md shadow-gray-500'}`}>{firstLetterUpperCase(string)}</button>)}
+            {tags?.map((string, i) => <button key={i} onClick={() => setButton(tags.length === 1 ? tags[0] : string)} className={`p-1 font-semibold text-base rounded-md ${button === string ? 'bg-blue-600 text-white hover:shadow-blue-800 shadow-md shadow-blue-950' : 'bg-blue-400 hover:shadow-blue-400 shadow-md shadow-gray-500'}`}>{firstLetterUpperCase(string)}</button>)}
         </div>
     )
 }
