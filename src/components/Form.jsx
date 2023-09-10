@@ -6,24 +6,20 @@ import { db } from '../utils/firebase';
 import MarketList from './MarketList';
 import Input from './Input';
 
-const Form = ({ userIn }) => {
-    const { setList, controltags, button, setButton, marketData } = useContext(AllItemsContext);
+const Form = () => {
+    const { userIn, setList, controltags, button, setButton, list } = useContext(AllItemsContext);
     const [user, setUser] = useState({});
     const [message, setMessage] = useState('');
+
     useEffect(() => {
-        setUser(prev => {
-            return {
-                ...prev,
-                tags: marketData.length ? button : 'Compras'
-            };
-        });
+        setUser(prev => ({...prev, tags: list?.length ? button : 'Compras' }));
     }, [button]);
 
-    const showMessage = (text, duration) => {
+    const showMessage = (text) => {
         setMessage(text);
         setTimeout(() => {
             setMessage('');
-        }, duration);
+        }, 2000);
     };
 
     const handleInput = () => {
@@ -35,23 +31,22 @@ const Form = ({ userIn }) => {
     const handleSubmit = async () => {
         event.preventDefault();
 
-        const newProductName = user.name;
         try {
             const querySnapshot = await getDocs(query(collection(db, 'users4'), where('email', '==', userIn.email)));
             const market = querySnapshot.docs[0]?.data().markeList || []
-            const productExists = market.some(item => item.name === newProductName);
+            const productExists = market.some(item => item.name === user.name.trim());
 
             if (!productExists) {
                 const newId = doc(collection(db, 'dummy')).id;
-                setList(prev => [...prev, { ...user, isDone: false, id: newId, name: user.name.toLowerCase() }]);
+                setList(prev => [...prev, { ...user, isDone: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }].sort((a, b) => a.name.localeCompare(b.name)));
                 await updateDoc(doc(db, 'users4', userIn.uid), {
-                    markeList: arrayUnion({ ...user, isDone: false, id: newId })
+                    markeList: arrayUnion({ ...user, tags: user.tags.trim(), isDone: false, id: newId })
                 });
-                showMessage('Agregado', 2000);
+                showMessage('Agregado');
                 setUser(prev => ({ ...prev, name: '' }));
-                setButton(prev => user.tags);
+                setButton(prev => user.tags.trim());
             } else {
-                showMessage('Repetido', 2000);
+                showMessage('Repetido');
             }
         } catch (error) {
             console.error('Error al realizar la consulta:', error);
@@ -60,8 +55,9 @@ const Form = ({ userIn }) => {
 
     return (
         <div className={userIn ? 'flex flex-col items-center pt-2 gap-2' : 'hidden'}>
-            <form className={`flex items-center gap-2 ${controltags ? 'flex-col' : ''}`} onSubmit={handleSubmit}>
+            <form className={`flex items-center gap-2 ${controltags ? '' : ''}`} onSubmit={handleSubmit}>
                 <Input
+                className={'w-28'}
                     type={'text'}
                     name={'name'}
                     onChange={handleInput}
@@ -75,11 +71,12 @@ const Form = ({ userIn }) => {
                     onChange={handleInput}
                     value={user.tags || ''}
                     placeholder={'Nueva lista'}
-                    className={controltags && marketData.length ? '' : 'hidden'} // Ajusta la lógica aquí
+                    className={controltags && list?.length ? 'w-28' : 'hidden'}
+                    maxLength="15"
                     required
                 />
                 <Input
-                    className={'w-fit px-2 h-9 py-0 text-white font-semibold text-base bg-slate-500 hover:bg-slate-700 hover:shadow-blue-800 shadow-md shadow-blue-950'}
+                    className={'w-20 px-1 h-9 py-0 text-white font-semibold text-base bg-slate-500 hover:bg-slate-700 hover:shadow-blue-800 shadow-md shadow-blue-950'}
                     type={'submit'}
                     value={'Agregar'}
                     required
@@ -92,5 +89,4 @@ const Form = ({ userIn }) => {
         </div>
     );
 }
-
 export default Form;

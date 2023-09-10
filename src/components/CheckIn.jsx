@@ -9,7 +9,9 @@ const CheckIn = () => {
     const history = useNavigate();
     const [user, setUser] = useState({});
     const [passwordError, setPasswordError] = useState('');
-    const [emailError, setEmailError] = useState('')
+    const [emailError, setEmailError] = useState('');
+    const [messageLogIn, setMessageLogIn] = useState('');
+
     const handleInput = () => {
         const inputName = event.target.name;
         const inputValue = event.target.value;
@@ -33,29 +35,39 @@ const CheckIn = () => {
     const handleSubmit = async () => {
         event.preventDefault();
         if (!user.email || !user.email.includes('@')) {
-            setEmailError('Formato de correo invalido, debe contener @.')
+            setEmailError('Formato de correo invalido, debe contener @.');
             return;
         }
+        const showMessage = () => {
+            setTimeout(() => {
+                history('/', { replace: true });
+            }, 2000);
+        };
 
-        const user3 = { ...user, markeList: [], password: '', email: (user.email).toLowerCase() };
+        const userToFirebase = { ...user, markeList: [], email: (user.email).toLowerCase() };
 
         const auth = getAuth();
         createUserWithEmailAndPassword(auth, user.email, user.password)
             .then(async (userCredential) => {
                 const user = userCredential.user;
-                await setDoc(doc(db, "users4", user.uid), user3);
+                delete userToFirebase.password;
+                await setDoc(doc(db, "users4", user.uid), userToFirebase);
+                setMessageLogIn('Usuario registrado correctamente');
+                showMessage();
             })
             .catch((error) => {
+                setMessageLogIn('Error al registrar usuario, intentalo de nuevo');
+                setUser('');
                 const errorCode = error.code;
                 const errorMessage = error.message;
             });
-
-        history('/', { replace: true });
     }
 
     return (
         <form className='flex flex-col gap-2 p-5 items-center' onSubmit={handleSubmit}>
-            <Input
+           <div className='flex gap-2'>
+           <Input
+           className={'w-28'}
                 type={'text'}
                 name={'nombre'}
                 onChange={handleInput}
@@ -64,6 +76,7 @@ const CheckIn = () => {
                 required
             />
             <Input
+            className={'w-28'}
                 type={'text'}
                 name={'apellido'}
                 onChange={handleInput}
@@ -71,16 +84,18 @@ const CheckIn = () => {
                 placeholder={'Apellido'}
                 required
             />
+           </div>
             <Input
+            className={'w-[232px]'}
                 type={'text'}
                 name={'email'}
                 onChange={handleInput}
                 value={user.email || ''}
                 placeholder={'Email'}
                 required
-                />
-                {emailError && <p className='text-red-600'>{emailError}</p>}
+            />
             <Input
+            className={'w-[232px]'}
                 type={'password'}
                 name={'password'}
                 onChange={handleInput}
@@ -89,8 +104,9 @@ const CheckIn = () => {
                 minLength={'6'}
                 required
             />
+            <p>{messageLogIn}</p>
             {passwordError && <p className='text-red-600'>{passwordError}</p>}
-
+            {emailError && <p className='text-red-600'>{emailError}</p>}
             <Input
                 className={'w-fit text-white font-semibold text-base bg-slate-500 hover:bg-slate-700 hover:shadow-blue-800 shadow-md shadow-blue-950'}
                 type={'submit'}
