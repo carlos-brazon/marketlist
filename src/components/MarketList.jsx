@@ -9,7 +9,7 @@ import { firstLetterUpperCase } from '../utils/util';
 const MarketList = () => {
   const { userIn, list, setList, button, setControlTags, setButton, danger, setDanger } = useContext(AllItemsContext);
   const [lastTapTime, setLastTapTime] = useState(0);
-  
+
 
   const updateIsDoneInFirestore = async (userId, itemId, newIsDoneValue) => {
     try {
@@ -38,7 +38,7 @@ const MarketList = () => {
     const timeSinceLastTap = currentTime - lastTapTime;
 
     const newIsDoneValue = !objitem.isDone;
-    
+
     setList(prev => {
       const updatedList = prev.map(item => {
         if (item.id === objitem.id) {
@@ -48,7 +48,7 @@ const MarketList = () => {
       });
       return updatedList;
     });
-    
+
     if (timeSinceLastTap < 300) {
       const userDocSnapshot = await getDoc(doc(db, 'users4', userIn.uid));
 
@@ -58,12 +58,12 @@ const MarketList = () => {
 
         await updateDoc(doc(db, 'users4', userIn.uid), { markeList: updatedMarkeList });
         console.log('Producto eliminado de Firestore correctamente.');
-        if (updatedMarkeList.length === 0 || list.length===0) {
+        if (updatedMarkeList.length === 0 || list.length === 0) {
           setControlTags(false)
           setButton('Compras')
         }
         setList(updatedMarkeList);
-        setButton(updatedMarkeList[0]?.tags);
+        // setButton(updatedMarkeList[0]?.tags);
       } else {
         console.log('El documento no existe en Firestore.');
       }
@@ -72,9 +72,9 @@ const MarketList = () => {
 
     await updateIsDoneInFirestore(userIn.uid, objitem.id, newIsDoneValue);
   };
-  useEffect(()=>{
+  useEffect(() => {
     setList(userIn?.markeList?.sort((a, b) => a.name.localeCompare(b.name)))
-  },[])
+  }, [])
   const itemsCompra = list?.filter(item => item.tags === button);
   return (
     <div className='flex flex-col items-center relative gap-3 min-h-[580px] w-screen px-3 pb-10'>
