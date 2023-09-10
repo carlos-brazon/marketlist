@@ -8,6 +8,8 @@ const Danger = () => {
   const { button, setButton, setList, setDanger, userIn, setControlTags } = useContext(AllItemsContext);
 
   const handleClick = async () => {
+    setDanger(false);
+      setControlTags(false);
     const userDocRef = doc(db, 'users4', userIn.uid);
     const userDocSnapshot = await getDoc(userDocRef);
 
@@ -25,8 +27,6 @@ const Danger = () => {
         return acc
       }, []);
       
-      setDanger(false);
-      setControlTags(false);
       if (tags.length >= 1) {
         setButton(tags[0])
       } else {
