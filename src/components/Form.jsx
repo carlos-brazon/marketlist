@@ -41,7 +41,7 @@ const Form = () => {
                 const newId = doc(collection(db, 'dummy')).id;
                 setList(prev => [...prev, { ...user, isDone: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }].sort((a, b) => a.name.localeCompare(b.name)));
                 await updateDoc(doc(db, 'users4', userIn.uid), {
-                    markeList: arrayUnion({ ...user, tags: user.tags.trim(), isDone: false, id: newId })
+                    markeList: arrayUnion({ ...user, tags: user.tags.trim(), isDone: false, id: newId, priority: false })
                 });
                 setUser(prev => ({ ...prev, name: '' }));
                 setButton(prev => user.tags.trim());
@@ -62,7 +62,7 @@ const Form = () => {
                     name={'name'}
                     onChange={handleInput}
                     value={user.name || ''}
-                    placeholder={'Producto'}
+                    placeholder={'Item'}
                     required
                 />
                 <Input
@@ -72,7 +72,7 @@ const Form = () => {
                     value={user.tags || ''}
                     placeholder={'Nueva lista'}
                     className={controltags  ? 'w-28' : 'hidden'}
-                    maxLength="15"
+                    maxLength="25"
                     required
                 />
                 <Input

@@ -5,7 +5,7 @@ export const AllItemsContext = createContext();
 const Contex = ({ children, userIn }) => {
   const [list, setList] = useState([]);
   const [controltags, setControlTags] = useState(false);
-  const [ button, setButton] = useState(userIn ? userIn?.markeList[0]?.tags : 'Compras');
+  const [button, setButton] = useState(userIn ? userIn?.markeList[0]?.tags : 'Compras');
   const [danger, setDanger] = useState(false);
 
   return (
