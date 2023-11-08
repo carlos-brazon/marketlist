@@ -4,9 +4,8 @@ import { firstLetterUpperCase } from './utils/util';
 import Add from "./assets/add-black.svg";
 
 const Tags = () => {
-    const { setList, setControlTags, button, setButton, userIn } = useContext(AllItemsContext);
-    const arrayItems = userIn?.markeList
-    const tags = arrayItems?.reduce((acc, obj) => {
+    const { setList, setControlTags, button, setButton, userIn, list } = useContext(AllItemsContext);
+    const tags = list?.reduce((acc, obj) => {
         if (obj.tags) {
             if (!acc.includes(obj.tags)) {
                 acc.push(obj.tags);
@@ -17,7 +16,13 @@ const Tags = () => {
     }, []);
     const handleClic = (string) => {
         setButton(tags.length === 1 ? tags[0] : string)
-        setList(arrayItems.filter(item => item.tags === string))
+        setList(list?.filter(item => {
+            const array = []
+            if (item.tags === string) {
+                array.push(item)
+            }
+            return array
+        }))
     }
 
     useEffect(() => {

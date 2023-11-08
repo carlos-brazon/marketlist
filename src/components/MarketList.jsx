@@ -77,8 +77,9 @@ const MarketList = () => {
           setControlTags(false)
           setButton('Compras')
         }
+
         setList(updatedMarkeList);
-        // setButton(updatedMarkeList[0]?.tags);
+        setButton(updatedMarkeList[0]?.tags);
       } else {
         console.log('El documento no existe en Firestore.');
       }
