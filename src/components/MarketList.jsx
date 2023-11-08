@@ -7,7 +7,7 @@ import Tags from '../Tags';
 import { firstLetterUpperCase } from '../utils/util';
 
 const MarketList = () => {
-  const { userIn, list, setList, button, setControlTags, controltags, setButton, danger, setDanger } = useContext(AllItemsContext);
+  const { userIn, list, setList, button, setControlTags, controltags, setButton, danger, setDanger, selectedTag, setSelectedTag } = useContext(AllItemsContext);
   const [lastTapTime, setLastTapTime] = useState(0);
   const [priority, setPriority] = useState(false);
 
@@ -15,6 +15,7 @@ const MarketList = () => {
     try {
       const querySnapshot = await getDocs(query(collection(db, 'users4'), where('email', '==', userIn.email)));
       const market = querySnapshot.docs[0]?.data()?.markeList || [];
+      console.log(market);
 
       if (!querySnapshot.empty) {
         const updatedMarkeList = market.map(item => {
@@ -24,6 +25,8 @@ const MarketList = () => {
           return item;
         });
         await updateDoc(doc(db, 'users4', userId), { markeList: updatedMarkeList });
+        setList(updatedMarkeList)
+        setSelectedTag(updatedMarkeList)
         console.log('isDone actualizado en Firestore correctamente.');
       } else {
         console.log('El documento no existe en Firestore.');
@@ -74,12 +77,14 @@ const MarketList = () => {
         await updateDoc(doc(db, 'users4', userIn.uid), { markeList: updatedMarkeList });
         console.log('Producto eliminado de Firestore correctamente.');
         if (updatedMarkeList.length === 0 || list.length === 0) {
+          console.log('aqui');
           setControlTags(false)
           setButton('Compras')
         }
 
         setList(updatedMarkeList);
-        setButton(updatedMarkeList[0]?.tags);
+        setControlTags(updatedMarkeList);
+        // setButton(updatedMarkeList[0]?.tags);
       } else {
         console.log('El documento no existe en Firestore.');
       }
@@ -89,48 +94,24 @@ const MarketList = () => {
     await updateIsDoneInFirestore(userIn.uid, objitem.id, newIsDoneValue, objitem.priority);
   };
 
-  const itemsCompra = list?.filter(item => item.tags === button);
-
   const handleOrder = () => {
-    const yyy = list?.reduce((acc, obj) => {
-      if (obj.tags) {
-        if (obj.tags === button) {
-          acc.push(obj);
-        }
-      }
-      return acc
-    }, []);
-
-    const hhh = yyy.sort((a, b) => a.name.localeCompare(b.name));
-    // setList(userIn?.markeList)
-    setList(hhh)
-    return hhh
+    const sortedList = list?.filter(item => item.tags === button).sort((a, b) => a.name.localeCompare(b.name));
+    setList(sortedList);
   }
   const handleUrgente = () => {
-    setList(prev => {
-      const holdPrev = prev
-      const array = holdPrev?.reduce((acc, obj) => {
-        if (obj.tags) {
-          if (obj.tags === button) {
-            acc.push(obj);
-          }
-        }
-        return acc
-      }, []);
-      return array.sort((a, b) => (a.priority ? -1 : 1) - (b.priority ? -1 : 1));
-
-    })
+    const urgentList = list?.filter(item => item.tags === button).sort((a, b) => (a.priority ? -1 : 1) - (b.priority ? -1 : 1));
+    setList(urgentList);
   }
 
   useEffect(() => {
-    // setList(userIn?.markeList?.sort((a, b) => a.name.localeCompare(b.name)))
     setList(userIn?.markeList)
+    setSelectedTag(userIn?.markeList)
   }, [])
 
 
   return (
     <div className='flex flex-col items-center relative gap-3 min-h-[580px] w-screen px-3 pb-10'>
-      <Tags itemsCompra={itemsCompra} />
+      <Tags />
       <h1 className='text-center text-xl'>Lista</h1>
       <div className='flex gap-6'>
         <button onClick={() => handleOrder()} className='p-1 bg-yellow-500 rounded text-sm'>Ordenar A-Z</button>

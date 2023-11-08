@@ -1,35 +1,44 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { AllItemsContext } from './components/Contex'
 import { firstLetterUpperCase } from './utils/util';
 import Add from "./assets/add-black.svg";
 
 const Tags = () => {
-    const { setList, setControlTags, button, setButton, userIn, list } = useContext(AllItemsContext);
-    const tags = list?.reduce((acc, obj) => {
-        if (obj.tags) {
-            if (!acc.includes(obj.tags)) {
-                acc.push(obj.tags);
-            }
-        }
-        return acc
-        // return acc.sort((a, b) => a.localeCompare(b))
-    }, []);
+    const { setList, setControlTags, button, setButton, list, selectedTag, setSelectedTag, userIn } = useContext(AllItemsContext);
+    const [tags, setTags] = useState([]);
+
     const handleClic = (string) => {
         setButton(tags.length === 1 ? tags[0] : string)
-        setList(list?.filter(item => {
-            const array = []
-            if (item.tags === string) {
-                array.push(item)
-            }
-            return array
-        }))
+        console.log(string);
+        setList(prev => {
+            const yyy = selectedTag?.filter(item => {
+                const array = []
+                if (item.tags === string) {
+                    array.push(item)
+                }
+                return array
+            })
+            return yyy
+        })
     }
 
     useEffect(() => {
+        setTags(prev => {
+            const tags2 = selectedTag.reduce((acc, obj) => {
+                if (obj.tags) {
+                    if (!acc.includes(obj.tags)) {
+                        acc.push(obj.tags);
+                    }
+                }
+                return acc
+                // return acc.sort((a, b) => a.localeCompare(b))
+            }, []);
+            return tags2
+        })
         if (tags?.length === 1) {
             setButton(tags[0]);
         }
-    }, [tags]);
+    }, [list]);
     return (
         <div className='w-full flex gap-2 flex-wrap break-all'>
             <img onClick={() => setControlTags(prev => !prev)} className='w-8 h-8' src={Add} alt="Aquí va la imagen de un Add" />

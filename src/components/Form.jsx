@@ -7,12 +7,12 @@ import MarketList from './MarketList';
 import Input from './Input';
 
 const Form = () => {
-    const { userIn, setList, controltags, button, setButton, list } = useContext(AllItemsContext);
+    const { userIn, setList, controltags, button, setButton, list, setSelectedTag } = useContext(AllItemsContext);
     const [user, setUser] = useState({});
     const [message, setMessage] = useState('');
 
     useEffect(() => {
-        setUser(prev => ({...prev, tags: list?.length ? button : 'Compras' }));
+        setUser(prev => ({ ...prev, tags: list?.length ? button : 'Compras' }));
     }, [button]);
 
     const showMessage = (text) => {
@@ -39,12 +39,13 @@ const Form = () => {
             if (!productExists) {
                 showMessage('Agregado');
                 const newId = doc(collection(db, 'dummy')).id;
-                setList(prev => [...prev, { ...user, isDone: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }].sort((a, b) => a.name.localeCompare(b.name)));
                 await updateDoc(doc(db, 'users4', userIn.uid), {
                     markeList: arrayUnion({ ...user, tags: user.tags.trim(), isDone: false, id: newId, priority: false })
                 });
                 setUser(prev => ({ ...prev, name: '' }));
-                setButton(prev => user.tags.trim());
+                setButton(user.tags.trim());
+                setList(prev => [...prev, { ...user, isDone: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }].sort((a, b) => a.name.localeCompare(b.name)));
+                setSelectedTag(prev => [...prev, { ...user, isDone: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }].sort((a, b) => a.name.localeCompare(b.name)));
             } else {
                 showMessage('Repetido');
             }
@@ -57,7 +58,7 @@ const Form = () => {
         <div className={userIn ? 'flex flex-col items-center pt-2 gap-2' : 'hidden'}>
             <form className={`flex items-center gap-2 ${controltags ? '' : ''}`} onSubmit={handleSubmit}>
                 <Input
-                className={'w-28'}
+                    className={'w-28'}
                     type={'text'}
                     name={'name'}
                     onChange={handleInput}
@@ -71,7 +72,7 @@ const Form = () => {
                     onChange={handleInput}
                     value={user.tags || ''}
                     placeholder={'Nueva lista'}
-                    className={controltags  ? 'w-28' : 'hidden'}
+                    className={controltags ? 'w-28' : 'hidden'}
                     maxLength="25"
                     required
                 />
