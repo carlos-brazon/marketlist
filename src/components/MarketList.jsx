@@ -5,6 +5,19 @@ import { AllItemsContext } from './Contex';
 import Danger from './Danger';
 import Tags from '../Tags';
 import { firstLetterUpperCase } from '../utils/util';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { ScrollArea } from "@/components/ui/scroll-area"
+
 
 const MarketList = () => {
   const { userIn, list, setList, button, setControlTags, controltags, setButton, danger, setDanger, selectedTag, setSelectedTag } = useContext(AllItemsContext);
@@ -16,7 +29,7 @@ const MarketList = () => {
       const querySnapshot = await getDocs(query(collection(db, 'users4'), where('email', '==', userIn.email)));
       const market = querySnapshot.docs[0]?.data()?.markeList || [];
       console.log(market);
-
+      console.log(querySnapshot.empty);
       if (!querySnapshot.empty) {
         const updatedMarkeList = market.map(item => {
           if (item.id === itemId) {
@@ -24,6 +37,7 @@ const MarketList = () => {
           }
           return item;
         });
+        console.log(updatedMarkeList);
         await updateDoc(doc(db, 'users4', userId), { markeList: updatedMarkeList });
         setList(updatedMarkeList)
         setSelectedTag(updatedMarkeList)
@@ -55,6 +69,8 @@ const MarketList = () => {
     const timeSinceLastTap = currentTime - lastTapTime;
 
     const newIsDoneValue = !objitem.isDone;
+    console.log(objitem);
+    console.log(newIsDoneValue);
 
     setList(prev => {
       const updatedList = prev.map(item => {
@@ -83,8 +99,22 @@ const MarketList = () => {
         }
 
         setList(updatedMarkeList);
-        setControlTags(updatedMarkeList);
-        // setButton(updatedMarkeList[0]?.tags);
+        setSelectedTag(updatedMarkeList)
+        setControlTags(false);
+        console.log(button.length);
+        setButton(prev => {
+          const tags2 = selectedTag?.reduce((acc, obj) => {
+            if (obj.tags) {
+              if (!acc.includes(obj.tags)) {
+                acc.push(obj.tags);
+              }
+            }
+            return acc
+            // return acc.sort((a, b) => a.localeCompare(b))
+          }, []);
+          console.log(tags2);
+          return tags2[0]
+        });
       } else {
         console.log('El documento no existe en Firestore.');
       }
@@ -110,15 +140,15 @@ const MarketList = () => {
 
 
   return (
-    <div className='flex flex-col items-center relative gap-3 min-h-[580px] w-screen px-3 pb-10'>
+    <div className='flex flex-col items-center relative gap-3 h-screen w-screen px-3 pb-10'>
       <Tags />
       <h1 className='text-center text-xl'>Lista</h1>
       <div className='flex gap-6'>
         <button onClick={() => handleOrder()} className='p-1 bg-yellow-500 rounded text-sm'>Ordenar A-Z</button>
         <button onClick={() => handleUrgente()} className='p-1 bg-yellow-500 rounded text-sm'>Ordenar Urgente</button>
       </div>
-      {danger ? <Danger userIn={userIn} /> : ''}
-      <ul className='flex flex-col gap-0.5 text-xl w-full'>
+      <ScrollArea className="h-full w-full rounded-md border p-4">
+        {/* <ScrollArea className='flex flex-col gap-0.5 text-xl w-full'> */}
         {list?.length ?
           list?.map((item, index) => {
             if (item.tags === button) {
@@ -132,10 +162,28 @@ const MarketList = () => {
             }
           })
           : <p className='text-base'>Lista vacia</p>}
-      </ul>
+      </ScrollArea>
+      {/* <AlertDialog>
+        <AlertDialogTrigger>Eliminar</AlertDialogTrigger>
+        <AlertDialogContent>
+        <AlertDialogHeader>
+        <AlertDialogTitle>¿Deseas borrar la lista?</AlertDialogTitle>
+        <AlertDialogDescription>
+        This action cannot be undone. This will permanently delete your account
+        and remove your data from our servers.
+        </AlertDialogDescription>
+        </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction>Continue</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog> */}
+
       {list?.length
         ? <button onClick={() => setDanger(true)} className={`p-2 font-semibold text-base leading-4 bg-red-600 text-white rounded absolute bottom-0 ${userIn ? '' : 'hidden'}`}>Eliminar lista</button>
         : ''}
+      {danger ? <Danger userIn={userIn} /> : ''}
     </div>
   );
 };

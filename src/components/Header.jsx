@@ -7,6 +7,8 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../utils/firebase';
 import { AllItemsContext } from './Contex';
 import { firstLetterUpperCase } from "../utils/util.js";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+
 
 const Header = () => {
   const { userIn, danger } = useContext(AllItemsContext);
@@ -47,6 +49,10 @@ const Header = () => {
 
           <div className='flex gap-2 items-center text-white' >
             <p className='text-sm'>{!userIn || `Hola, ${firstLetterUpperCase(userIn.nombre)}`}</p>
+            {/* <Avatar>
+              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar> */}
             <img onClick={() => setIconUser(prev => !prev)} className='static z-10 w-9 h-9' ref={iconRef} src={userIn ? UserConectedIcon : UserDisconectedIcon} alt='Aquí va un icono de usuario' />
           </div>
 

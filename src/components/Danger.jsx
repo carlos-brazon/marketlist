@@ -5,11 +5,11 @@ import { AllItemsContext } from './Contex';
 import { firstLetterUpperCase } from '../utils/util';
 
 const Danger = () => {
-  const { button, setButton, setList, setDanger, userIn, setControlTags } = useContext(AllItemsContext);
+  const { button, setButton, setList, setDanger, userIn, setControlTags, setSelectedTag } = useContext(AllItemsContext);
 
   const handleClick = async () => {
     setDanger(false);
-      setControlTags(false);
+    setControlTags(false);
     const userDocRef = doc(db, 'users4', userIn.uid);
     const userDocSnapshot = await getDoc(userDocRef);
 
@@ -17,6 +17,8 @@ const Danger = () => {
       const userDocData = userDocSnapshot.data();
       const updatedMarkeList = userDocData.markeList.filter(item => item.tags !== button);
       setList(updatedMarkeList);
+      setSelectedTag(updatedMarkeList);
+
       await updateDoc(userDocRef, { markeList: updatedMarkeList });
       const tags = updatedMarkeList.reduce((acc, obj) => {
         if (obj.tags) {
@@ -26,7 +28,7 @@ const Danger = () => {
         }
         return acc
       }, []);
-      
+
       if (tags.length >= 1) {
         setButton(tags[0])
       } else {
