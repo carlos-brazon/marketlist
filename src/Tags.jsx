@@ -24,7 +24,7 @@ const Tags = () => {
 
     useEffect(() => {
         setTags(prev => {
-            const tags2 = selectedTag.reduce((acc, obj) => {
+            const tags2 = selectedTag?.reduce((acc, obj) => {
                 if (obj.tags) {
                     if (!acc.includes(obj.tags)) {
                         acc.push(obj.tags);
