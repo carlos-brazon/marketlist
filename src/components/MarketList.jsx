@@ -113,7 +113,10 @@ const MarketList = () => {
             // return acc.sort((a, b) => a.localeCompare(b))
           }, []);
           console.log(tags2);
-          return tags2[0]
+          console.log(button);
+          console.log(tags2.includes(button));
+
+          return !tags2.includes(button) ? button : tags2[0]
         });
       } else {
         console.log('El documento no existe en Firestore.');
