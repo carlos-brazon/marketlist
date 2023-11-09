@@ -11,7 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 
 const Header = () => {
-  const { userIn, danger } = useContext(AllItemsContext);
+  const { userIn, danger, list, setDanger } = useContext(AllItemsContext);
   const [iconUser, setIconUser] = useState(false);
   const [by, setBy] = useState(true);
   const iconRef = useRef(null);
@@ -67,7 +67,10 @@ const Header = () => {
         </div>
       </header>
       <Outlet />
-      <div className={`${danger ? 'min-h-full backdrop-blur-xs w-full bg-neutral-500/40 absolute z-40' : ''}`}></div>
+      {list?.length
+        ? <button onClick={() => setDanger(true)} className={`p-2 font-semibold text-base leading-4 bg-red-600 text-white rounded absolute bottom-0 ${userIn ? '' : 'hidden'}`}>Eliminar lista</button>
+        : ''}
+      {/* <div className={`${danger ? 'min-h-full backdrop-blur-xs w-full bg-neutral-500/40 absolute z-40' : ''}`}>eliminae</div> */}
       <p className={`w-full text-right mb-2 mr-8 ${by && !userIn || 'hidden'}`}><span className='font-bold'>by:</span> Carlos Brazon</p>
     </div>
   );

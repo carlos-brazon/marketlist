@@ -143,14 +143,14 @@ const MarketList = () => {
 
 
   return (
-    <div className='flex flex-col items-center relative gap-3 h-screen w-screen px-3 pb-10'>
+    <div className='flex flex-col items-center relative gap-3 h-full w-screen px-3 pb-10'>
       <Tags />
       <h1 className='text-center text-xl'>Lista</h1>
       <div className='flex gap-6'>
         <button onClick={() => handleOrder()} className='p-1 bg-yellow-500 rounded text-sm'>Ordenar A-Z</button>
         <button onClick={() => handleUrgente()} className='p-1 bg-yellow-500 rounded text-sm'>Ordenar Urgente</button>
       </div>
-      <ScrollArea className="h-full w-full rounded-md border p-4">
+      <ScrollArea className="h-[400px] w-full rounded-md border p-4">
         {/* <ScrollArea className='flex flex-col gap-0.5 text-xl w-full'> */}
         {list?.length ?
           list?.map((item, index) => {
@@ -182,10 +182,6 @@ const MarketList = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog> */}
-
-      {list?.length
-        ? <button onClick={() => setDanger(true)} className={`p-2 font-semibold text-base leading-4 bg-red-600 text-white rounded absolute bottom-0 ${userIn ? '' : 'hidden'}`}>Eliminar lista</button>
-        : ''}
       {danger ? <Danger userIn={userIn} /> : ''}
     </div>
   );

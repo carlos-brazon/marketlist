@@ -37,7 +37,7 @@ function App() {
   }, []);
 
   return (
-    <>
+    <div className="animate-fade flex items-start relative justify-center min-h-screen min-w-min bg-gray-300">
       {loading ? (
         <div className='flex flex-col min-h-screen min-w-min items-center justify-center'>
           <div className="lds-default">
@@ -46,7 +46,7 @@ function App() {
           <div>Cargando...</div>
         </div>
       ) : (
-        <div className='animate-fade flex items-start relative justify-center min-h-screen min-w-min bg-gray-300'>
+        <div className=''>
           <Contex userIn={userIn}>
             <BrowserRouter>
               <Routes>
@@ -61,7 +61,7 @@ function App() {
           </Contex>
         </div>
       )}
-    </>
+    </div>
   );
 }
 
