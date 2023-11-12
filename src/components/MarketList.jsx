@@ -28,8 +28,6 @@ const MarketList = () => {
     try {
       const querySnapshot = await getDocs(query(collection(db, 'users4'), where('email', '==', userIn.email)));
       const market = querySnapshot.docs[0]?.data()?.markeList || [];
-      console.log(market);
-      console.log(querySnapshot.empty);
       if (!querySnapshot.empty) {
         const updatedMarkeList = market.map(item => {
           if (item.id === itemId) {
@@ -37,7 +35,6 @@ const MarketList = () => {
           }
           return item;
         });
-        console.log(updatedMarkeList);
         await updateDoc(doc(db, 'users4', userId), { markeList: updatedMarkeList });
         setList(updatedMarkeList)
         setSelectedTag(updatedMarkeList)
@@ -69,9 +66,6 @@ const MarketList = () => {
     const timeSinceLastTap = currentTime - lastTapTime;
 
     const newIsDoneValue = !objitem.isDone;
-    console.log(objitem);
-    console.log(newIsDoneValue);
-
     setList(prev => {
       const updatedList = prev.map(item => {
         if (item.id === objitem.id) {
@@ -93,7 +87,6 @@ const MarketList = () => {
         await updateDoc(doc(db, 'users4', userIn.uid), { markeList: updatedMarkeList });
         console.log('Producto eliminado de Firestore correctamente.');
         if (updatedMarkeList.length === 0 || list.length === 0) {
-          console.log('aqui');
           setControlTags(false)
           setButton('Compras')
         }
@@ -101,22 +94,18 @@ const MarketList = () => {
         setList(updatedMarkeList);
         setSelectedTag(updatedMarkeList)
         setControlTags(false);
-        console.log(button.length);
         setButton(prev => {
-          const tags2 = selectedTag?.reduce((acc, obj) => {
-            if (obj.tags) {
-              if (!acc.includes(obj.tags)) {
-                acc.push(obj.tags);
+          const arrayStringTags = selectedTag?.reduce((acc, item) => {
+            if (item.tags) {
+              if (!acc.includes(item.tags)) {
+                acc.push(item.tags);
               }
             }
             return acc
             // return acc.sort((a, b) => a.localeCompare(b))
           }, []);
-          console.log(tags2);
-          console.log(button);
-          console.log(tags2.includes(button));
-
-          return !tags2.includes(button) ? button : tags2[0]
+          const arrayObjectTags = selectedTag.filter(item => item.tags === button);
+          return arrayStringTags.includes(button) && arrayObjectTags.length !== 1 ? button : arrayStringTags[0]
         });
       } else {
         console.log('El documento no existe en Firestore.');
@@ -150,13 +139,13 @@ const MarketList = () => {
         <button onClick={() => handleOrder()} className='p-1 bg-yellow-500 rounded text-sm'>Ordenar A-Z</button>
         <button onClick={() => handleUrgente()} className='p-1 bg-yellow-500 rounded text-sm'>Ordenar Urgente</button>
       </div>
-      <ScrollArea className="h-[400px] w-full rounded-md border p-4">
+      <ScrollArea className="h-[400px] w-full rounded-md border">
         {/* <ScrollArea className='flex flex-col gap-0.5 text-xl w-full'> */}
         {list?.length ?
           list?.map((item, index) => {
             if (item.tags === button) {
               return <li
-                className={`list-disc list-inside break-normal items-center justify-between flex gap-4 rounded py-1 px-2 ${item.isDone ? 'line-through' : ''} ${item.priority ? 'bg-red-300' : index % 2 === 0 ? 'bg-blue-200' : 'bg-slate-50'}`}
+                className={`list-disc list-inside break-normal items-center justify-between flex gap-4 m-0.5 rounded py-1 px-2 ${item.isDone ? 'line-through' : ''} ${item.priority ? 'bg-red-300' : index % 2 === 0 ? 'bg-blue-200' : 'bg-slate-50'}`}
                 key={index}
               >
                 <div className='w-full text-lg' onClick={() => handleClick(item)}>{firstLetterUpperCase(item.name)}</div>

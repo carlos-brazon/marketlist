@@ -9,7 +9,6 @@ const Tags = () => {
 
     const handleClic = (string) => {
         setButton(tags.length === 1 ? tags[0] : string)
-        console.log(string);
         setList(prev => {
             const yyy = selectedTag?.filter(item => {
                 const array = []
