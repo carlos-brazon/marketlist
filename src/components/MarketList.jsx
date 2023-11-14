@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { DialogClose } from './ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
+
 
 
 
@@ -142,7 +144,6 @@ const MarketList = () => {
       }
     }
     setLastTapTime(new Date().getTime());
-    console.log(objitem);
     await updateIsDoneInFirestore(userIn.uid, objitem.id, newIsDoneValue, objitem.priority);
   };
 
@@ -170,7 +171,6 @@ const MarketList = () => {
         <button onClick={() => handleUrgente()} className='p-1 bg-yellow-500 rounded text-sm'>Ordenar Urgente</button>
       </div>
       <ScrollArea className="h-[400px] w-full rounded-md border">
-        {/* <ScrollArea className='flex flex-col gap-0.5 text-xl w-full'> */}
         {list?.length ?
           list?.map((item, index) => {
             if (item.tags === button) {
@@ -181,7 +181,7 @@ const MarketList = () => {
                 <div className='w-full text-lg' onClick={() => handleClick(item)}>{firstLetterUpperCase(item.name)}</div>
                 <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-7 z-50 rounded text-xs text-center px-0.5 ${priority ? 'bg-red-400' : 'bg-slate-400'}`}>Urgente</div>
                 <Dialog>
-                  <DialogTrigger className={'flex items-center w-auto h-7 z-50 rounded text-xs text-center px-0.5 bg-slate-400'}>Editar</DialogTrigger>
+                  <DialogTrigger onClick={() => setUser(prev => ({ ...prev, name: item.name }))} className={'flex items-center w-auto h-7 z-50 rounded text-xs text-center px-0.5 bg-slate-400'}>Editar</DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
                       <DialogTitle>¿Estás seguro que deseas editar este Item?</DialogTitle>
@@ -202,7 +202,7 @@ const MarketList = () => {
                             type={'submit'}
                             value={'Agregar'}
                             required
-                            onClick={() => setUser({ ...user, id: item.id })}
+                            onClick={() => setUser(prev => ({ ...prev, id: item.id }))}
                           />
                         </DialogClose>
                       </form>
@@ -216,22 +216,22 @@ const MarketList = () => {
           })
           : <p className='text-base'>Lista vacia</p>}
       </ScrollArea>
-      {/* <AlertDialog>
+      <AlertDialog>
         <AlertDialogTrigger>Eliminar</AlertDialogTrigger>
         <AlertDialogContent>
-        <AlertDialogHeader>
-        <AlertDialogTitle>¿Deseas borrar la lista?</AlertDialogTitle>
-        <AlertDialogDescription>
-        This action cannot be undone. This will permanently delete your account
-        and remove your data from our servers.
-        </AlertDialogDescription>
-        </AlertDialogHeader>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Deseas borrar la lista?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete your account
+              and remove your data from our servers.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction>Continue</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog> */}
+      </AlertDialog>
       {danger ? <Danger userIn={userIn} /> : ''}
     </div>
   );
