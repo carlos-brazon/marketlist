@@ -14,6 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
+import { DialogClose } from './ui/dialog';
 
 
 
@@ -194,13 +195,16 @@ const MarketList = () => {
                           placeholder={'Item'}
                           required
                         />
-                        <Input
-                          className={'w-20 px-1 h-9 py-0 text-white font-semibold text-base bg-slate-500 hover:bg-slate-700 hover:shadow-blue-800 shadow-md shadow-blue-950'}
-                          type={'submit'}
-                          value={'Agregar'}
-                          required
-                          onClick={() => setUser({ ...user, id: item.id })}
-                        />
+                        <DialogClose>
+
+                          <Input
+                            className={'w-20 px-1 h-9 py-0 text-white font-semibold text-base bg-slate-500 hover:bg-slate-700 hover:shadow-blue-800 shadow-md shadow-blue-950'}
+                            type={'submit'}
+                            value={'Agregar'}
+                            required
+                            onClick={() => setUser({ ...user, id: item.id })}
+                          />
+                        </DialogClose>
                       </form>
 
                     </DialogHeader>
