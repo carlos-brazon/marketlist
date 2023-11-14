@@ -5,41 +5,15 @@ import { AllItemsContext } from './Contex';
 import Danger from './Danger';
 import Tags from '../Tags';
 import { firstLetterUpperCase } from '../utils/util';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
-import { useForm, FormProvider, useFormContext } from 'react-hook-form';
-import { DialogClose } from '@radix-ui/react-dialog';
 
 
 
@@ -167,7 +141,7 @@ const MarketList = () => {
       }
     }
     setLastTapTime(new Date().getTime());
-
+    console.log(objitem);
     await updateIsDoneInFirestore(userIn.uid, objitem.id, newIsDoneValue, objitem.priority);
   };
 
@@ -211,15 +185,6 @@ const MarketList = () => {
                     <DialogHeader>
                       <DialogTitle>¿Estás seguro que deseas editar este Item?</DialogTitle>
                       <form className={`flex items-center gap-2 ${controltags ? '' : ''}`} onSubmit={handleSubmit}>
-                        {/* <Input
-                          className={'w-28'}
-                          type={'text'}
-                          name={'id'}
-                          onChange={handleInput}
-                          value={user.id || ''}
-                          placeholder={'Item2'}
-                          required
-                        /> */}
                         <Input
                           className={'w-28'}
                           type={'text'}
@@ -236,7 +201,6 @@ const MarketList = () => {
                           required
                           onClick={() => setUser({ ...user, id: item.id })}
                         />
-                        <DialogClose />
                       </form>
 
                     </DialogHeader>
