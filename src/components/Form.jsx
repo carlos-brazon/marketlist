@@ -38,7 +38,6 @@ const Form = () => {
 
             if (!productExists) {
                 setUser(prev => ({ ...prev, name: '' }));
-                console.log(user);
                 setList(prev => [...prev, { ...user, isDone: false, priority: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }].sort((a, b) => a.name.localeCompare(b.name)));
                 setSelectedTag(prev => [...prev, { ...user, isDone: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }].sort((a, b) => a.name.localeCompare(b.name)));
                 showMessage('Agregado');

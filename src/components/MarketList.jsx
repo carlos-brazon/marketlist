@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { collection, query, where, getDocs, getDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../utils/firebase';
 import { AllItemsContext } from './Contex';
-import Danger from './Danger';
 import Tags from '../Tags';
 import { firstLetterUpperCase } from '../utils/util';
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -16,12 +15,20 @@ import {
 import { Input } from "@/components/ui/input"
 import { DialogClose } from './ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu"
+import DeleteDialog from './DeleteDialog';
+
 
 
 
 
 const MarketList = () => {
-  const { userIn, list, setList, button, setControlTags, controltags, setButton, danger, setDanger, selectedTag, setSelectedTag } = useContext(AllItemsContext);
+  const { userIn, list, setList, button, setControlTags, controltags, setButton, selectedTag, setSelectedTag } = useContext(AllItemsContext);
   const [lastTapTime, setLastTapTime] = useState(0);
   const [priority, setPriority] = useState(false);
   const [user, setUser] = useState({});
@@ -216,7 +223,7 @@ const MarketList = () => {
           })
           : <p className='text-base'>Lista vacia</p>}
       </ScrollArea>
-      <AlertDialog>
+      {/* <AlertDialog>
         <AlertDialogTrigger>Eliminar</AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -231,8 +238,9 @@ const MarketList = () => {
             <AlertDialogAction>Continue</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
-      </AlertDialog>
-      {danger ? <Danger userIn={userIn} /> : ''}
+      </AlertDialog> */}
+      {/* {danger ? <Danger userIn={userIn} /> : ''} */}
+      <DeleteDialog userIn={userIn} />
     </div>
   );
 };
