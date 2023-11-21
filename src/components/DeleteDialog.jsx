@@ -42,7 +42,7 @@ const DeleteDialog = () => {
         <>
             <AlertDialog>
                 <AlertDialogTrigger asChild>
-                    <Button variant="ghost">Eliminar lista</Button>
+                    <Button variant="outline">Eliminar lista</Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
                     <AlertDialogHeader>

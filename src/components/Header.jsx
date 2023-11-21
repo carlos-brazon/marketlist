@@ -8,6 +8,7 @@ import { auth } from '../utils/firebase';
 import { AllItemsContext } from './Contex';
 import { firstLetterUpperCase } from "../utils/util.js";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from './ui/button.jsx';
 
 
 const Header = () => {
@@ -43,6 +44,9 @@ const Header = () => {
     <div className='flex flex-col gap-2 items-center h-full w-screen'>
       <header className="flex items-center justify-between relative text-white bg-neutral-800 py-5 px-3 w-full">
         <Link to={'/'} className={'py-2 px-2 font-semibold text-sm leading-4 rounded  text-white hover:bg-slate-700  bg-slate-600 hover:shadow-blue-800 shadow-md shadow-blue-950'}>{'Inicio'} </Link>
+        <div>
+          <Button variant="ghost">Eliminar lista</Button>
+        </div>
 
         <div className='flex relative gap-3 items-center'>
           <Link to={'singin'} className={`py-2 px-5 font-semibold text-sm leading-4 rounded text-white hover:bg-slate-700  bg-slate-600 hover:shadow-blue-800 shadow-md shadow-blue-950 ${!userIn || 'hidden'} `}>{'Iniciar sesión'} </Link>
