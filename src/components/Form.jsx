@@ -38,8 +38,8 @@ const Form = () => {
 
             if (!productExists) {
                 setUser(prev => ({ ...prev, name: '' }));
-                setList(prev => [...prev, { ...user, isDone: false, priority: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }].sort((a, b) => a.name.localeCompare(b.name)));
-                setSelectedTag(prev => [...prev, { ...user, isDone: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }].sort((a, b) => a.name.localeCompare(b.name)));
+                setList(prev => [...prev, { ...user, isDone: false, priority: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }]);
+                setSelectedTag(prev => [...prev, { ...user, isDone: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }]);
                 showMessage('Agregado');
                 const newId = doc(collection(db, 'dummy')).id;
                 await updateDoc(doc(db, 'users4', userIn.uid), {

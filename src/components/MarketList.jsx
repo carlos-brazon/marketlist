@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { collection, query, where, getDocs, getDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../utils/firebase';
 import { AllItemsContext } from './Contex';
@@ -8,15 +8,9 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import DeleteDialog from './DeleteDialog';
 import EditDialog from './EditDialog';
 
-
-
-
-
 const MarketList = () => {
   const { userIn, list, setList, button, setControlTags, setButton, selectedTag, setSelectedTag } = useContext(AllItemsContext);
   const [lastTapTime, setLastTapTime] = useState(0);
-  const [priority, setPriority] = useState(false);
-
 
   const updateIsDoneInFirestore = async (userId, itemId, newIsDoneValue, newIsDoneValue2) => {
     try {
@@ -88,7 +82,7 @@ const MarketList = () => {
         setList(updatedMarkeList);
         setSelectedTag(updatedMarkeList)
         setControlTags(false);
-        setButton(prev => {
+        setButton(() => {
           const arrayStringTags = selectedTag?.reduce((acc, item) => {
             if (item.tags) {
               if (!acc.includes(item.tags)) {
@@ -96,7 +90,6 @@ const MarketList = () => {
               }
             }
             return acc
-            // return acc.sort((a, b) => a.localeCompare(b))
           }, []);
           const arrayObjectTags = selectedTag.filter(item => item.tags === button);
           return arrayStringTags.includes(button) && arrayObjectTags.length !== 1 ? button : arrayStringTags[0]
@@ -141,7 +134,7 @@ const MarketList = () => {
                 key={index}
               >
                 <div className='w-full text-lg' onClick={() => handleClick(item)}>{firstLetterUpperCase(item.name)}</div>
-                <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-7 z-50 rounded text-xs text-center px-0.5 ${priority ? 'bg-red-400' : 'bg-slate-400'}`}>Urgente</div>
+                <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-7 z-50 rounded text-xs text-center px-0.5 bg-slate-400`}>Urgente</div>
                 <EditDialog item={item} />
               </li>
             }

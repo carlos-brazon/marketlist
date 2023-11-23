@@ -1,15 +1,15 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { AllItemsContext } from './components/Contex'
 import { firstLetterUpperCase } from './utils/util';
 import Add from "./assets/add-black.svg";
 
 const Tags = () => {
-    const { setList, setControlTags, button, setButton, list, selectedTag, setSelectedTag, userIn } = useContext(AllItemsContext);
+    const { setList, setControlTags, button, setButton, list, selectedTag } = useContext(AllItemsContext);
     const [tags, setTags] = useState([]);
 
     const handleClic = (string) => {
         setButton(tags.length === 1 ? tags[0] : string)
-        setList(prev => {
+        setList(() => {
             const yyy = selectedTag?.filter(item => {
                 const array = []
                 if (item.tags === string) {
@@ -22,7 +22,7 @@ const Tags = () => {
     }
 
     useEffect(() => {
-        setTags(prev => {
+        setTags(() => {
             const tags2 = selectedTag?.reduce((acc, obj) => {
                 if (obj.tags) {
                     if (!acc.includes(obj.tags)) {
@@ -30,7 +30,6 @@ const Tags = () => {
                     }
                 }
                 return acc
-                // return acc.sort((a, b) => a.localeCompare(b))
             }, []);
             return tags2
         })

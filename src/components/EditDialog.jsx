@@ -16,7 +16,7 @@ import PropTypes from 'prop-types';
 
 
 const EditDialog = ({ item }) => {
-  const { userIn, selectedTag, setList, setSelectedTag } = useContext(AllItemsContext)
+  const { userIn, setList, setSelectedTag } = useContext(AllItemsContext)
   const [user, setUser] = useState({});
   EditDialog.propTypes = {
     item: PropTypes.any.isRequired,
@@ -30,18 +30,16 @@ const EditDialog = ({ item }) => {
   }
 
   const handleSubmit = async () => {
-    console.log(user);
     event.preventDefault();
     try {
       const querySnapshot = await getDocs(query(collection(db, 'users4'), where('email', '==', userIn.email)));
       const market = querySnapshot.docs[0]?.data()?.markeList || [];
       if (!querySnapshot.empty) {
-        const updatedMarkeList = market.map(item2 => {
-          console.log(item2);
-          if (item2.id === user.id) {
-            return { ...item2, name: user.name };
+        const updatedMarkeList = market.map(itemListFromFirebase => {
+          if (itemListFromFirebase.id === user.id) {
+            return { ...itemListFromFirebase, name: user.name };
           }
-          return item2;
+          return itemListFromFirebase;
         });
         await updateDoc(doc(db, 'users4', userIn.uid), { markeList: updatedMarkeList });
         setList(updatedMarkeList)

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
+import { useContext, useState, useEffect, useRef } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import UserConectedIcon from "../assets/user-svgrepo-com-green.svg";
 import UserDisconectedIcon from "../assets/user-svgrepo-com-red.svg";
@@ -12,7 +12,7 @@ import { Button } from './ui/button.jsx';
 
 
 const Header = () => {
-  const { userIn, list } = useContext(AllItemsContext);
+  const { userIn } = useContext(AllItemsContext);
   const [iconUser, setIconUser] = useState(false);
   const [by, setBy] = useState(true);
   const iconRef = useRef(null);
