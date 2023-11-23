@@ -110,10 +110,10 @@ const MarketList = () => {
     const urgentList = list?.filter(item => item.tags === button).sort((a, b) => (a.priority ? -1 : 1) - (b.priority ? -1 : 1));
     setList(urgentList);
   }
-
   useEffect(() => {
     setList(userIn?.markeList)
     setSelectedTag(userIn?.markeList)
+    setButton(userIn ? userIn?.markeList[0]?.tags : 'Compras')
   }, [])
 
 

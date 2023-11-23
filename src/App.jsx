@@ -12,7 +12,7 @@ import Contex from './components/Contex'
 import HowUse from './components/HowUse'
 
 function App() {
-  const [userIn, setUserIn] = useState();
+  const [userIn, setUserIn] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
