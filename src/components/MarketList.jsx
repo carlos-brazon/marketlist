@@ -5,62 +5,17 @@ import { AllItemsContext } from './Contex';
 import Tags from '../Tags';
 import { firstLetterUpperCase } from '../utils/util';
 import { ScrollArea } from "@/components/ui/scroll-area"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { DialogClose } from './ui/dialog';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuTrigger,
-} from "@/components/ui/context-menu"
 import DeleteDialog from './DeleteDialog';
+import EditDialog from './EditDialog';
 
 
 
 
 
 const MarketList = () => {
-  const { userIn, list, setList, button, setControlTags, controltags, setButton, selectedTag, setSelectedTag } = useContext(AllItemsContext);
+  const { userIn, list, setList, button, setControlTags, setButton, selectedTag, setSelectedTag } = useContext(AllItemsContext);
   const [lastTapTime, setLastTapTime] = useState(0);
   const [priority, setPriority] = useState(false);
-  const [user, setUser] = useState({});
-  const handleInput = () => {
-    const inputName = event.target.name;
-    const inputValue = event.target.value;
-    setUser(prev => ({ ...prev, [inputName]: inputValue }));
-  }
-
-  const handleSubmit = async () => {
-    event.preventDefault();
-    try {
-      const querySnapshot = await getDocs(query(collection(db, 'users4'), where('email', '==', userIn.email)));
-      const market = querySnapshot.docs[0]?.data()?.markeList || [];
-      if (!querySnapshot.empty) {
-        const updatedMarkeList = market.map(item => {
-          if (item.id === user.id) {
-            return { ...item, name: user.name };
-          }
-          return item;
-        });
-        await updateDoc(doc(db, 'users4', userIn.uid), { markeList: updatedMarkeList });
-        setList(updatedMarkeList)
-        setSelectedTag(updatedMarkeList)
-        console.log('isDone actualizado en Firestore correctamente.');
-      } else {
-        console.log('El documento no existe en Firestore.');
-      }
-    } catch (error) {
-      console.error('Error al actualizar isDone en Firestore:', error);
-    }
-  }
 
 
   const updateIsDoneInFirestore = async (userId, itemId, newIsDoneValue, newIsDoneValue2) => {
@@ -187,60 +142,13 @@ const MarketList = () => {
               >
                 <div className='w-full text-lg' onClick={() => handleClick(item)}>{firstLetterUpperCase(item.name)}</div>
                 <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-7 z-50 rounded text-xs text-center px-0.5 ${priority ? 'bg-red-400' : 'bg-slate-400'}`}>Urgente</div>
-                <Dialog>
-                  <DialogTrigger onClick={() => setUser(prev => ({ ...prev, name: item.name }))} className={'flex items-center w-auto h-7 z-50 rounded text-xs text-center px-0.5 bg-slate-400'}>Editar</DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>¿Estás seguro que deseas editar este Item?</DialogTitle>
-                      <form className={`flex items-center gap-2 ${controltags ? '' : ''}`} onSubmit={handleSubmit}>
-                        <Input
-                          className={'w-28'}
-                          type={'text'}
-                          name={'name'}
-                          onChange={handleInput}
-                          value={user.name || ''}
-                          placeholder={'Item'}
-                          required
-                        />
-                        <DialogClose>
-
-                          <Input
-                            className={'w-20 px-1 h-9 py-0 text-white font-semibold text-base bg-slate-500 hover:bg-slate-700 hover:shadow-blue-800 shadow-md shadow-blue-950'}
-                            type={'submit'}
-                            value={'Agregar'}
-                            required
-                            onClick={() => setUser(prev => ({ ...prev, id: item.id }))}
-                          />
-                        </DialogClose>
-                      </form>
-
-                    </DialogHeader>
-                  </DialogContent>
-                </Dialog>
-
+                <EditDialog item={item} />
               </li>
             }
           })
           : <p className='text-base'>Lista vacia</p>}
       </ScrollArea>
-      {/* <AlertDialog>
-        <AlertDialogTrigger>Eliminar</AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>¿Deseas borrar la lista?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your account
-              and remove your data from our servers.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction>Continue</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog> */}
-      {/* {danger ? <Danger userIn={userIn} /> : ''} */}
-      <DeleteDialog userIn={userIn} />
+      <DeleteDialog />
     </div>
   );
 };
