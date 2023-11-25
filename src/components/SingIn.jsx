@@ -12,9 +12,11 @@ import {
 } from "@/components/ui/sheet"
 import { Button } from './ui/button';
 import { SheetClose } from './ui/sheet';
+import CheckIn from './CheckIn';
 
 const SingIn = () => {
     const [user, setUser] = useState({});
+    const [checkIn, setChekIn] = useState(false)
 
     const handleInput = () => {
         const inputName = event.target.name;
@@ -34,14 +36,13 @@ const SingIn = () => {
                 console.errorMessage = error.message;
             });
     }
-
     return (
         <Sheet>
             <SheetTrigger asChild><Button variant='secondary'> Iniciar sesión</Button></SheetTrigger>
             <SheetContent>
                 <SheetHeader>
                     <SheetTitle>Inicia sesión en MarketList</SheetTitle>
-                    <SheetDescription>
+                    <SheetDescription asChild>
                         <div className={`flex flex-col gap-4 items-center`}>
                             <form className='flex flex-col gap-2 items-center justify-center' onSubmit={handleSubmit}>
                                 <Input
@@ -67,7 +68,14 @@ const SingIn = () => {
                                     <Button type='submit'>Iniciar sesión</Button>
                                 </SheetClose>
                             </form>
-                            <div className='font-normal text-sm leading-4'>Si no estás registrado <Link className='font-semibold text-sm leading-4 underline' to={'/CheckIn'}> divulsa aquí </Link></div>
+                            <div className='font-normal text-sm leading-4'>Si no estás registrado
+                                <Link to={'/checkIn'} className='font-semibold text-sm leading-4 underline'>
+                                    <SheetClose >
+                                        Pulsa aquí
+                                    </SheetClose>
+                                </Link>
+                            </div>
+                            {/* <div className='font-normal text-sm leading-4'>Si no estás registrado <Link className='font-semibold text-sm leading-4 underline' to={'/CheckIn'}> <SheetClose className='underline'>Pulsa aquí</SheetClose> </Link></div> */}
                         </div>
                     </SheetDescription>
                 </SheetHeader>

@@ -1,36 +1,51 @@
-import React, { useState } from 'react'
+import { useContext, useRef, useState } from 'react';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../utils/firebase.js';
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { useNavigate } from 'react-router';
 import Input from './Input.jsx';
 
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from './ui/button.jsx';
+import { DialogClose } from '@radix-ui/react-dialog';
+import { AllItemsContext } from './Contex.jsx';
 const CheckIn = () => {
+    const { userIn } = useContext(AllItemsContext)
+    const dialogTriggerRef = useRef(null);
     const history = useNavigate();
     const [user, setUser] = useState({});
     const [passwordError, setPasswordError] = useState('');
     const [emailError, setEmailError] = useState('');
     const [messageLogIn, setMessageLogIn] = useState('');
+    const [messageLogIn2, setMessageLogIn2] = useState(false);
 
-    const handleInput = () => {
+    const handleInput = (event) => {
+
         const inputName = event.target.name;
         const inputValue = event.target.value;
+
         if (inputName === 'email') {
             const cleanedValue = inputValue.replace(/[^a-zA-Z0-9@.\-_]/g, '');
             setUser((prev) => ({ ...prev, [inputName]: cleanedValue }));
             if (cleanedValue.includes('@')) {
-                setEmailError(false)
+                setEmailError(false);
             }
-        }
-        else {
+        } else {
             setUser((prev) => ({ ...prev, [inputName]: inputValue }));
         }
+
         if (inputName === 'password' && inputValue.length < 6) {
             setPasswordError('La contraseña debe tener al menos 6 caracteres.');
         } else {
             setPasswordError('');
         }
-    }
+    };
 
     const handleSubmit = async () => {
         event.preventDefault();
@@ -38,86 +53,117 @@ const CheckIn = () => {
             setEmailError('Formato de correo invalido, debe contener @.');
             return;
         }
+
         const showMessage = () => {
             setTimeout(() => {
                 history('/', { replace: true });
             }, 2000);
         };
 
-        const userToFirebase = { ...user, markeList: [], email: (user.email).toLowerCase() };
+        const userToFirebase = { ...user, markeList: [], email: user.email.toLowerCase() };
 
         const auth = getAuth();
         createUserWithEmailAndPassword(auth, user.email, user.password)
             .then(async (userCredential) => {
-                const user = userCredential.user;
+                const newUser = userCredential.user;
                 delete userToFirebase.password;
-                await setDoc(doc(db, "users4", user.uid), userToFirebase);
+                await setDoc(doc(db, "users4", newUser.uid), userToFirebase);
                 setMessageLogIn('Usuario registrado correctamente');
                 showMessage();
             })
             .catch((error) => {
-                setMessageLogIn('Error al registrar usuario, intentalo de nuevo');
+                setMessageLogIn('Error al registrar usuario, inténtalo de nuevo');
                 setUser('');
                 const errorCode = error.code;
                 const errorMessage = error.message;
             });
-    }
+    };
+
+    const handleClickAutomatico = () => {
+        if (dialogTriggerRef.current) {
+            dialogTriggerRef.current.click(true);
+        }
+    };
+
+    setTimeout(() => {
+        handleClickAutomatico();
+    }, "600");
 
     return (
-        <div className='flex flex-col gap-4 p-3'>
-            <h1 className='font-semibold text-xl'>Crea tu cuenta</h1>
+        <>
+            <Dialog asChild>
+                {/* <DialogTrigger ref={dialogTriggerRef} as="div">Registrarse</DialogTrigger> */}
+                <DialogTrigger asChild>
+                    <div>
+                        <Button>Registrarse</Button>
+                        {userIn ? <div>Ususario registrado correctamente</div> : ''}
+                    </div>
+                </DialogTrigger>
+                <DialogContent >
+                    <DialogHeader>
+                        <DialogDescription asChild>
+                            <div className='flex flex-col gap-4 p-3'>
+                                <div className='font-semibold text-xl'>Crea tu cuenta</div>
 
-            <form className='flex flex-col gap-2 items-center' onSubmit={handleSubmit}>
-                <div className='flex gap-2'>
-                    <Input
-                        className={'w-28'}
-                        type={'text'}
-                        name={'nombre'}
-                        onChange={handleInput}
-                        value={user.nombre || ''}
-                        placeholder={'Nombre'}
-                        required
-                    />
-                    <Input
-                        className={'w-28'}
-                        type={'text'}
-                        name={'apellido'}
-                        onChange={handleInput}
-                        value={user.apellido || ''}
-                        placeholder={'Apellido'}
-                        required
-                    />
-                </div>
-                <Input
-                    className={'w-[232px]'}
-                    type={'text'}
-                    name={'email'}
-                    onChange={handleInput}
-                    value={user.email || ''}
-                    placeholder={'Email'}
-                    required
-                />
-                <Input
-                    className={'w-[232px]'}
-                    type={'password'}
-                    name={'password'}
-                    onChange={handleInput}
-                    value={user.password || ''}
-                    placeholder={'Establecer contraseña'}
-                    minLength={'6'}
-                    required
-                />
-                <p>{messageLogIn}</p>
-                {passwordError && <p className='text-red-600'>{passwordError}</p>}
-                {emailError && <p className='text-red-600'>{emailError}</p>}
-                <Input
-                    className={'w-fit text-white font-semibold text-base bg-slate-500 hover:bg-slate-700 hover:shadow-blue-800 shadow-md shadow-blue-950'}
-                    type={'submit'}
-                    value={'Registrarse'}
-                    required
-                />
-            </form>
-        </div>
+                                <form className='flex flex-col gap-2 items-center' onSubmit={handleSubmit}>
+                                    <div className='flex gap-2'>
+                                        <Input
+                                            className={'w-28'}
+                                            type={'text'}
+                                            name={'nombre'}
+                                            onChange={handleInput}
+                                            value={user.nombre || ''}
+                                            placeholder={'Nombre'}
+                                            required
+                                        />
+                                        <Input
+                                            className={'w-28'}
+                                            type={'text'}
+                                            name={'apellido'}
+                                            onChange={handleInput}
+                                            value={user.apellido || ''}
+                                            placeholder={'Apellido'}
+                                            required
+                                        />
+                                    </div>
+                                    <Input
+                                        className={'w-[232px]'}
+                                        type={'text'}
+                                        name={'email'}
+                                        onChange={handleInput}
+                                        value={user.email || ''}
+                                        placeholder={'Email'}
+                                        required
+                                    />
+                                    <Input
+                                        className={'w-[232px]'}
+                                        type={'password'}
+                                        name={'password'}
+                                        onChange={handleInput}
+                                        value={user.password || ''}
+                                        placeholder={'Establecer contraseña'}
+                                        minLength={'6'}
+                                        required
+                                    />
+                                    <p>{messageLogIn}</p>
+                                    {passwordError && <p className='text-red-600'>{passwordError}</p>}
+                                    {emailError && <p className='text-red-600'>{emailError}</p>}
+                                    <DialogClose asChild>
+                                        <Button type={'submit'}>Registrarse</Button>
+                                    </DialogClose>
+                                    {/* <Input
+                                        className={'w-fit text-white font-semibold text-base bg-slate-500 hover:bg-slate-700 hover:shadow-blue-800 shadow-md shadow-blue-950'}
+                                        type={'submit'}
+                                        value={'Registrarse'}
+                                        required
+                                    /> */}
+                                </form>
+                            </div>
+                        </DialogDescription>
+                    </DialogHeader>
+                </DialogContent>
+            </Dialog>
+        </>
     )
 }
 export default CheckIn;
