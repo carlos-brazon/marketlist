@@ -1,29 +1,16 @@
-import { useContext, useRef, useState } from 'react';
+import { useState } from 'react';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../utils/firebase.js';
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { useNavigate } from 'react-router';
 import Input from './Input.jsx';
-
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTrigger,
-} from "@/components/ui/dialog";
 import { Button } from './ui/button.jsx';
-import { DialogClose } from '@radix-ui/react-dialog';
-import { AllItemsContext } from './Contex.jsx';
 const CheckIn = () => {
-    const { userIn } = useContext(AllItemsContext)
-    const dialogTriggerRef = useRef(null);
     const history = useNavigate();
     const [user, setUser] = useState({});
     const [passwordError, setPasswordError] = useState('');
     const [emailError, setEmailError] = useState('');
     const [messageLogIn, setMessageLogIn] = useState('');
-    const [messageLogIn2, setMessageLogIn2] = useState(false);
 
     const handleInput = (event) => {
 
@@ -74,95 +61,63 @@ const CheckIn = () => {
             .catch((error) => {
                 setMessageLogIn('Error al registrar usuario, inténtalo de nuevo');
                 setUser('');
-                const errorCode = error.code;
-                const errorMessage = error.message;
+                console.errorCode = error.code;
+                console.errorMessage = error.message;
             });
     };
 
-    const handleClickAutomatico = () => {
-        if (dialogTriggerRef.current) {
-            dialogTriggerRef.current.click(true);
-        }
-    };
-
-    setTimeout(() => {
-        handleClickAutomatico();
-    }, "600");
-
     return (
         <>
-            <Dialog asChild>
-                {/* <DialogTrigger ref={dialogTriggerRef} as="div">Registrarse</DialogTrigger> */}
-                <DialogTrigger asChild>
-                    <div>
-                        <Button>Registrarse</Button>
-                        {userIn ? <div>Ususario registrado correctamente</div> : ''}
-                    </div>
-                </DialogTrigger>
-                <DialogContent >
-                    <DialogHeader>
-                        <DialogDescription asChild>
-                            <div className='flex flex-col gap-4 p-3'>
-                                <div className='font-semibold text-xl'>Crea tu cuenta</div>
+            <div className='flex flex-col gap-4 p-3 items-center bg-white rounded-md shadow-md shadow-neutral-700 hover:shadow-lg hover:shadow-neutral-800'>
+                <div className='font-semibold text-xl'>Crea tu cuenta</div>
 
-                                <form className='flex flex-col gap-2 items-center' onSubmit={handleSubmit}>
-                                    <div className='flex gap-2'>
-                                        <Input
-                                            className={'w-28'}
-                                            type={'text'}
-                                            name={'nombre'}
-                                            onChange={handleInput}
-                                            value={user.nombre || ''}
-                                            placeholder={'Nombre'}
-                                            required
-                                        />
-                                        <Input
-                                            className={'w-28'}
-                                            type={'text'}
-                                            name={'apellido'}
-                                            onChange={handleInput}
-                                            value={user.apellido || ''}
-                                            placeholder={'Apellido'}
-                                            required
-                                        />
-                                    </div>
-                                    <Input
-                                        className={'w-[232px]'}
-                                        type={'text'}
-                                        name={'email'}
-                                        onChange={handleInput}
-                                        value={user.email || ''}
-                                        placeholder={'Email'}
-                                        required
-                                    />
-                                    <Input
-                                        className={'w-[232px]'}
-                                        type={'password'}
-                                        name={'password'}
-                                        onChange={handleInput}
-                                        value={user.password || ''}
-                                        placeholder={'Establecer contraseña'}
-                                        minLength={'6'}
-                                        required
-                                    />
-                                    <p>{messageLogIn}</p>
-                                    {passwordError && <p className='text-red-600'>{passwordError}</p>}
-                                    {emailError && <p className='text-red-600'>{emailError}</p>}
-                                    <DialogClose asChild>
-                                        <Button type={'submit'}>Registrarse</Button>
-                                    </DialogClose>
-                                    {/* <Input
-                                        className={'w-fit text-white font-semibold text-base bg-slate-500 hover:bg-slate-700 hover:shadow-blue-800 shadow-md shadow-blue-950'}
-                                        type={'submit'}
-                                        value={'Registrarse'}
-                                        required
-                                    /> */}
-                                </form>
-                            </div>
-                        </DialogDescription>
-                    </DialogHeader>
-                </DialogContent>
-            </Dialog>
+                <form className='flex flex-col gap-2 items-center' onSubmit={handleSubmit}>
+                    <div className='flex gap-2'>
+                        <Input
+                            className={'w-28'}
+                            type={'text'}
+                            name={'nombre'}
+                            onChange={handleInput}
+                            value={user.nombre || ''}
+                            placeholder={'Nombre'}
+                            required
+                        />
+                        <Input
+                            className={'w-28'}
+                            type={'text'}
+                            name={'apellido'}
+                            onChange={handleInput}
+                            value={user.apellido || ''}
+                            placeholder={'Apellido'}
+                            required
+                        />
+                    </div>
+                    <Input
+                        className={'w-[232px]'}
+                        type={'text'}
+                        name={'email'}
+                        onChange={handleInput}
+                        value={user.email || ''}
+                        placeholder={'Email'}
+                        required
+                    />
+                    <Input
+                        className={'w-[232px]'}
+                        type={'password'}
+                        name={'password'}
+                        onChange={handleInput}
+                        value={user.password || ''}
+                        placeholder={'Establecer contraseña'}
+                        minLength={'6'}
+                        required
+                    />
+                    <p>{messageLogIn}</p>
+                    {passwordError && <p className='text-red-600'>{passwordError}</p>}
+                    {emailError && <p className='text-red-600'>{emailError}</p>}
+
+                    <Button type={'submit'}>Registrarse</Button>
+                </form>
+            </div>
         </>
     )
 }
