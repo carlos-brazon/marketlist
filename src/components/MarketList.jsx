@@ -134,7 +134,7 @@ const MarketList = () => {
                 key={index}
               >
                 <div className='w-full text-lg' onClick={() => handleClick(item)}>{firstLetterUpperCase(item.name)}</div>
-                <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-7 z-50 rounded text-xs text-center px-0.5 bg-slate-400`}>Urgente</div>
+                <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-7 z-50 rounded text-sm text-center px-0.5 bg-slate-400`}>Urgente</div>
                 <EditDialog item={item} />
               </li>
             }

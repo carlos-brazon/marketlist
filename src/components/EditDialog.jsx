@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import { useContext, useState } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -13,7 +13,6 @@ import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/fire
 import { AllItemsContext } from './Contex';
 import { db } from '../utils/firebase';
 import PropTypes from 'prop-types';
-
 
 const EditDialog = ({ item }) => {
   const { userIn, setList, setSelectedTag } = useContext(AllItemsContext)
@@ -54,11 +53,11 @@ const EditDialog = ({ item }) => {
   }
   return (
     <Dialog>
-      <DialogTrigger onClick={() => setUser(item)} className={'flex items-center w-auto h-7 z-50 rounded text-xs text-center px-0.5 bg-slate-400'}>Editar</DialogTrigger>
+      <DialogTrigger onClick={() => setUser(item)} className={'flex items-center w-auto h-7 z-50 rounded text-sm text-center px-0.5 bg-slate-400'}>Editar</DialogTrigger>
       <DialogContent>
         <DialogHeader className={'flex flex-col gap-5'}>
           <DialogTitle>¿Estás seguro que deseas editar este Item?</DialogTitle>
-          <form className={`flex items-center gap-4`} onSubmit={handleSubmit}>
+          <form className={`flex flex-col gap-4`} onSubmit={handleSubmit}>
             <Input
               className={'w-28'}
               type={'text'}
@@ -68,7 +67,7 @@ const EditDialog = ({ item }) => {
               placeholder={'Item'}
               required
             />
-            <DialogClose asChild className='flex gap-2'>
+            <DialogClose asChild className='flex justify-end gap-2'>
               <div><Button variant='outline'>Cancel</Button>
                 <Button
                   variant=''
