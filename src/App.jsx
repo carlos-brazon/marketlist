@@ -10,6 +10,8 @@ import { db } from './utils/firebase'
 import Form from './components/Form'
 import Contex from './components/Contex'
 import HowUse from './components/HowUse'
+import { Toaster } from "@/components/ui/toaster";
+import RootLayout from './components/Toaster'
 
 function App() {
   const [userIn, setUserIn] = useState(null);
@@ -37,31 +39,35 @@ function App() {
   }, []);
 
   return (
-    <div className="animate-fade flex items-start relative justify-center min-h-screen min-w-min bg-gray-300">
-      {loading ? (
-        <div className='flex flex-col min-h-screen min-w-min items-center justify-center'>
-          <div className="lds-default">
-            <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+    <RootLayout>
+      <div className="animate-fade flex items-start relative justify-center min-h-screen min-w-min bg-gray-300">
+        {loading ? (
+          <div className='flex flex-col min-h-screen min-w-min items-center justify-center'>
+            <div className="lds-default">
+              <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+            </div>
+            <div>Cargando...</div>
           </div>
-          <div>Cargando...</div>
-        </div>
-      ) : (
-        <div className=''>
-          <Contex userIn={userIn}>
-            <BrowserRouter>
-              <Routes>
-                <Route path='/' element={<Header />}>
-                  <Route index element={<Form />} />
-                  <Route path='HowToUse' element={<HowUse />} />
-                  <Route path='singin' element={<SingIn />} />
-                  <Route path='checkIn' element={<CheckIn />} />
-                </Route>
-              </Routes>
-            </BrowserRouter>
-          </Contex>
-        </div>
-      )}
-    </div>
+        ) : (
+          <div className=''>
+            <Contex userIn={userIn}>
+              <BrowserRouter>
+                <Routes>
+                  <Route path='/' element={<Header />}>
+                    <Route index element={<Form />} />
+                    <Route path='HowToUse' element={<HowUse />} />
+                    <Route path='singin' element={<SingIn />} />
+                    <Route path='checkIn' element={<CheckIn />} />
+                  </Route>
+                </Routes>
+              </BrowserRouter>
+            </Contex>
+          </div>
+        )}
+      </div>
+      <Toaster />
+    </RootLayout>
+
   );
 }
 
