@@ -27,7 +27,7 @@ const SingIn = () => {
         signInWithEmailAndPassword(auth, user.email, user.password)
             .then((userCredential) => {
                 userCredential.user;
-                window.location.reload();
+                window.location.href = '/';
             })
             .catch((error) => {
                 console.errorCode = error.code;

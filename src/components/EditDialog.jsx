@@ -63,7 +63,7 @@ const EditDialog = ({ item }) => {
         <DialogTrigger onClick={() => setUser(item)} className={'flex items-center w-auto h-7 z-50 rounded text-sm text-center px-0.5 bg-slate-400'}>Editar</DialogTrigger>
         <DialogContent>
           <DialogHeader className={'flex flex-col gap-5'}>
-            <DialogTitle>¿Estás seguro que deseas editar este Itemm?</DialogTitle>
+            <DialogTitle>¿Estás seguro que deseas editar este Item?</DialogTitle>
             <form className={`flex flex-col gap-4`} onSubmit={handleSubmit}>
               <Input
                 className={'w-28'}
