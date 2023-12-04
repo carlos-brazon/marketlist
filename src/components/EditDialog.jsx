@@ -55,12 +55,9 @@ const EditDialog = ({ item }) => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-
     >
-
-
       <Dialog>
-        <DialogTrigger onClick={() => setUser(item)} className={'flex items-center w-auto h-7 z-50 rounded text-sm text-center px-0.5 bg-slate-400'}>Editar</DialogTrigger>
+        <DialogTrigger onClick={() => setUser(item)} className={'flex items-center w-auto h-7 z-50 rounded-md text-sm text-center px-0.5 bg-slate-100 border border-gray-900'}>Editar</DialogTrigger>
         <DialogContent>
           <DialogHeader className={'flex flex-col gap-5'}>
             <DialogTitle>¿Estás seguro que deseas editar este Item?</DialogTitle>

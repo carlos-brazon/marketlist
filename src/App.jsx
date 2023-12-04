@@ -40,7 +40,7 @@ function App() {
 
   return (
     <RootLayout>
-      <div className="animate-fade flex items-start relative justify-center min-h-screen min-w-min bg-gray-300">
+      <div className="animate-fade flex items-start relative justify-center min-h-screen min-w-min bg-zinc-100">
         {loading ? (
           <div className='flex flex-col min-h-screen min-w-min items-center justify-center'>
             <div className="lds-default">

@@ -7,11 +7,13 @@ import { firstLetterUpperCase } from '../utils/util';
 import { ScrollArea } from "@/components/ui/scroll-area"
 import DeleteDialog from './DeleteDialog';
 import EditDialog from './EditDialog';
+import { SeparatorList } from './SeparatorList';
 
 const MarketList = () => {
   const { userIn, list, setList, button, setControlTags, setButton, selectedTag, setSelectedTag } = useContext(AllItemsContext);
   const [lastTapTime, setLastTapTime] = useState(0);
-
+  const [yyy, setYyy] = useState(false)
+  console.log(yyy);
   const updateIsDoneInFirestore = async (userId, itemId, newIsDoneValue, newIsDoneValue2) => {
     try {
       const querySnapshot = await getDocs(query(collection(db, 'users4'), where('email', '==', userIn.email)));
@@ -24,7 +26,7 @@ const MarketList = () => {
           return item;
         });
         await updateDoc(doc(db, 'users4', userId), { markeList: updatedMarkeList });
-        setList(updatedMarkeList)
+        // setList(updatedMarkeList)
         setSelectedTag(updatedMarkeList)
         console.log('isDone actualizado en Firestore correctamente.');
       } else {
@@ -61,8 +63,9 @@ const MarketList = () => {
         }
         return item;
       });
-      setList(updatedList.filter(item => item.tags === button))
-      return updatedList;
+      updatedList.filter(item => item.tags === button)
+      return updatedList
+
     });
 
     if (timeSinceLastTap < 300) {
@@ -105,6 +108,7 @@ const MarketList = () => {
   const handleOrder = () => {
     const sortedList = list?.filter(item => item.tags === button).sort((a, b) => a.name.localeCompare(b.name));
     setList(sortedList);
+    setYyy(prev => !prev)
   }
   const handleUrgente = () => {
     const urgentList = list?.filter(item => item.tags === button).sort((a, b) => (a.priority ? -1 : 1) - (b.priority ? -1 : 1));
@@ -116,28 +120,23 @@ const MarketList = () => {
     setButton(userIn ? userIn?.markeList[0]?.tags : 'Compras')
   }, [])
 
-
+  const listFilterTags = list.filter(item => item.tags === button)
   return (
     <div className='flex flex-col items-center relative gap-3 h-full w-screen px-3 pb-10'>
       <Tags />
-      <h1 className='text-center text-xl'>Lista</h1>
-      <div className='flex gap-6'>
-        <button onClick={() => handleOrder()} className='p-1 bg-yellow-500 rounded text-sm'>Ordenar A-Z</button>
-        <button onClick={() => handleUrgente()} className='p-1 bg-yellow-500 rounded text-sm'>Ordenar Urgente</button>
-      </div>
+      <SeparatorList handleOrder={handleOrder} handleUrgente={handleUrgente} />
       <ScrollArea className="h-[400px] w-full rounded-md border">
         {list?.length ?
-          list?.map((item, index) => {
-            if (item.tags === button) {
-              return <li
-                className={`list-disc list-inside break-normal items-center justify-between flex gap-2 m-0.5 rounded py-1 px-2 ${item.isDone ? 'line-through' : ''} ${item.priority ? 'bg-red-300' : index % 2 === 0 ? 'bg-blue-200' : 'bg-slate-50'}`}
-                key={index}
-              >
-                <div className='w-full text-lg' onClick={() => handleClick(item)}>{firstLetterUpperCase(item.name)}</div>
-                <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-7 z-50 rounded text-sm text-center px-0.5 bg-slate-400`}>Urgente</div>
-                <EditDialog item={item} />
-              </li>
-            }
+          listFilterTags.map((item, index) => {
+            return <li
+              key={index}
+              className={`list-disc list-inside break-normal items-center justify-between flex gap-2 m-0.5 rounded py-1 px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-gray-200' : 'bg-gray-300'}`}
+            >
+              <div className={`w-full text-lg ${item.isDone ? 'line-through' : ''}`} onClick={() => handleClick(item)}>{firstLetterUpperCase(item.name)}</div>
+              <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-7 z-50 rounded-md text-sm text-center px-0.5 bg-slate-100 border border-gray-900`}>Urgente</div>
+              <EditDialog item={item} />
+            </li>
+
           })
           : <p className='text-base'>Lista vacia</p>}
       </ScrollArea>
