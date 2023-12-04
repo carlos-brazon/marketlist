@@ -6,7 +6,7 @@ export default function RootLayout({ children }) {
             <head />
             <body>
                 <main>{children}</main>
-                <Toaster duration={100} />
+                <Toaster />
             </body>
         </html>
     )

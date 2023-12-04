@@ -7,6 +7,8 @@ import MarketList from './MarketList';
 import Input from './Input';
 import { Button } from './ui/button';
 import { useToast } from "@/components/ui/use-toast"
+import Accepted from "../assets/accept-check.svg"
+import Cancel from "../assets/cancel-remove.svg"
 
 
 const Form = () => {
@@ -39,8 +41,8 @@ const Form = () => {
                 setList(prev => [...prev, { ...user, isDone: false, priority: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }]);
                 setSelectedTag(prev => [...prev, { ...user, isDone: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }])
                 toast({
-                    title: 'Agregado',
-                    duration: '800',
+                    title: <div className='flex gap-2 items-center justify-center'><span>Agregado</span> <img className='h-8 w-8' src={Accepted} alt="" /></div>,
+                    duration: '1000',
                 })
                 const newId = doc(collection(db, 'dummy')).id;
                 await updateDoc(doc(db, 'users4', userIn.uid), {
@@ -50,8 +52,8 @@ const Form = () => {
                 setButton(user.tags.trim());
             } else {
                 toast({
-                    title: 'Repetido',
-                    duration: '800',
+                    title: <div className='flex gap-2 items-center justify-center'><span>Repetido</span> <img className='h-8 w-8' src={Cancel} alt="" /></div>,
+                    duration: '1000',
                 })
             }
         } catch (error) {
