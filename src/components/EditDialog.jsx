@@ -13,7 +13,6 @@ import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/fire
 import { AllItemsContext } from './Contex';
 import { db } from '../utils/firebase';
 import PropTypes from 'prop-types';
-import { KeyboardAvoidingView, Platform } from 'react-native-web';
 
 const EditDialog = ({ item }) => {
   const { userIn, setList, setSelectedTag } = useContext(AllItemsContext)
@@ -53,38 +52,34 @@ const EditDialog = ({ item }) => {
     }
   }
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <Dialog>
-        <DialogTrigger onClick={() => setUser(item)} className={'flex items-center w-auto h-7 z-50 rounded-md text-sm text-center px-0.5 bg-slate-100 border border-gray-900'}>Editar</DialogTrigger>
-        <DialogContent>
-          <DialogHeader className={'flex flex-col gap-5'}>
-            <DialogTitle>¿Estás seguro que deseas editar este Item?</DialogTitle>
-            <form className={`flex flex-col gap-4`} onSubmit={handleSubmit}>
-              <Input
-                className={'w-28'}
-                type={'text'}
-                name={'name'}
-                onChange={handleInput}
-                value={user.name || ''}
-                placeholder={'Item'}
-                required
-              />
-              <DialogClose asChild className='flex justify-end gap-2'>
-                <div><Button variant='outline'>Cancel</Button>
-                  <Button
-                    variant=''
-                    type={'submit'}
-                    required
-                    onClick={() => setUser(prev => ({ ...prev, id: item.id }))}
-                  >Editar</Button></div>
-              </DialogClose>
-            </form>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
-    </KeyboardAvoidingView>
+    <Dialog>
+      <DialogTrigger onClick={() => setUser(item)} className={'flex items-center w-auto h-7 z-50 rounded-md text-sm text-center px-0.5 bg-slate-100 border border-gray-900'}>Editar</DialogTrigger>
+      <DialogContent>
+        <DialogHeader className={'flex flex-col gap-5'}>
+          <DialogTitle>¿Estás seguro que deseas editar este Item?</DialogTitle>
+          <form className={`flex flex-col gap-4`} onSubmit={handleSubmit}>
+            <Input
+              className={'w-28'}
+              type={'text'}
+              name={'name'}
+              onChange={handleInput}
+              value={user.name || ''}
+              placeholder={'Item'}
+              required
+            />
+            <DialogClose asChild className='flex justify-end gap-2'>
+              <div><Button variant='outline'>Cancel</Button>
+                <Button
+                  variant=''
+                  type={'submit'}
+                  required
+                  onClick={() => setUser(prev => ({ ...prev, id: item.id }))}
+                >Editar</Button></div>
+            </DialogClose>
+          </form>
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
   )
 }
 

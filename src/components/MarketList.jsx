@@ -12,8 +12,6 @@ import { SeparatorList } from './SeparatorList';
 const MarketList = () => {
   const { userIn, list, setList, button, setControlTags, setButton, selectedTag, setSelectedTag } = useContext(AllItemsContext);
   const [lastTapTime, setLastTapTime] = useState(0);
-  const [yyy, setYyy] = useState(false)
-  console.log(yyy);
   const updateIsDoneInFirestore = async (userId, itemId, newIsDoneValue, newIsDoneValue2) => {
     try {
       const querySnapshot = await getDocs(query(collection(db, 'users4'), where('email', '==', userIn.email)));
@@ -108,7 +106,6 @@ const MarketList = () => {
   const handleOrder = () => {
     const sortedList = list?.filter(item => item.tags === button).sort((a, b) => a.name.localeCompare(b.name));
     setList(sortedList);
-    setYyy(prev => !prev)
   }
   const handleUrgente = () => {
     const urgentList = list?.filter(item => item.tags === button).sort((a, b) => (a.priority ? -1 : 1) - (b.priority ? -1 : 1));
@@ -122,7 +119,7 @@ const MarketList = () => {
 
   const listFilterTags = list.filter(item => item.tags === button)
   return (
-    <div className='flex flex-col items-center relative gap-3 h-full w-screen px-3 pb-10'>
+    <div className='flex flex-col items-center relative gap-6 h-full w-screen px-3 pb-10'>
       <Tags />
       <SeparatorList handleOrder={handleOrder} handleUrgente={handleUrgente} />
       <ScrollArea className="h-[400px] w-full rounded-md border">
@@ -130,7 +127,7 @@ const MarketList = () => {
           listFilterTags.map((item, index) => {
             return <li
               key={index}
-              className={`list-disc list-inside break-normal items-center justify-between flex gap-2 m-0.5 rounded py-1 px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-gray-200' : 'bg-gray-300'}`}
+              className={`list-disc list-inside break-normal items-center justify-between flex gap-2 m-0.5 rounded py-1 px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-gray-200' : 'bg-gray-100'}`}
             >
               <div className={`w-full text-lg ${item.isDone ? 'line-through' : ''}`} onClick={() => handleClick(item)}>{firstLetterUpperCase(item.name)}</div>
               <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-7 z-50 rounded-md text-sm text-center px-0.5 bg-slate-100 border border-gray-900`}>Urgente</div>

@@ -63,7 +63,7 @@ const Form = () => {
 
     return (
         <div className={userIn ? 'flex flex-col items-center pt-2 gap-2' : 'hidden'}>
-            <form className={`flex items-center gap-2`} onSubmit={handleSubmit}>
+            <form className={`flex items-center gap-2 py-2`} onSubmit={handleSubmit}>
                 <Input
                     className={'w-28'}
                     type={'text'}
