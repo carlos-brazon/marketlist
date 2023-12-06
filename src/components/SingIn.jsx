@@ -23,7 +23,8 @@ const SingIn = () => {
         setUser(prev => ({ ...prev, [inputName]: event.target.value }));
     }
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (event) => {
+        event.preventDefault();
         const auth = getAuth();
         signInWithEmailAndPassword(auth, user.email, user.password)
             .then((userCredential) => {
