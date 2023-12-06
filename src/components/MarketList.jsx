@@ -117,7 +117,7 @@ const MarketList = () => {
     setButton(userIn ? userIn?.markeList[0]?.tags : 'Compras')
   }, [])
 
-  const listFilterTags = list.filter(item => item.tags === button)
+  const listFilterTags = list?.filter(item => item.tags === button)
   return (
     <div className='flex flex-col items-center relative gap-6 h-full w-screen px-3 pb-10'>
       <Tags />
@@ -127,13 +127,12 @@ const MarketList = () => {
           listFilterTags.map((item, index) => {
             return <li
               key={index}
-              className={`list-disc list-inside break-normal items-center justify-between flex gap-2 m-0.5 rounded py-1 px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-50'}`}
+              className={`list-disc list-inside break-normal items-center justify-between flex gap-2 m-0.5 rounded py-1 px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-200'}`}
             >
               <div className={`w-full text-lg ${item.isDone ? 'line-through' : ''}`} onClick={() => handleClick(item)}>{firstLetterUpperCase(item.name)}</div>
               <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-7 z-50 rounded-md text-sm text-center px-0.5 bg-slate-100 border border-gray-900`}>Urgente</div>
               <EditDialog item={item} />
             </li>
-
           })
           : <p className='text-base'>Lista vacia</p>}
       </ScrollArea>

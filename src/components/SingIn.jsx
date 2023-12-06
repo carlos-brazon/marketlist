@@ -13,16 +13,17 @@ import {
 import { Button } from './ui/button';
 import { SheetClose } from './ui/sheet';
 
+// ...
+
 const SingIn = () => {
     const [user, setUser] = useState({});
 
-    const handleInput = () => {
+    const handleInput = (event) => {
         const inputName = event.target.name;
         setUser(prev => ({ ...prev, [inputName]: event.target.value }));
     }
-    const handleSubmit = async () => {
-        event.preventDefault();
 
+    const handleSubmit = async () => {
         const auth = getAuth();
         signInWithEmailAndPassword(auth, user.email, user.password)
             .then((userCredential) => {
@@ -34,6 +35,7 @@ const SingIn = () => {
                 console.errorMessage = error.message;
             });
     }
+
     return (
         <Sheet>
             <SheetTrigger asChild><Button variant='secondary'> Iniciar sesión</Button></SheetTrigger>
@@ -42,7 +44,7 @@ const SingIn = () => {
                     <SheetTitle>Inicia sesión en MarketList</SheetTitle>
                     <SheetDescription asChild>
                         <div className={`flex flex-col gap-4 items-center`}>
-                            <form className='flex flex-col gap-2 items-center justify-center' onSubmit={handleSubmit}>
+                            <form className='flex flex-col gap-2 items-center justify-center'>
                                 <Input
                                     type={'text'}
                                     name={'email'}
@@ -63,7 +65,7 @@ const SingIn = () => {
                                     required
                                 />
                                 <SheetClose asChild>
-                                    <Button type='submit'>Iniciar sesión</Button>
+                                    <Button type="submit" onClick={() => handleSubmit()}>Iniciar sesión</Button>
                                 </SheetClose>
                             </form>
 
@@ -80,4 +82,5 @@ const SingIn = () => {
         </Sheet>
     )
 }
-export default SingIn
+
+export default SingIn;
