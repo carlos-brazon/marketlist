@@ -42,7 +42,7 @@ const Tags = () => {
         <div className='w-full flex gap-2 flex-wrap break-all'>
             <img onClick={() => setControlTags(prev => !prev)} className='w-8 h-8' src={Add} alt="Aquí va la imagen de un Add" />
 
-            {tags?.map((string, i) => <button key={i} onClick={() => handleClic(string)} className={`p-1 font-semibold text-sm rounded-md ${button === string ? 'bg-slate-800 text-white shadow-md shadow-gray-600' : 'bg-slate-400 shadow-md shadow-gray-300'}`}>{firstLetterUpperCase(string)}</button >)}
+            {tags?.map((string, i) => <button key={i} onClick={() => handleClic(string)} className={`p-1 font-semibold text-sm rounded-md ${button === string ? 'bg-slate-700 text-white shadow-md shadow-gray-600' : 'bg-slate-400 shadow-md shadow-gray-300'}`}>{firstLetterUpperCase(string)}</button >)}
         </div>
     )
 }

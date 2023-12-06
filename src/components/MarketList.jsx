@@ -122,12 +122,12 @@ const MarketList = () => {
     <div className='flex flex-col items-center relative gap-6 h-full w-screen px-3 pb-10'>
       <Tags />
       <SeparatorList handleOrder={handleOrder} handleUrgente={handleUrgente} />
-      <ScrollArea className="h-[400px] w-full rounded-md border">
+      <ScrollArea className="h-[400px] w-full rounded-md  ">
         {list?.length ?
           listFilterTags.map((item, index) => {
             return <li
               key={index}
-              className={`list-disc list-inside break-normal items-center justify-between flex gap-2 m-0.5 rounded py-1 px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-gray-200' : 'bg-gray-100'}`}
+              className={`list-disc list-inside break-normal items-center justify-between flex gap-2 m-0.5 rounded py-1 px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-50'}`}
             >
               <div className={`w-full text-lg ${item.isDone ? 'line-through' : ''}`} onClick={() => handleClick(item)}>{firstLetterUpperCase(item.name)}</div>
               <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-7 z-50 rounded-md text-sm text-center px-0.5 bg-slate-100 border border-gray-900`}>Urgente</div>
