@@ -21,15 +21,13 @@ const EditDialog = ({ item }) => {
     item: PropTypes.any.isRequired,
   }
 
-
-  const handleInput = () => {
+  const handleInput = (event) => {
     const inputName = event.target.name;
     const inputValue = event.target.value;
     setUser(prev => ({ ...prev, [inputName]: inputValue }));
   }
 
   const handleSubmit = async () => {
-    event.preventDefault();
     try {
       const querySnapshot = await getDocs(query(collection(db, 'users4'), where('email', '==', userIn.email)));
       const market = querySnapshot.docs[0]?.data()?.markeList || [];
@@ -57,7 +55,7 @@ const EditDialog = ({ item }) => {
       <DialogContent>
         <DialogHeader className={'flex flex-col gap-5'}>
           <DialogTitle>¿Estás seguro que deseas editar este Item?</DialogTitle>
-          <form className={`flex flex-col gap-4`} onSubmit={handleSubmit}>
+          <form className={`flex flex-col gap-4`}>
             <Input
               className={'w-28'}
               type={'text'}
@@ -68,13 +66,10 @@ const EditDialog = ({ item }) => {
               required
             />
             <DialogClose asChild className='flex justify-end gap-2'>
-              <div><Button variant='outline'>Cancel</Button>
-                <Button
-                  variant=''
-                  type={'submit'}
-                  required
-                  onClick={() => setUser(prev => ({ ...prev, id: item.id }))}
-                >Editar</Button></div>
+              <div>
+                <Button type="submit" onClick={() => handleSubmit()}>Editar</Button>
+                <Button variant='outline'>Cancel</Button>
+              </div>
             </DialogClose>
           </form>
         </DialogHeader>
