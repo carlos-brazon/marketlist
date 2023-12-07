@@ -21,8 +21,7 @@ const EditDialog = ({ item }) => {
     item: PropTypes.any.isRequired,
   }
 
-
-  const handleInput = () => {
+  const handleInput = (event) => {
     const inputName = event.target.name;
     const inputValue = event.target.value;
     setUser(prev => ({ ...prev, [inputName]: inputValue }));
@@ -67,10 +66,10 @@ const EditDialog = ({ item }) => {
               required
             />
             <DialogClose asChild className='flex justify-end gap-2'>
-              <div><Button variant='outline'>Cancel</Button>
-                <Button
-                  onClick={() => { handleSubmit(), setUser(prev => ({ ...prev, id: item.id })) }}
-                >Editar</Button></div>
+              <div>
+                <Button type="submit" onClick={() => handleSubmit()}>Editar</Button>
+                <Button variant='outline'>Cancel</Button>
+              </div>
             </DialogClose>
           </form>
         </DialogHeader>

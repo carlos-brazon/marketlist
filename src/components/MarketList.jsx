@@ -124,7 +124,7 @@ const MarketList = () => {
       <SeparatorList handleOrder={handleOrder} handleUrgente={handleUrgente} />
       <ScrollArea className="h-[400px] w-full rounded-md  ">
         {list?.length ?
-          listFilterTags.map((item, index) => {
+          listFilterTags?.map((item, index) => {
             return <li
               key={index}
               className={`list-disc list-inside break-normal items-center justify-between flex gap-2 m-0.5 rounded py-1 px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-200'}`}
