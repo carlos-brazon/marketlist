@@ -12,7 +12,7 @@ import Cancel from "../assets/cancel-remove.svg"
 
 
 const Form = () => {
-    const { userIn, setList, controltags, button, setButton, list, setSelectedTag } = useContext(AllItemsContext);
+    const { userIn, setList, controltags, setControlTags, button, setButton, list, setSelectedTag } = useContext(AllItemsContext);
     const [user, setUser] = useState({});
     const { toast } = useToast()
 
@@ -37,19 +37,20 @@ const Form = () => {
             const productExists = market.some(item => item.name === user.name.trim());
 
             if (!productExists) {
-                setUser(prev => ({ ...prev, name: '' }));
-                setList(prev => [...prev, { ...user, isDone: false, priority: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }]);
-                setSelectedTag(prev => [...prev, { ...user, isDone: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }])
+                setControlTags(false)
                 toast({
                     title: <div className='flex gap-2 items-center justify-center'><span>Agregado</span> <img className='h-8 w-8' src={Accepted} alt="" /></div>,
                     duration: '1000',
                 })
+                setUser(prev => ({ ...prev, name: '' }));
+                setList(prev => [...prev, { ...user, isDone: false, priority: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }]);
+                setSelectedTag(prev => [...prev, { ...user, isDone: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }])
                 const newId = doc(collection(db, 'dummy')).id;
                 await updateDoc(doc(db, 'users4', userIn.uid), {
                     markeList: arrayUnion({ ...user, tags: user.tags.trim(), isDone: false, id: newId, priority: false })
                 });
-
                 setButton(user.tags.trim());
+
             } else {
                 toast({
                     title: <div className='flex gap-2 items-center justify-center'><span>Repetido</span> <img className='h-8 w-8' src={Cancel} alt="" /></div>,
