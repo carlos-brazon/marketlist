@@ -13,8 +13,6 @@ import {
 import { Button } from './ui/button';
 import { SheetClose } from './ui/sheet';
 
-// ...
-
 const SingIn = () => {
     const [user, setUser] = useState({});
 
@@ -23,8 +21,7 @@ const SingIn = () => {
         setUser(prev => ({ ...prev, [inputName]: event.target.value }));
     }
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    const handleSubmit = async () => {
         const auth = getAuth();
         signInWithEmailAndPassword(auth, user.email, user.password)
             .then((userCredential) => {
