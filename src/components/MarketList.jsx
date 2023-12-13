@@ -118,12 +118,14 @@ const MarketList = () => {
   }, [])
 
   const listFilterTags = list?.filter(item => item.tags === button)
+
   return (
     <div className='flex flex-col items-center gap-4 h-full w-screen px-3'>
       <Tags />
       <SeparatorList handleOrder={handleOrder} handleUrgente={handleUrgente} />
       <ScrollArea
-        className={`w-full rounded-md ${window.innerHeight < 720 ? 'h-[200px]' : window.innerHeight < 850 ? "h-[300px]" : 'h-[500px]'}`}
+        style={{ height: `${Math.round(window.innerHeight / 2) + 50}px` }}
+        className={`w-full rounded-md`}
       >
         {list?.length ?
           listFilterTags?.map((item, index) => {
@@ -139,7 +141,7 @@ const MarketList = () => {
           : <p className='text-base'>Lista vacia</p>}
       </ScrollArea>
       <DeleteDialog />
-    </div>
+    </div >
   );
 };
 

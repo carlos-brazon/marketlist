@@ -31,7 +31,7 @@ const Header = () => {
   }, []);
   return (
     <div className='flex flex-col gap-2 items-center'>
-      <header className="flex items-center justify-between relative text-white bg-neutral-800 py-5 px-3 w-full">
+      <header className="flex items-center justify-between relative text-white bg-neutral-800 py-2 px-3 w-full">
         <Link to={'/'}>
           <Button variant='secondary'>Inicio</Button>
         </Link>
