@@ -12,12 +12,12 @@ import Cancel from "../assets/cancel-remove.svg"
 
 
 const Form = () => {
-    const { userIn, setList, controltags, setControlTags, button, setButton, list, setSelectedTag } = useContext(AllItemsContext);
+    const { userIn, setList, addTags, setAddTags, button, setButton, setSelectedTag } = useContext(AllItemsContext);
     const [user, setUser] = useState({});
     const { toast } = useToast()
 
     useEffect(() => {
-        setUser(prev => ({ ...prev, tags: list?.length ? button : 'Compras' }));
+        setUser(prev => ({ ...prev, tags: userIn?.markeList.length ? button : 'Compras' }));
     }, [button]);
 
 
@@ -37,7 +37,7 @@ const Form = () => {
             const productExists = market.some(item => item.name === user.name.trim());
 
             if (!productExists) {
-                setControlTags(false)
+                setAddTags(false)
                 toast({
                     title: <div className='flex gap-2 items-center justify-center'><span>Agregado</span> <img className='h-8 w-8' src={Accepted} alt="" /></div>,
                     duration: '1000',
@@ -80,7 +80,7 @@ const Form = () => {
                     onChange={handleInput}
                     value={user.tags || ''}
                     placeholder={'Nueva lista'}
-                    className={controltags ? 'w-28' : 'hidden'}
+                    className={addTags ? 'w-28' : 'hidden'}
                     maxLength="25"
                     required
                 />

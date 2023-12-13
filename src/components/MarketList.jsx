@@ -10,7 +10,7 @@ import EditDialog from './EditDialog';
 import { SeparatorList } from './SeparatorList';
 
 const MarketList = () => {
-  const { userIn, list, setList, button, setControlTags, setButton, selectedTag, setSelectedTag } = useContext(AllItemsContext);
+  const { userIn, list, setList, button, setAddTags, setButton, setSelectedTag } = useContext(AllItemsContext);
   const [lastTapTime, setLastTapTime] = useState(0);
   const updateIsDoneInFirestore = async (userId, itemId, newIsDoneValue, newIsDoneValue2) => {
     try {
@@ -63,7 +63,6 @@ const MarketList = () => {
       });
       updatedList.filter(item => item.tags === button)
       return updatedList
-
     });
 
     if (timeSinceLastTap < 300) {
@@ -72,19 +71,20 @@ const MarketList = () => {
       if (userDocSnapshot.exists()) {
         const userData = userDocSnapshot.data();
         const updatedMarkeList = userData.markeList.filter(item => item.id !== objitem.id);
+        console.log(updatedMarkeList);
 
         await updateDoc(doc(db, 'users4', userIn.uid), { markeList: updatedMarkeList });
         console.log('Producto eliminado de Firestore correctamente.');
         if (updatedMarkeList.length === 0 || list.length === 0) {
-          setControlTags(false)
+          setAddTags(false)
           setButton('Compras')
         }
 
         setList(updatedMarkeList);
         setSelectedTag(updatedMarkeList)
-        setControlTags(false);
+        setAddTags(false);
         setButton(() => {
-          const arrayStringTags = selectedTag?.reduce((acc, item) => {
+          const arrayStringTags = updatedMarkeList?.reduce((acc, item) => {
             if (item.tags) {
               if (!acc.includes(item.tags)) {
                 acc.push(item.tags);
@@ -92,8 +92,9 @@ const MarketList = () => {
             }
             return acc
           }, []);
-          const arrayObjectTags = selectedTag.filter(item => item.tags === button);
-          return arrayStringTags.includes(button) && arrayObjectTags.length !== 1 ? button : arrayStringTags[0]
+          return arrayStringTags.length !== 1 && arrayStringTags.includes(button) ? button : arrayStringTags[0]
+          // const arrayObjectTags = setSelectedTag?.filter(item => item.tags === button);
+          // return arrayStringTags.includes(button) && arrayObjectTags.length !== 1 ? button : arrayStringTags[0]
         });
       } else {
         console.log('El documento no existe en Firestore.');
@@ -114,15 +115,18 @@ const MarketList = () => {
   useEffect(() => {
     setList(userIn?.markeList)
     setSelectedTag(userIn?.markeList)
-    setButton(userIn ? userIn?.markeList[0]?.tags : 'Compras')
   }, [])
 
   const listFilterTags = list?.filter(item => item.tags === button)
+
   return (
-    <div className='flex flex-col items-center relative gap-6 h-full w-screen px-3 pb-10'>
+    <div className='flex flex-col items-center gap-4 h-full w-screen px-3'>
       <Tags />
       <SeparatorList handleOrder={handleOrder} handleUrgente={handleUrgente} />
-      <ScrollArea className="h-[400px] w-full rounded-md  ">
+      <ScrollArea
+        style={{ height: `${Math.round(window.innerHeight / 2) + 50}px` }}
+        className={`w-full rounded-md`}
+      >
         {list?.length ?
           listFilterTags?.map((item, index) => {
             return <li
@@ -137,7 +141,7 @@ const MarketList = () => {
           : <p className='text-base'>Lista vacia</p>}
       </ScrollArea>
       <DeleteDialog />
-    </div>
+    </div >
   );
 };
 

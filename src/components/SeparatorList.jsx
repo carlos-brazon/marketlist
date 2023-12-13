@@ -1,10 +1,5 @@
 import { Separator } from "@/components/ui/separator"
-import {
-    ToggleGroup,
-    ToggleGroupItem,
-} from "@/components/ui/toggle-group"
 import { Button } from "./ui/button"
-
 
 export function SeparatorList({ handleOrder, handleUrgente }) {
     return (
@@ -18,6 +13,7 @@ export function SeparatorList({ handleOrder, handleUrgente }) {
                 <Separator orientation="vertical" />
                 <Button variant="outline" value="priority" onClick={() => handleUrgente()}>Ordenar Urgente</Button>
             </div>
+            <h1></h1>
 
             {/* <ToggleGroup type="single" className="flex h-5 items-center space-x-4 text-sm">
                 <ToggleGroupItem value="order" onClick={() => handleOrder()}>Ordenar A-Z</ToggleGroupItem>

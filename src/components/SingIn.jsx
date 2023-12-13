@@ -13,8 +13,6 @@ import {
 import { Button } from './ui/button';
 import { SheetClose } from './ui/sheet';
 
-// ...
-
 const SingIn = () => {
     const [user, setUser] = useState({});
 

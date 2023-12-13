@@ -7,20 +7,16 @@ import { firstLetterUpperCase } from '../utils/util';
 import { Button } from './ui/button';
 
 const DeleteDialog = () => {
-    const { button, setButton, setList, userIn, setControlTags, setSelectedTag } = useContext(AllItemsContext);
+    const { button, setButton, setList, userIn, setAddTags, setSelectedTag } = useContext(AllItemsContext);
 
     const handleClick = async () => {
-        setControlTags(false);
+        setAddTags(false);
         const userDocRef = doc(db, 'users4', userIn.uid);
         const userDocSnapshot = await getDoc(userDocRef);
 
         if (userDocSnapshot.exists()) {
             const userDocData = userDocSnapshot.data();
             const updatedMarkeList = userDocData.markeList.filter(item => item.tags !== button);
-            setList(updatedMarkeList);
-            setSelectedTag(updatedMarkeList);
-
-            await updateDoc(userDocRef, { markeList: updatedMarkeList });
             const tags = updatedMarkeList.reduce((acc, obj) => {
                 if (obj.tags) {
                     if (!acc.includes(obj.tags)) {
@@ -29,19 +25,21 @@ const DeleteDialog = () => {
                 }
                 return acc
             }, []);
-
-            if (tags.length >= 1) {
+            if (tags.length) {
                 setButton(tags[0])
             } else {
                 setButton('Compras');
             }
+            setList(updatedMarkeList);
+            setSelectedTag(updatedMarkeList);
+            await updateDoc(userDocRef, { markeList: updatedMarkeList });
         }
     }
 
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <Button>Eliminar lista</Button>
+                <Button className="">Eliminar lista</Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
