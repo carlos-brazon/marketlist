@@ -49,7 +49,7 @@ function App() {
             <div>Cargando...</div>
           </div>
         ) : (
-          <div className=''>
+          <div className='w-screen'>
             <Contex userIn={userIn}>
               <BrowserRouter>
                 <Routes>

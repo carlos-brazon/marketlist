@@ -9,9 +9,9 @@ import {
     SheetHeader,
     SheetTitle,
     SheetTrigger,
+    SheetClose
 } from "@/components/ui/sheet"
 import { Button } from './ui/button';
-import { SheetClose } from './ui/sheet';
 
 const SingIn = () => {
     const [user, setUser] = useState({});
@@ -22,6 +22,7 @@ const SingIn = () => {
     }
 
     const handleSubmit = async () => {
+        event.preventDefault();
         const auth = getAuth();
         signInWithEmailAndPassword(auth, user.email, user.password)
             .then((userCredential) => {
@@ -62,9 +63,7 @@ const SingIn = () => {
                                     className={'w-64'}
                                     required
                                 />
-                                <SheetClose asChild>
-                                    <Button type="submit" onClick={() => handleSubmit()}>Iniciar sesión</Button>
-                                </SheetClose>
+                                <Button type="submit" onClick={() => handleSubmit()}>Iniciar sesión</Button>
                             </form>
 
                             <Link to={'/checkIn'} className='font-normal text-sm leading-4'>

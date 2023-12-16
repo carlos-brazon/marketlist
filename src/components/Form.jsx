@@ -10,7 +10,6 @@ import { useToast } from "@/components/ui/use-toast"
 import Accepted from "../assets/accept-check.svg"
 import Cancel from "../assets/cancel-remove.svg"
 
-
 const Form = () => {
     const { userIn, setList, addTags, setAddTags, button, setButton, setSelectedTag } = useContext(AllItemsContext);
     const [user, setUser] = useState({});
@@ -19,8 +18,6 @@ const Form = () => {
     useEffect(() => {
         setUser(prev => ({ ...prev, tags: userIn?.markeList.length ? button : 'Compras' }));
     }, [button]);
-
-
 
     const handleInput = () => {
         const inputName = event.target.name;
