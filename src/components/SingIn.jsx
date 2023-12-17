@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import Input from './Input';
 import {
@@ -12,9 +12,13 @@ import {
     SheetClose
 } from "@/components/ui/sheet"
 import { Button } from './ui/button';
+import { useToast } from "@/components/ui/use-toast"
 
 const SingIn = () => {
+    const { toast } = useToast()
     const [user, setUser] = useState({});
+    const navigate = useNavigate();
+
 
     const handleInput = (event) => {
         const inputName = event.target.name;
@@ -27,9 +31,17 @@ const SingIn = () => {
         signInWithEmailAndPassword(auth, user.email, user.password)
             .then((userCredential) => {
                 userCredential.user;
-                window.location.href = '/';
+                toast({
+                    title: <div className='flex gap-2 items-center justify-center'><span>Sesión iniciada correctamente</span></div>,
+                    duration: '2500',
+                })
+                navigate('/');
             })
             .catch((error) => {
+                toast({
+                    title: <div className='flex gap-2 items-center justify-center'><span className='text-red-700'>Usuario o contraseña incorrecta</span></div>,
+                    duration: '2500',
+                })
                 console.errorCode = error.code;
                 console.errorMessage = error.message;
             });

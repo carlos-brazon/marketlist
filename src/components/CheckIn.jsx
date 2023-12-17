@@ -54,9 +54,9 @@ const CheckIn = () => {
             .then(async (userCredential) => {
                 const newUser = userCredential.user;
                 delete userToFirebase.password;
-                await setDoc(doc(db, "users4", newUser.uid), userToFirebase);
                 setMessageLogIn('Usuario registrado correctamente');
                 showMessage();
+                await setDoc(doc(db, "users4", newUser.uid), userToFirebase);
             })
             .catch((error) => {
                 setMessageLogIn('Error al registrar usuario, inténtalo de nuevo');
@@ -70,7 +70,6 @@ const CheckIn = () => {
         <>
             <div className='flex flex-col gap-4 p-3 items-center bg-white rounded-md shadow-md shadow-neutral-700 hover:shadow-lg hover:shadow-neutral-800'>
                 <div className='font-semibold text-xl'>Crea tu cuenta</div>
-
                 <form className='flex flex-col gap-2 items-center' onSubmit={handleSubmit}>
                     <div className='flex gap-2'>
                         <Input
@@ -111,10 +110,11 @@ const CheckIn = () => {
                         minLength={'6'}
                         required
                     />
-                    <p>{messageLogIn}</p>
-                    {passwordError && <p className='text-red-600'>{passwordError}</p>}
-                    {emailError && <p className='text-red-600'>{emailError}</p>}
-
+                    <div className='min-h-6'>
+                        <p>{messageLogIn}</p>
+                        {passwordError && <p className='text-red-600'>{passwordError}</p>}
+                        {emailError && <p className='text-red-600'>{emailError}</p>}
+                    </div>
                     <Button type={'submit'}>Registrarse</Button>
                 </form>
             </div>

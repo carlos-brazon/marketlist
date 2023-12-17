@@ -71,8 +71,6 @@ const MarketList = () => {
       if (userDocSnapshot.exists()) {
         const userData = userDocSnapshot.data();
         const updatedMarkeList = userData.markeList.filter(item => item.id !== objitem.id);
-        console.log(updatedMarkeList);
-
         await updateDoc(doc(db, 'users4', userIn.uid), { markeList: updatedMarkeList });
         console.log('Producto eliminado de Firestore correctamente.');
         if (updatedMarkeList.length === 0 || list.length === 0) {
