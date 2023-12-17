@@ -34,12 +34,12 @@ const Form = () => {
             const productExists = market.some(item => item.name === user.name.trim());
 
             if (!productExists) {
+                setUser(prev => ({ ...prev, name: '' }));
                 setAddTags(false)
                 toast({
                     title: <div className='flex gap-2 items-center justify-center'><span>Agregado</span> <img className='h-8 w-8' src={Accepted} alt="" /></div>,
                     duration: '1000',
                 })
-                setUser(prev => ({ ...prev, name: '' }));
                 setList(prev => [...prev, { ...user, isDone: false, priority: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }]);
                 setSelectedTag(prev => [...prev, { ...user, isDone: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }])
                 const newId = doc(collection(db, 'dummy')).id;
