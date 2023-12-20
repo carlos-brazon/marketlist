@@ -111,14 +111,14 @@ const MarketList = () => {
     setList(userIn?.markeList)
     setSelectedTag(userIn?.markeList)
   }, [])
-
   const listFilterTags = list?.filter(item => item.tags === button)
   return (
     <div className='flex flex-col items-center gap-4 h-full w-screen px-3'>
       <Tags />
       <SeparatorList handleOrder={handleOrder} handleUrgente={handleUrgente} />
       <ScrollArea
-        style={{ height: `${Math.round(window.innerHeight / 2) + 50}px` }}
+        style={{ height: `${Math.round(window.innerHeight - 340)}px` }}
+        // style={{ height: `${Math.round(window.innerHeight / 2) + 50}px` }}
         className={`w-full rounded-md`}
       >
         {list?.length ?
