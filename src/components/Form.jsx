@@ -21,7 +21,7 @@ const Form = () => {
         } else {
             setUser(prev => ({ ...prev, tags: userIn?.MarkeList?.length ? button : 'Compras' }));
         }
-    }, [selectedTag]);
+    }, [button]);
 
     const handleInput = () => {
         const inputName = event.target.name;
