@@ -36,6 +36,7 @@ const SingIn = () => {
                     duration: '2500',
                 })
                 navigate('/');
+                window.location.href = '/';
             })
             .catch((error) => {
                 toast({

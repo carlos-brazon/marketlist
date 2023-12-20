@@ -77,7 +77,6 @@ const MarketList = () => {
           setAddTags(false)
           setButton('Compras')
         }
-
         setList(updatedMarkeList);
         setSelectedTag(updatedMarkeList)
         setAddTags(false);
@@ -90,9 +89,7 @@ const MarketList = () => {
             }
             return acc
           }, []);
-          return arrayStringTags.length !== 1 && arrayStringTags.includes(button) ? button : arrayStringTags[0]
-          // const arrayObjectTags = setSelectedTag?.filter(item => item.tags === button);
-          // return arrayStringTags.includes(button) && arrayObjectTags.length !== 1 ? button : arrayStringTags[0]
+          return arrayStringTags.length > 1 && arrayStringTags.includes(button) ? button : arrayStringTags[0]
         });
       } else {
         console.log('El documento no existe en Firestore.');
@@ -116,7 +113,6 @@ const MarketList = () => {
   }, [])
 
   const listFilterTags = list?.filter(item => item.tags === button)
-
   return (
     <div className='flex flex-col items-center gap-4 h-full w-screen px-3'>
       <Tags />

@@ -26,9 +26,6 @@ const Tags = () => {
             return tagsToPrint
         })
 
-        if (tags?.length === 1) {
-            setButton(tags[0]);
-        }
     }, [list]);
     return (
         <div className='w-full flex gap-2 flex-wrap break-all'>
