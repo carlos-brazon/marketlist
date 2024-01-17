@@ -57,6 +57,7 @@ const CheckIn = () => {
                 setMessageLogIn('Usuario registrado correctamente');
                 showMessage();
                 await setDoc(doc(db, "users4", newUser.uid), userToFirebase);
+                await setDoc(doc(db, "usersData", newUser.uid), userToFirebase);
             })
             .catch((error) => {
                 setMessageLogIn('Error al registrar usuario, inténtalo de nuevo');

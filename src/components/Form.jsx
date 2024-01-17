@@ -31,12 +31,11 @@ const Form = () => {
 
     const handleSubmit = async () => {
         event.preventDefault();
-
         try {
             const querySnapshot = await getDocs(query(collection(db, 'users4'), where('email', '==', userIn.email)));
             const market = querySnapshot.docs[0]?.data().markeList || []
-            const productExists = market.some(item => item.name === user.name.trim());
-
+            const listFilterTags = market.filter(item => item.tags === button)
+            const productExists = listFilterTags.some(item => item.tags === user.tags && item.name === user.name.trim());
             if (!productExists) {
                 setUser(prev => ({ ...prev, name: '' }));
                 setAddTags(false)
@@ -51,6 +50,10 @@ const Form = () => {
                 await updateDoc(doc(db, 'users4', userIn.uid), {
                     markeList: arrayUnion({ ...user, tags: user.tags.trim(), isDone: false, id: newId, priority: false })
                 });
+                await updateDoc(doc(db, 'usersData', userIn.uid), {
+                    markeList: arrayUnion({ ...user, tags: user.tags.trim(), isDone: false, id: newId, priority: false })
+                });
+
 
             } else {
                 toast({

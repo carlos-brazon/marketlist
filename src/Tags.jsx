@@ -8,7 +8,6 @@ const Tags = () => {
     const [tags, setTags] = useState([]);
 
     const handleClic = (string) => {
-        console.log(string);
         setButton(tags.length === 1 ? tags[0] : string)
         setList(() => {
             const arrayTagsFilter = selectedTag?.filter(item => item.tags === string)
