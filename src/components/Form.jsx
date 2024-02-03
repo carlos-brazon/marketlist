@@ -11,7 +11,7 @@ import Accepted from "../assets/accept-check.svg"
 import Cancel from "../assets/cancel-remove.svg"
 
 const Form = () => {
-    const { userIn, setList, addTags, setAddTags, button, setButton, selectedTag, setSelectedTag } = useContext(AllItemsContext);
+    const { setValueInputNewTags, valueInputNewTags, userIn, setList, addTags, setAddTags, button, setButton, selectedTag, setSelectedTag } = useContext(AllItemsContext);
     const [user, setUser] = useState({});
     const { toast } = useToast()
 
@@ -27,6 +27,9 @@ const Form = () => {
         const inputName = event.target.name;
         const inputValue = event.target.value;
         setUser(prev => ({ ...prev, [inputName]: inputValue }));
+        if (inputValue.length) {
+            setValueInputNewTags('')
+        }
     }
 
     const handleSubmit = async () => {
@@ -69,7 +72,7 @@ const Form = () => {
         <div className={userIn ? 'flex flex-col items-center pt-2 gap-2' : 'hidden'}>
             <form className={`flex items-center gap-2 py-2`} onSubmit={handleSubmit}>
                 <Input
-                    className={'w-28'}
+                    className={'w-32'}
                     type={'text'}
                     name={'name'}
                     onChange={handleInput}
@@ -81,9 +84,9 @@ const Form = () => {
                     type={'text'}
                     name={'tags'}
                     onChange={handleInput}
-                    value={user.tags || button || ''}
+                    value={user.tags || '' || valueInputNewTags}
                     placeholder={'Nueva lista'}
-                    className={addTags ? 'w-28' : 'hidden'}
+                    className={addTags ? 'w-32' : 'hidden'}
                     maxLength="25"
                     required
                 />
