@@ -11,7 +11,7 @@ import { DialogClose } from '@radix-ui/react-dialog'
 import { Button } from './ui/button';
 import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import { AllItemsContext } from './Contex';
-import { db } from '../utils/firebase';
+import { db2 } from '../utils/firebase';
 import PropTypes from 'prop-types';
 
 const EditDialog = ({ item }) => {
@@ -29,7 +29,7 @@ const EditDialog = ({ item }) => {
 
   const handleSubmit = async () => {
     try {
-      const querySnapshot = await getDocs(query(collection(db, 'users4'), where('email', '==', userIn.email)));
+      const querySnapshot = await getDocs(query(collection(db2, 'usersMarketList'), where('email', '==', userIn.email)));
       const market = querySnapshot.docs[0]?.data()?.markeList || [];
       if (!querySnapshot.empty) {
         const updatedMarkeList = market.map(itemListFromFirebase => {
@@ -38,7 +38,7 @@ const EditDialog = ({ item }) => {
           }
           return itemListFromFirebase;
         });
-        await updateDoc(doc(db, 'users4', userIn.uid), { markeList: updatedMarkeList });
+        await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
         setList(updatedMarkeList)
         setSelectedTag(updatedMarkeList)
         console.log('isDone actualizado en Firestore correctamente.');
@@ -67,8 +67,8 @@ const EditDialog = ({ item }) => {
             />
             <DialogClose asChild className='flex justify-end gap-2'>
               <div>
-                <Button type="submit" onClick={() => handleSubmit()}>Editar</Button>
                 <Button variant='outline'>Cancel</Button>
+                <Button type="submit" onClick={() => handleSubmit()}>Editar</Button>
               </div>
             </DialogClose>
           </form>

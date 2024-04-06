@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 export const AllItemsContext = createContext();
 
-const Context = ({ children, userIn }) => {
+const Context = ({ children, userIn, setUserIn, setLoading }) => {
   const [list, setList] = useState([]);
   const [addTags, setAddTags] = useState(false);
   const [button, setButton] = useState(userIn ? userIn?.markeList[0]?.tags : 'Compras');
@@ -11,7 +11,7 @@ const Context = ({ children, userIn }) => {
   const [selectedTag, setSelectedTag] = useState([]);
 
   return (
-    <AllItemsContext.Provider value={{ valueInputNewTags, setValueInputNewTags, list, setList, userIn, addTags, setAddTags, button, setButton, selectedTag, setSelectedTag }}>
+    <AllItemsContext.Provider value={{ setLoading, setUserIn, valueInputNewTags, setValueInputNewTags, list, setList, userIn, addTags, setAddTags, button, setButton, selectedTag, setSelectedTag }}>
       {children}
     </AllItemsContext.Provider>
   );
@@ -26,6 +26,8 @@ Context.propTypes = {
     uid: PropTypes.string.isRequired,
     markeList: PropTypes.array.isRequired,
   }),
+  setUserIn: PropTypes.func.isRequired,
+  setLoading: PropTypes.func.isRequired,
 };
 
 export default Context;

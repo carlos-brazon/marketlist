@@ -3,7 +3,7 @@ import { Link, Outlet } from 'react-router-dom';
 import UserConectedIcon from "../assets/user-svgrepo-com-green.svg";
 import UserDisconectedIcon from "../assets/user-svgrepo-com-red.svg";
 import { signOut } from 'firebase/auth';
-import { auth } from '../utils/firebase';
+import { auth, auth2 } from '../utils/firebase';
 import { AllItemsContext } from './Contex';
 import { firstLetterUpperCase } from "../utils/util.js";
 import { Button } from './ui/button.jsx';
@@ -18,9 +18,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 const Header = () => {
-  const { userIn } = useContext(AllItemsContext);
+  const { userIn, setUserIn } = useContext(AllItemsContext);
   const [by, setBy] = useState(true);
-
   const showMessage = () => {
     setTimeout(() => {
       setBy(false);
@@ -29,6 +28,12 @@ const Header = () => {
   useEffect(() => {
     showMessage();
   }, []);
+
+  const handleClick = async () => {
+    await setUserIn(null)
+    await signOut(auth);
+    await signOut(auth2);
+  }
   return (
     <div className='flex flex-col gap-2 items-center'>
       <header className="flex items-center justify-between relative text-white bg-neutral-800 py-2 px-3 w-full">
@@ -55,7 +60,7 @@ const Header = () => {
                     </DropdownMenuItem>
                   </Link >
                   <Link to={'/'}>
-                    <DropdownMenuItem onClick={() => { signOut(auth) }} className={`${userIn || 'hidden'}`}>Cerrar sesión</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleClick()} className={`${userIn || 'hidden'}`}>Cerrar sesión</DropdownMenuItem>
                   </Link >
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -64,7 +69,7 @@ const Header = () => {
         </div>
       </header>
       <Outlet />
-      <p className={`w-full text-right mb-2 mr-8 ${by && !userIn || 'hidden'}`}><span className='font-bold'>by:</span> Carlos Brazon</p>
+      <p className={`w-full text-right mb-2 mr-8 ${by && !userIn || 'hidden'}`}><span className='font-bold'>by:</span> Carlos Brazon.</p>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { collection, query, where, getDocs, getDoc, doc, updateDoc } from 'firebase/firestore';
-import { db } from '../utils/firebase';
+import { db2 } from '../utils/firebase';
 import { AllItemsContext } from './Contex';
 import Tags from '../Tags';
 import { firstLetterUpperCase } from '../utils/util';
@@ -14,7 +14,7 @@ const MarketList = () => {
   const [lastTapTime, setLastTapTime] = useState(0);
   const updateIsDoneInFirestore = async (userId, itemId, newIsDoneValue, newIsDoneValue2) => {
     try {
-      const querySnapshot = await getDocs(query(collection(db, 'users4'), where('email', '==', userIn.email)));
+      const querySnapshot = await getDocs(query(collection(db2, 'usersMarketList'), where('email', '==', userIn.email)));
       const market = querySnapshot.docs[0]?.data()?.markeList || [];
       if (!querySnapshot.empty) {
         const updatedMarkeList = market.map(item => {
@@ -23,7 +23,7 @@ const MarketList = () => {
           }
           return item;
         });
-        await updateDoc(doc(db, 'users4', userId), { markeList: updatedMarkeList });
+        await updateDoc(doc(db2, 'usersMarketList', userId), { markeList: updatedMarkeList });
         // setList(updatedMarkeList)
         setSelectedTag(updatedMarkeList)
         console.log('isDone actualizado en Firestore correctamente.');
@@ -66,12 +66,12 @@ const MarketList = () => {
     });
 
     if (timeSinceLastTap < 300) {
-      const userDocSnapshot = await getDoc(doc(db, 'users4', userIn.uid));
+      const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
 
       if (userDocSnapshot.exists()) {
         const userData = userDocSnapshot.data();
         const updatedMarkeList = userData.markeList.filter(item => item.id !== objitem.id);
-        await updateDoc(doc(db, 'users4', userIn.uid), { markeList: updatedMarkeList });
+        await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
         console.log('Producto eliminado de Firestore correctamente.');
         if (updatedMarkeList.length === 0 || list.length === 0) {
           setAddTags(false)
@@ -118,7 +118,6 @@ const MarketList = () => {
       <SeparatorList handleOrder={handleOrder} handleUrgente={handleUrgente} />
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 340)}px` }}
-        // style={{ height: `${Math.round(window.innerHeight / 2) + 50}px` }}
         className={`w-full rounded-md`}
       >
         {list?.length ?
