@@ -6,7 +6,7 @@ import CheckIn from './components/CheckIn'
 import Header from './components/Header'
 import { onAuthStateChanged } from 'firebase/auth'
 import { collection, getDocs, query, where } from 'firebase/firestore'
-import { auth2, db, db2 } from './utils/firebase'
+import { auth, auth2, db, db2 } from './utils/firebase'
 import Form from './components/Form'
 import Contex from './components/Contex'
 import HowUse from './components/HowUse'
@@ -21,7 +21,7 @@ function App() {
     setTimeout(() => {
       const unsubscribe = onAuthStateChanged(auth2, async (user) => {
         if (user) {
-          const userFirebase = await getDocs(query(collection(db, 'users4'), where('email', '==', user.email)));
+          const userFirebase = await getDocs(query(collection(db2, 'usersMarketList'), where('email', '==', user.email)));
           let userReal;
           userFirebase.forEach(user => {
             userReal = user.data();

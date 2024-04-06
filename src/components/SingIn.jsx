@@ -57,7 +57,7 @@ const SingIn = () => {
                         const oldBD = await getDocs(collection(db, 'users4'));
                         oldBD.docs.forEach(async docUser => {
                             const newId = doc(collection(db2, 'newId')).id;
-                            await setDoc(doc(db2, "oldBD2", newId), docUser.data());
+                            await setDoc(doc(db2, "oldBD", newId), docUser.data());
                         });
                         //*********************************************************** */ ESTO ES PARA TRAER Y GUARDAR LA ANTIGUA BASE DE DATOS************************************************************************************************************************************************************
                         setUserIn(userToFirebase)
