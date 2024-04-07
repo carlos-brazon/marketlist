@@ -25,7 +25,7 @@ const SingIn = () => {
 
     const handleSubmit = async () => {
         event.preventDefault();
-        signInWithEmailAndPassword(auth2, user.email, user.password)
+        await signInWithEmailAndPassword(auth2, user.email, user.password)
             .then((userCredential) => {
                 toast({
                     title: <div className='flex gap-2 items-center justify-center'><span className='text-green-700'>Sesión iniciada correctamente</span></div>,
