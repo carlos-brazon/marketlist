@@ -69,7 +69,7 @@ const Header = () => {
         </div>
       </header>
       <Outlet />
-      <p className={`w-full text-right mb-2 mr-8 ${by && !userIn || 'hidden'}`}><span className='font-bold'>by:</span> Carlos Brazon</p>
+      <p className={`w-full text-right mb-2 mr-8 ${by && !userIn || 'hidden'}`}><span className='font-bold'>by:</span> Carlos Brazon...</p>
     </div>
   );
 }
