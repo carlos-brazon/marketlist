@@ -6,7 +6,7 @@ import CheckIn from './components/CheckIn'
 import Header from './components/Header'
 import { onAuthStateChanged } from 'firebase/auth'
 import { collection, getDocs, query, where } from 'firebase/firestore'
-import { auth, auth2, db, db2 } from './utils/firebase'
+import { auth2, db2 } from './utils/firebase'
 import Form from './components/Form'
 import Contex from './components/Contex'
 import HowUse from './components/HowUse'
@@ -17,25 +17,22 @@ function App() {
   const [userIn, setUserIn] = useState(null);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    //quitar esta funcion de setTimeout dentro de unos meses, fecha de ahora. 04/04/2024
-    setTimeout(() => {
-      const unsubscribe = onAuthStateChanged(auth2, async (user) => {
-        if (user) {
-          const userFirebase = await getDocs(query(collection(db2, 'usersMarketList'), where('email', '==', user.email)));
-          let userReal;
-          userFirebase.forEach(user => {
-            userReal = user.data();
-          });
-          setUserIn({ ...userReal, uid: user.uid });
-        } else {
-          setUserIn(null);
-        }
-        setLoading(false);
-      });
-      return () => {
-        unsubscribe();
+    const unsubscribe = onAuthStateChanged(auth2, async (user) => {
+      if (user) {
+        const userFirebase = await getDocs(query(collection(db2, 'usersMarketList'), where('email', '==', user.email)));
+        let userReal;
+        userFirebase.forEach(user => {
+          userReal = user.data();
+        });
+        setUserIn({ ...userReal, uid: user.uid });
+      } else {
+        setUserIn(null);
       }
-    }, 1200);
+      setLoading(false);
+    });
+    return () => {
+      unsubscribe();
+    }
   }, [loading]);
 
 
@@ -51,7 +48,7 @@ function App() {
           </div>
         ) : (
           <div className='w-screen'>
-            <Contex userIn={userIn} setUserIn={setUserIn} setLoading={setLoading}>
+            <Contex userIn={userIn} setUserIn={setUserIn}>
               <BrowserRouter>
                 <Routes>
                   <Route path='/' element={<Header />}>
