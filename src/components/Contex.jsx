@@ -6,7 +6,8 @@ export const AllItemsContext = createContext();
 const Context = ({ children, userIn, setUserIn }) => {
   const [list, setList] = useState([]);
   const [addTags, setAddTags] = useState(false);
-  const [button, setButton] = useState(userIn ? userIn?.markeList[0]?.tags : 'Compras');
+  // const [button, setButton] = useState(userIn ? userIn?.markeList[0]?.tags : 'Compras'); asi estaba funcionando siempre
+  const [button, setButton] = useState(userIn ? userIn?.last_tags : 'Compras');
   const [valueInputNewTags, setValueInputNewTags] = useState('');
   const [selectedTag, setSelectedTag] = useState([]);
 
@@ -25,6 +26,7 @@ Context.propTypes = {
     email: PropTypes.string.isRequired,
     uid: PropTypes.string.isRequired,
     markeList: PropTypes.array.isRequired,
+    last_tags: PropTypes.string.isRequired,
   }),
   setUserIn: PropTypes.func.isRequired,
 };

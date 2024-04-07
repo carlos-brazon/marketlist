@@ -49,8 +49,9 @@ const Form = () => {
                 setButton(user.tags.trim());
                 setList(prev => [...prev, { ...user, isDone: false, priority: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }]);
                 setSelectedTag(prev => [...prev, { ...user, isDone: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }])
-                const newId = doc(collection(db2, 'dummy')).id;
+                const newId = doc(collection(db2, 'newId')).id;
                 await updateDoc(doc(db2, 'usersMarketList', userIn.uid), {
+                    last_tags: user.tags.trim(),
                     markeList: arrayUnion({ ...user, tags: user.tags.trim(), isDone: false, id: newId, priority: false })
                 });
                 await updateDoc(doc(db2, 'usersData', userIn.uid), {
@@ -90,7 +91,7 @@ const Form = () => {
                     maxLength="25"
                     required
                 />
-                <Button type={"submit"}>
+                <Button className="text-sm" type={"submit"}>
                     Agregar
                 </Button>
             </form>
