@@ -68,11 +68,11 @@ const EditDialog = ({ item }) => {
       <DialogTrigger onClick={() => [setUser(item), setIsOpen(true)]} className={'flex items-center w-auto h-7 z-50 rounded-md text-[10px] text-center px-0.5 bg-slate-100 border border-gray-900'}>Editar</DialogTrigger>
       <DialogContent>
         <DialogHeader className={'flex flex-col gap-5'}>
-          <DialogTitle>¿Estás seguro que deseas editar este Item?</DialogTitle>
+          <DialogTitle className={'text-base'}>¿Estás seguro que deseas editar este Item?</DialogTitle>
           <form className={`flex flex-col gap-4`}>
             <div className='flex flex-col gap-2'>
               <Textarea
-                className={'p-2 min-h-[40px]'}
+                className={'p-2 min-h-[40px] w-[330px] md:w-full'}
                 type={'text'}
                 name={'name'}
                 onChange={handleInput}
@@ -81,7 +81,7 @@ const EditDialog = ({ item }) => {
                 required
               />
               <div className='h-6'>
-                {editBlocked && <p className='text-red-700'>No se puede editar la información si el campo está vacío.</p>}
+                {editBlocked && <p className='text-red-700 text-sm'>No se puede editar la información si el campo está vacío.</p>}
               </div>
             </div>
             <div className='flex gap-2 justify-end'>
