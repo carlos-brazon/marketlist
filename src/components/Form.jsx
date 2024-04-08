@@ -9,6 +9,7 @@ import { Button } from './ui/button';
 import { useToast } from "@/components/ui/use-toast"
 import Accepted from "../assets/accept-check.svg"
 import Cancel from "../assets/cancel-remove.svg"
+import { Textarea } from './ui/textarea';
 
 const Form = () => {
     const { setValueInputNewTags, valueInputNewTags, userIn, setList, addTags, setAddTags, button, setButton, selectedTag, setSelectedTag } = useContext(AllItemsContext);
@@ -72,8 +73,8 @@ const Form = () => {
     return (
         <div className={userIn ? 'flex flex-col items-center pt-2 gap-2' : 'hidden'}>
             <form className={`flex items-center gap-2 py-2`} onSubmit={handleSubmit}>
-                <Input
-                    className={'w-44'}
+                <Textarea
+                    className={` ${addTags ? "w-44 min-h-[40px]" : "w-[260px] min-h-[40px]"}`}
                     type={'text'}
                     name={'name'}
                     onChange={handleInput}
@@ -87,7 +88,7 @@ const Form = () => {
                     onChange={handleInput}
                     value={user.tags || '' || valueInputNewTags}
                     placeholder={'Nueva lista'}
-                    className={addTags ? 'w-24' : 'hidden'}
+                    className={addTags ? 'w-20 text-sm' : 'hidden'}
                     maxLength="25"
                     required
                 />
