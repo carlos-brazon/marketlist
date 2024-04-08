@@ -81,7 +81,7 @@ const EditDialog = ({ item }) => {
                 required
               />
               <div className='h-6'>
-                {editBlocked && <p className='text-red-700 text-sm'>No se puede editar la información si el campo está vacío.</p>}
+                {editBlocked && <p className='text-red-700 text-[12px]'>No se puede editar la información si el campo está vacío.</p>}
               </div>
             </div>
             <div className='flex gap-2 justify-end'>
