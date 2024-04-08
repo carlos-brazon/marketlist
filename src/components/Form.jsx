@@ -74,7 +74,7 @@ const Form = () => {
         <div className={userIn ? 'flex flex-col items-center pt-2 gap-2' : 'hidden'}>
             <form className={`flex items-center gap-2 py-2`} onSubmit={handleSubmit}>
                 <Textarea
-                    className={` ${addTags ? "w-44 min-h-[40px]" : "w-[260px] min-h-[40px]"}`}
+                    className={` ${addTags ? "w-[186px] min-h-[40px]" : "w-[290px] min-h-[40px]"}`}
                     type={'text'}
                     name={'name'}
                     onChange={handleInput}
@@ -88,11 +88,11 @@ const Form = () => {
                     onChange={handleInput}
                     value={user.tags || '' || valueInputNewTags}
                     placeholder={'Nueva lista'}
-                    className={addTags ? 'w-20 text-sm' : 'hidden'}
+                    className={addTags ? 'w-24 text-sm' : 'hidden'}
                     maxLength="25"
                     required
                 />
-                <Button className="text-sm" type={"submit"}>
+                <Button className="text-xs px-2" type={"submit"}>
                     Agregar
                 </Button>
             </form>

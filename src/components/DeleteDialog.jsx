@@ -32,7 +32,7 @@ const DeleteDialog = () => {
             }
             setList(updatedMarkeList);
             setSelectedTag(updatedMarkeList);
-            await updateDoc(userDocRef, { markeList: updatedMarkeList });
+            await updateDoc(userDocRef, { last_tags: tags[0] || '', markeList: updatedMarkeList });
         }
     }
 
@@ -40,6 +40,7 @@ const DeleteDialog = () => {
         <AlertDialog>
             <AlertDialogTrigger asChild>
                 <Button className="">Eliminar lista</Button>
+                {/* <Button className="">Elimina</Button> */}
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>

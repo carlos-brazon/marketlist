@@ -89,8 +89,10 @@ const MarketList = () => {
             }
             return acc
           }, []);
+          updateDoc(doc(db2, 'usersMarketList', userIn.uid), { last_tags: arrayStringTags.length > 1 && arrayStringTags.includes(button) ? button : arrayStringTags[0] });
           return arrayStringTags.length > 1 && arrayStringTags.includes(button) ? button : arrayStringTags[0]
         });
+
       } else {
         console.log('El documento no existe en Firestore.');
       }
@@ -126,8 +128,8 @@ const MarketList = () => {
               key={index}
               className={`list-disc list-inside break-normal items-center justify-between flex gap-2 m-0.5 rounded py-1 px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-200'}`}
             >
-              <div className={`w-full text-sm ${item.isDone ? 'line-through' : ''}`} onClick={() => handleClick(item)}>{firstLetterUpperCase(item.name)}</div>
-              <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-7 z-50 rounded-md text-[10px] text-center px-0.5 bg-slate-100 border border-gray-900`}>Urgente</div>
+              <div className={`w-full text-lg ${item.isDone ? 'line-through' : ''}`} onClick={() => handleClick(item)}>{firstLetterUpperCase(item.name)}</div>
+              <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-7 z-50 rounded-md text-sm text-center px-0.5 bg-slate-100 border border-gray-900`}>Urgente</div>
               <EditDialog item={item} />
             </li>
           })
