@@ -89,7 +89,7 @@ const MarketList = () => {
             }
             return acc
           }, []);
-          updateDoc(doc(db2, 'usersMarketList', userIn.uid), { last_tags: arrayStringTags.length > 1 && arrayStringTags.includes(button) ? button : arrayStringTags[0] });
+          updateDoc(doc(db2, 'usersMarketList', userIn.uid), { last_tags: arrayStringTags.length > 1 && arrayStringTags.includes(button) ? button : arrayStringTags[0] || '' });
           return arrayStringTags.length > 1 && arrayStringTags.includes(button) ? button : arrayStringTags[0]
         });
 
