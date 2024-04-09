@@ -48,8 +48,8 @@ const Form = () => {
                     duration: '1000',
                 })
                 setButton(user.tags.trim());
-                setList(prev => [...prev, { ...user, isDone: false, priority: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }]);
-                setSelectedTag(prev => [...prev, { ...user, isDone: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }])
+                setList(prev => [...prev, { ...user, isDone: false, priority: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim(), create_at: new Date() }]);
+                setSelectedTag(prev => [...prev, { ...user, isDone: false, riority: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim(), create_at: new Date() }])
                 const newId = doc(collection(db2, 'newId')).id;
                 await updateDoc(doc(db2, 'usersMarketList', userIn.uid), {
                     last_tags: user.tags.trim(),
