@@ -143,7 +143,7 @@ const MarketList = () => {
               className={`list-disc list-inside break-normal items-center justify-between flex gap-2 m-0.5 rounded py-1 px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-200'}`}
             >
               <div className={`w-full text-sm ${item.isDone ? 'line-through' : ''}`} onClick={() => handleClick(item)}>{firstLetterUpperCase(item.name)}</div>
-              <div className=' justify-center text-[8px] flex  '>{userIn?.email == 'aa@gmail.com' || userIn?.email == "oscar.brazon@gmail.com" ? date(item) : '  '}</div>
+              <div className=' justify-center text-[8px] flex  '>{userIn?.email == 'aa@gmail.com' || userIn?.email == "oscar.brazon@gmail.com" || userIn?.email == "comprashome@gmail.com" ? date(item) : '  '}</div>
               <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-7 z-50 rounded-md text-[10px] text-center px-0.5 bg-slate-100 border border-gray-900`}>Urgente</div>
               <EditDialog item={item} />
             </li>
