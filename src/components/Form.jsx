@@ -41,6 +41,7 @@ const Form = () => {
             const listFilterTags = marketListUser.filter(item => item.tags === button)
             const productExists = listFilterTags.some(item => item.tags === user.tags && item.name === user.name.trim());
             if (!productExists) {
+                const date = new Date()
                 setUser(prev => ({ ...prev, name: '' }));
                 setAddTags(false)
                 toast({
@@ -48,16 +49,16 @@ const Form = () => {
                     duration: '1000',
                 })
                 setButton(user.tags.trim());
-                setList(prev => [...prev, { ...user, isDone: false, priority: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim(), create_at: new Date() }]);
-                setSelectedTag(prev => [...prev, { ...user, isDone: false, priority: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim(), create_at: new Date() }])
+                setList(prev => [...prev, { ...user, isDone: false, priority: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }]);
+                setSelectedTag(prev => [...prev, { ...user, isDone: false, priority: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }])
                 const newId = doc(collection(db2, 'newId')).id;
                 await updateDoc(doc(db2, 'usersMarketList', userIn.uid), {
                     last_tags: user.tags.trim(),
-
-                    markeList: arrayUnion({ ...user, tags: user.tags.trim(), isDone: false, id: newId, priority: false, create_at: new Date(), })
+                    markeList: arrayUnion({ ...user, tags: user.tags.trim(), isDone: false, id: newId, priority: false, create_at: date, })
                 });
                 await updateDoc(doc(db2, 'usersData', userIn.uid), {
-                    markeList: arrayUnion({ ...user, tags: user.tags.trim(), isDone: false, id: newId, priority: false, create_at: new Date() })
+                    last_tags: user.tags.trim(),
+                    markeList: arrayUnion({ ...user, tags: user.tags.trim(), isDone: false, id: newId, priority: false, create_at: date })
                 });
 
 

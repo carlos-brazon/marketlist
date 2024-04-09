@@ -116,8 +116,7 @@ const MarketList = () => {
   const listFilterTags = list?.filter(item => item.tags === button)
   const date = (item) => {
     if (item.create_at) {
-
-      const date = item.create_at?.toDate() || ' ';
+      const date = item.create_at.toDate() || ' ';
       const day = String(date.getDate()).padStart(2, '0');
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const year = date.getFullYear();
