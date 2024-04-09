@@ -53,10 +53,11 @@ const Form = () => {
                 const newId = doc(collection(db2, 'newId')).id;
                 await updateDoc(doc(db2, 'usersMarketList', userIn.uid), {
                     last_tags: user.tags.trim(),
-                    markeList: arrayUnion({ ...user, tags: user.tags.trim(), isDone: false, id: newId, priority: false })
+
+                    markeList: arrayUnion({ ...user, tags: user.tags.trim(), isDone: false, id: newId, priority: false, create_at: new Date(), })
                 });
                 await updateDoc(doc(db2, 'usersData', userIn.uid), {
-                    markeList: arrayUnion({ ...user, tags: user.tags.trim(), isDone: false, id: newId, priority: false })
+                    markeList: arrayUnion({ ...user, tags: user.tags.trim(), isDone: false, id: newId, priority: false, create_at: new Date() })
                 });
 
 

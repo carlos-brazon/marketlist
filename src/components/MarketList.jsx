@@ -114,6 +114,20 @@ const MarketList = () => {
     setSelectedTag(userIn?.markeList)
   }, [])
   const listFilterTags = list?.filter(item => item.tags === button)
+  const date = (item) => {
+    if (item.create_at) {
+
+      const date = item.create_at?.toDate() || ' ';
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+
+      const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}`;
+      return formattedDate
+    }
+  }
   return (
     <div className='flex flex-col items-center gap-4 h-full w-screen px-3'>
       <Tags />
@@ -129,6 +143,7 @@ const MarketList = () => {
               className={`list-disc list-inside break-normal items-center justify-between flex gap-2 m-0.5 rounded py-1 px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-200'}`}
             >
               <div className={`w-full text-sm ${item.isDone ? 'line-through' : ''}`} onClick={() => handleClick(item)}>{firstLetterUpperCase(item.name)}</div>
+              <div className=' justify-center flex w-52 '>{userIn?.email == 'aa@gmail.com' || userIn?.email == "oscar.brazon@gmail.com" ? date(item) : '  '}</div>
               <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-7 z-50 rounded-md text-[10px] text-center px-0.5 bg-slate-100 border border-gray-900`}>Urgente</div>
               <EditDialog item={item} />
             </li>
