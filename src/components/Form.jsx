@@ -80,6 +80,11 @@ const Form = () => {
                     onChange={handleInput}
                     value={user.name || ''}
                     placeholder={'Item'}
+                    onKeyDown={(event) => {
+                        if (event.key === "Enter") {
+                            handleSubmit()
+                        }
+                    }}
                     required
                 />
                 <Input

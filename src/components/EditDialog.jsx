@@ -65,7 +65,7 @@ const EditDialog = ({ item }) => {
   }
   return (
     <Dialog open={isOpen} onChange={isOpen} setIsOpen={setIsOpen}>
-      <DialogTrigger onClick={() => [setUser(item), setIsOpen(true)]} className={'flex items-center w-auto h-7 z-50 rounded-md text-sm text-center px-0.5 bg-slate-100 border border-gray-900'}>Editar</DialogTrigger>
+      <DialogTrigger onClick={() => [setUser(item), setIsOpen(true)]} className={'flex items-center w-auto h-7 z-50 rounded-md text-[10px] text-center px-0.5 bg-slate-100 border border-gray-900'}>Editar</DialogTrigger>
       <DialogContent className={'rounded-lg'}>
         <DialogHeader className={'flex flex-col gap-5'}>
           <DialogTitle className={'text-base'}>¿Estás seguro que deseas editar este Item?</DialogTitle>
@@ -76,6 +76,11 @@ const EditDialog = ({ item }) => {
                 type={'text'}
                 name={'name'}
                 onChange={handleInput}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    handleSubmit()
+                  }
+                }}
                 value={user.name}
                 placeholder={'Item'}
                 required
