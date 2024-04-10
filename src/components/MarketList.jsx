@@ -19,7 +19,7 @@ const MarketList = () => {
       if (!querySnapshot.empty) {
         const updatedMarkeList = market.map(item => {
           if (item.id === itemId) {
-            return { ...item, isDone: newIsDoneValue, priority: newIsDoneValue2 };
+            return { ...item, isDone: newIsDoneValue, priority: newIsDoneValue2, isDone_at: new Date() };
           }
           return item;
         });
@@ -115,8 +115,8 @@ const MarketList = () => {
   }, [])
   const listFilterTags = list?.filter(item => item.tags === button)
   const date = (item) => {
-    if (item.create_at) {
-      const date = item.create_at.toDate() || ' ';
+    if (item) {
+      const date = item.toDate() || ' ';
       const day = String(date.getDate()).padStart(2, '0');
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const year = date.getFullYear();
@@ -139,12 +139,16 @@ const MarketList = () => {
           listFilterTags?.map((item, index) => {
             return <li
               key={index}
-              className={`list-disc list-inside break-normal items-center justify-between flex gap-2 m-0.5 rounded py-1 px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-200'}`}
+              className={`list-disc list-inside break-normal items-center justify-end flex gap-2 m-0.5 rounded py-1 px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-200'}`}
             >
               <div className={`w-full text-sm ${item.isDone ? 'line-through' : ''}`} onClick={() => handleClick(item)}>{firstLetterUpperCase(item.name)}</div>
-              <div className=' justify-center text-[8px] flex  '>{userIn?.email == 'aa@gmail.com' || userIn?.email == "oscar.brazon@gmail.com" || userIn?.email == "comprashome@gmail.com" ? date(item) : '  '}</div>
-              <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-7 z-50 rounded-md text-[10px] text-center px-0.5 bg-slate-100 border border-gray-900`}>Urgente</div>
-              <EditDialog item={item} />
+              <div className='flex gap-1'>
+
+                <div className=' whitespace-nowrap justify-center text-[8px] w-auto'>{userIn?.email == 'aa@gmail.com' || userIn?.email == "oscar.brazon@gmail.com" || userIn?.email == "comprashome@gmail.com" ? <div className='flex flex-col'><div>{date(item.create_at)}</div> <div className={`${item.isDone ? 'line-through' : ''}`}>{date(item.isDone_at)}</div></div> : '  '}</div>
+
+                <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-7 z-50 rounded-md text-[10px] text-center px-0.5 bg-slate-100 border border-gray-900`}>Urgente</div>
+                <EditDialog item={item} />
+              </div>
             </li>
           })
           : <p className='text-base'>Lista vacia</p>}
