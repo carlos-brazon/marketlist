@@ -151,7 +151,7 @@ const MarketList = () => {
                 <div className=' whitespace-nowrap justify-center text-[9px] w-auto'>
                   <div className='flex flex-col h-7'>
                     <div>{date(item.create_at)}</div>
-                    <div className={`${item.isDone ? 'line-through' : ''}`}>{date(item.isDone_at)}</div>
+                    <div className={`${item.isDone ? 'line-through' : 'hidden'} ${item.priority && !item.isDone ? 'hidden' : ''}`}>{date(item.isDone_at)}</div>
                   </div>
                 </div>
 
