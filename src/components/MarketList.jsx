@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { collection, query, where, getDocs, getDoc, doc, updateDoc } from 'firebase/firestore';
-import { db2 } from '../utils/firebase';
+import { auth2, db2 } from '../utils/firebase';
 import { AllItemsContext } from './Contex';
 import Tags from '../Tags';
 import { firstLetterUpperCase } from '../utils/util';
@@ -9,12 +9,15 @@ import DeleteDialog from './DeleteDialog';
 import EditDialog from './EditDialog';
 import { SeparatorList } from './SeparatorList';
 import { Timestamp } from 'firebase/firestore';
+import Input from './Input';
 
 
 const MarketList = () => {
   const { userIn, list, setList, button, setAddTags, setButton, setSelectedTag } = useContext(AllItemsContext);
   const [lastTapTime, setLastTapTime] = useState(0);
+  const [amount, setAmount] = useState()
   const updateIsDoneInFirestore = async (userId, itemId, newIsDoneValue, newIsDoneValue2) => {
+    console.log(newIsDoneValue);
     try {
       const querySnapshot = await getDocs(query(collection(db2, 'usersMarketList'), where('email', '==', userIn.email)));
       const market = querySnapshot.docs[0]?.data()?.markeList || [];
@@ -131,6 +134,28 @@ const MarketList = () => {
       return formattedDate
     }
   }
+  // setTimeout(async () => {
+  //   const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
+  //   if (userDocSnapshot.exists()) {
+  //     const userData = userDocSnapshot.data();
+  //     const updatedMarkeList = userData.markeList.map(item2 => {
+  //       if (item2.id == item.id) {
+  //         console.log(event.target.value);
+  //         return { ...item2 }
+  //       }
+  //       return item2
+  //     });
+  //     console.log(userData.markeList);
+  //     // await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
+  //     // console.log('Producto eliminado de Firestore correctamente.');
+  //     console.log(updatedMarkeList);
+
+
+  //   }
+
+  //   // await updateDoc(doc(auth2, "marketList"))
+
+  // }, 3000);
   return (
     <div className='flex flex-col items-center gap-4 h-full w-screen px-3'>
       <Tags />
@@ -145,15 +170,28 @@ const MarketList = () => {
               key={index}
               className={`list-disc list-inside break-normal items-center justify-end flex gap-2 m-0.5 rounded py-1 px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-200'}`}
             >
-              <div className={`w-full text-sm ${item.isDone ? 'line-through' : ''}`} onClick={() => handleClick(item)}>{firstLetterUpperCase(item.name)}</div>
-              <div className='flex gap-1 items-center'>
+              <div className={`flex w-full text-sm items-center ${item.isDone ? 'line-through' : ''}`} onClick={() => handleClick(item)}>
+                <div>{firstLetterUpperCase(item.name)}</div>
 
+              </div>
+              <div className='flex gap-1 items-center'>
                 <div className=' whitespace-nowrap justify-center text-[9px] w-auto'>
                   <div className='flex flex-col h-7'>
                     <div>{date(item.create_at)}</div>
                     <div className={`${item.isDone ? 'line-through' : ''}`}>{date(item.isDone_at)}</div>
                   </div>
                 </div>
+                <Input
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    // Actualizar el estado con un retraso después de que el usuario deje de escribir durante 500 milisegundos
+                    clearTimeout(timer);
+                    const timer = setTimeout(() => {
+                      setAmount(value);
+                    }, 500);
+                  }}
+                  className={"w-10 h-6"}
+                  type={"text"} />
 
                 <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-7 z-50 rounded-md text-[10px] text-center px-0.5 bg-slate-100 border border-gray-900`}>Urgente</div>
                 <EditDialog item={item} />
