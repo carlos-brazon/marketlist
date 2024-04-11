@@ -8,6 +8,8 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import DeleteDialog from './DeleteDialog';
 import EditDialog from './EditDialog';
 import { SeparatorList } from './SeparatorList';
+import { Timestamp } from 'firebase/firestore';
+
 
 const MarketList = () => {
   const { userIn, list, setList, button, setAddTags, setButton, setSelectedTag } = useContext(AllItemsContext);
@@ -17,15 +19,17 @@ const MarketList = () => {
       const querySnapshot = await getDocs(query(collection(db2, 'usersMarketList'), where('email', '==', userIn.email)));
       const market = querySnapshot.docs[0]?.data()?.markeList || [];
       if (!querySnapshot.empty) {
+        const date = new Date();
         const updatedMarkeList = market.map(item => {
           if (item.id === itemId) {
-            return { ...item, isDone: newIsDoneValue, priority: newIsDoneValue2, isDone_at: new Date() };
+            return { ...item, isDone: newIsDoneValue, priority: newIsDoneValue2};
           }
           return item;
         });
-        await updateDoc(doc(db2, 'usersMarketList', userId), { markeList: updatedMarkeList });
+        await updateDoc(doc(db2, 'usersMarketList', userId), { markeList: updatedMarkeList, isDone_at: date });
         // setList(updatedMarkeList)
-        setSelectedTag(updatedMarkeList)
+        const timestamp = Timestamp.fromDate(date);
+        setSelectedTag({...updatedMarkeList, isDone_at:timestamp})
         console.log('isDone actualizado en Firestore correctamente.');
       } else {
         console.log('El documento no existe en Firestore.');
