@@ -15,32 +15,6 @@ import Input from './Input';
 const MarketList = () => {
   const { userIn, list, setList, button, setAddTags, setButton, setSelectedTag } = useContext(AllItemsContext);
   const [lastTapTime, setLastTapTime] = useState(0);
-  const [amount, setAmount] = useState()
-  const updateIsDoneInFirestore = async (userId, itemId, newIsDoneValue, newIsDoneValue2) => {
-    console.log(newIsDoneValue);
-    try {
-      const querySnapshot = await getDocs(query(collection(db2, 'usersMarketList'), where('email', '==', userIn.email)));
-      const market = querySnapshot.docs[0]?.data()?.markeList || [];
-      if (!querySnapshot.empty) {
-        const date = new Date();
-        const timestamp = Timestamp.fromDate(date);
-        const updatedMarkeList = market.map(item => {
-          if (item.id === itemId) {
-            return { ...item, isDone: newIsDoneValue, priority: newIsDoneValue2, isDone_at: timestamp };
-          }
-          return item;
-        });
-        await updateDoc(doc(db2, 'usersMarketList', userId), { markeList: updatedMarkeList });
-        setList(updatedMarkeList)
-        setSelectedTag(updatedMarkeList)
-        console.log('isDone actualizado en Firestore correctamente.');
-      } else {
-        console.log('El documento no existe en Firestore.');
-      }
-    } catch (error) {
-      console.error('Error al actualizar isDone en Firestore:', error);
-    }
-  };
 
   const handlePriority = async (objitem) => {
     const newIsDoneValue2 = !objitem.priority;
@@ -53,13 +27,29 @@ const MarketList = () => {
       });
       return updatedList;
     });
-    await updateIsDoneInFirestore(userIn.uid, objitem.id, objitem.isDone, newIsDoneValue2);
+    try {
+      const querySnapshot = await getDocs(query(collection(db2, 'usersMarketList'), where('email', '==', userIn.email)));
+      const market = querySnapshot.docs[0]?.data()?.markeList || [];
+      if (!querySnapshot.empty) {
+        const updatedMarkeList = market.map(item => {
+          if (item.id === objitem.id) {
+            return { ...item, priority: newIsDoneValue2 };
+          }
+          return item;
+        });
+        await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
+        console.log('isDone actualizado en Firestore correctamente.');
+      } else {
+        console.log('El documento no existe en Firestore.');
+      }
+    } catch (error) {
+      console.error('Error al actualizar isDone en Firestore:', error);
+    }
 
   }
   const handleClick = async (objitem) => {
     const currentTime = new Date().getTime();
     const timeSinceLastTap = currentTime - lastTapTime;
-
     const newIsDoneValue = !objitem.isDone;
     setList(prev => {
       const updatedList = prev.map(item => {
@@ -68,9 +58,9 @@ const MarketList = () => {
         }
         return item;
       });
-      updatedList.filter(item => item.tags === button)
       return updatedList
     });
+
 
     if (timeSinceLastTap < 300) {
       const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
@@ -105,7 +95,34 @@ const MarketList = () => {
       }
     }
     setLastTapTime(new Date().getTime());
-    await updateIsDoneInFirestore(userIn.uid, objitem.id, newIsDoneValue, objitem.priority);
+
+
+    try {
+      const querySnapshot = await getDocs(query(collection(db2, 'usersMarketList'), where('email', '==', userIn.email)));
+      const market = querySnapshot.docs[0]?.data()?.markeList || [];
+      if (!querySnapshot.empty) {
+        const date = new Date();
+        const timestamp = Timestamp.fromDate(date);
+        const updatedMarkeList = market.map(item => {
+          if (item.id === objitem.id) {
+            if (newIsDoneValue) {
+              return { ...item, isDone: newIsDoneValue, isDone_at: timestamp };
+            } else {
+              return { ...item, isDone: newIsDoneValue };
+            }
+          }
+          return item;
+        });
+        await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
+        setList(updatedMarkeList)
+        setSelectedTag(updatedMarkeList)
+        console.log('isDone actualizado en Firestore correctamente.');
+      } else {
+        console.log('El documento no existe en Firestore.');
+      }
+    } catch (error) {
+      console.error('Error al actualizar isDone en Firestore:', error);
+    }
   };
 
   const handleOrder = () => {
@@ -178,7 +195,7 @@ const MarketList = () => {
                 <div className=' whitespace-nowrap justify-center text-[9px] w-auto'>
                   <div className='flex flex-col h-7'>
                     <div>{date(item.create_at)}</div>
-                    <div className={`${item.isDone ? 'line-through' : ''}`}>{date(item.isDone_at)}</div>
+                    <div className={`${item.isDone ? 'line-through' : 'hidden'} ${item.priority && !item.isDone ? 'hidden' : ''}`}>{date(item.isDone_at)}</div>
                   </div>
                 </div>
                 <Input
