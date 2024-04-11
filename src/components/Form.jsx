@@ -41,7 +41,7 @@ const Form = () => {
             const listFilterTags = marketListUser.filter(item => item.tags === button)
             const productExists = listFilterTags.some(item => item.tags === user.tags && item.name === user.name.trim());
             if (!productExists) {
-                const date = new Date()
+                const date =Timestamp.fromDate( new Date())
                 setUser(prev => ({ ...prev, name: '' }));
                 setAddTags(false)
                 toast({
@@ -49,7 +49,7 @@ const Form = () => {
                     duration: '1000',
                 })
                 setButton(user.tags.trim());
-                setList(prev => [...prev, { ...user, isDone: false, priority: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }]);
+                setList(prev => [...prev, { ...user, isDone: false, priority: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim(), create_at:date }]);
                 setSelectedTag(prev => [...prev, { ...user, isDone: false, priority: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }])
                 const newId = doc(collection(db2, 'newId')).id;
                 await updateDoc(doc(db2, 'usersMarketList', userIn.uid), {
