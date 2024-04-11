@@ -20,16 +20,16 @@ const MarketList = () => {
       const market = querySnapshot.docs[0]?.data()?.markeList || [];
       if (!querySnapshot.empty) {
         const date = new Date();
+        const timestamp = Timestamp.fromDate(date);
         const updatedMarkeList = market.map(item => {
           if (item.id === itemId) {
-            return { ...item, isDone: newIsDoneValue, priority: newIsDoneValue2};
+            return { ...item, isDone: newIsDoneValue, priority: newIsDoneValue2, isDone_at: timestamp };
           }
           return item;
         });
-        await updateDoc(doc(db2, 'usersMarketList', userId), { markeList: updatedMarkeList, isDone_at: date });
-        // setList(updatedMarkeList)
-        const timestamp = Timestamp.fromDate(date);
-        setSelectedTag({...updatedMarkeList, isDone_at:timestamp})
+        await updateDoc(doc(db2, 'usersMarketList', userId), { markeList: updatedMarkeList });
+        setList(updatedMarkeList)
+        setSelectedTag(updatedMarkeList)
         console.log('isDone actualizado en Firestore correctamente.');
       } else {
         console.log('El documento no existe en Firestore.');
@@ -123,7 +123,7 @@ const MarketList = () => {
       const date = item.toDate() || ' ';
       const day = String(date.getDate()).padStart(2, '0');
       const month = String(date.getMonth() + 1).padStart(2, '0');
-      const year = date.getFullYear();
+      const year = date.getFullYear().toString().slice(-2);
       const hours = String(date.getHours()).padStart(2, '0');
       const minutes = String(date.getMinutes()).padStart(2, '0');
 
@@ -146,9 +146,14 @@ const MarketList = () => {
               className={`list-disc list-inside break-normal items-center justify-end flex gap-2 m-0.5 rounded py-1 px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-200'}`}
             >
               <div className={`w-full text-sm ${item.isDone ? 'line-through' : ''}`} onClick={() => handleClick(item)}>{firstLetterUpperCase(item.name)}</div>
-              <div className='flex gap-1'>
+              <div className='flex gap-1 items-center'>
 
-                <div className=' whitespace-nowrap justify-center text-[8px] w-auto'>{userIn?.email == 'aa@gmail.com' || userIn?.email == "oscar.brazon@gmail.com" || userIn?.email == "comprashome@gmail.com" ? <div className='flex flex-col'><div>{date(item.create_at)}</div> <div className={`${item.isDone ? 'line-through' : ''}`}>{date(item.isDone_at)}</div></div> : '  '}</div>
+                <div className=' whitespace-nowrap justify-center text-[9px] w-auto'>
+                  <div className='flex flex-col h-7'>
+                    <div>{date(item.create_at)}</div>
+                    <div className={`${item.isDone ? 'line-through' : ''}`}>{date(item.isDone_at)}</div>
+                  </div>
+                </div>
 
                 <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-7 z-50 rounded-md text-[10px] text-center px-0.5 bg-slate-100 border border-gray-900`}>Urgente</div>
                 <EditDialog item={item} />
