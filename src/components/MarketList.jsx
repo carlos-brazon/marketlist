@@ -139,7 +139,11 @@ const MarketList = () => {
     // const yyy = userIn?.markeList.map(item => {
     //   setAmount(prev => prev + item.amount)
     // })
-    const totalAmount = userIn.markeList.reduce((acc, item) => acc + item.amount, 0);
+    const totalAmount = userIn.markeList.reduce((acc, item) => {
+      if (item.tags=== button) {
+        acc + item.amount
+      }
+    }, 0);
     setAmount(totalAmount);
   }, [])
   const listFilterTags = list?.filter(item => item.tags === button)
