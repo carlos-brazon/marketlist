@@ -137,8 +137,7 @@ const MarketList = () => {
   useEffect(() => {
     setList(userIn?.markeList)
     setSelectedTag(userIn?.markeList)
-    const yyy = userIn.markeList.map(item => {
-      console.log(item.amount);
+    const yyy = userIn?.markeList.map(item =>{
       setAmount(prev => prev + item.amount / 2)
     })
   }, [])
@@ -184,7 +183,7 @@ const MarketList = () => {
       <Tags />
       <SeparatorList handleOrder={handleOrder} handleUrgente={handleUrgente} />
 
-      <div>
+      <div className="flex gap-2">
         <div>Total</div>
         <div>{amount}</div>
       </div>
@@ -216,23 +215,24 @@ const MarketList = () => {
                       console.log(event);
                       if (event.key === "Enter") {
                         console.log(event.target.value);
+                        setTimeout(async () => {
+                        const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
+                         if (userDocSnapshot.exists()) {
+                           const userData = userDocSnapshot.data();
+                          const updatedMarkeList = userData.markeList.map(item2 => {
+                            if (item2.id == item.id) {
+                               return { ...item2, amount: Number(event.target.value) }
+                             }
+
+                             return item2
+                          });
+
+                           setList(updatedMarkeList)
+                           await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
+                         }
+                       }, 1000);
                       }
-                      // setTimeout(async () => {
-                      //   const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
-                      //   if (userDocSnapshot.exists()) {
-                      //     const userData = userDocSnapshot.data();
-                      //     const updatedMarkeList = userData.markeList.map(item2 => {
-                      //       if (item2.id == item.id) {
-                      //         return { ...item2, amount: Number(event.target.value) }
-                      //       }
-
-                      //       return item2
-                      //     });
-
-
-                      //     await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
-                      //   }
-                      // }, 1000);
+                     
                     }}
                     className={"w-10 h-6"}
                     type={"text"}
