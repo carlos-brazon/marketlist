@@ -177,7 +177,7 @@ const MarketList = () => {
   //   // await updateDoc(doc(auth2, "marketList"))
 
   // }, 3000);
-  const handleInput= (evento)=>{
+  const handleSubmit (evento)=>{
     event.preventDefault();
     console.log(evento);
     setTimeout(async () => {
@@ -228,21 +228,41 @@ const MarketList = () => {
                     <div className={`${item.isDone ? 'line-through' : 'hidden'} ${item.priority && !item.isDone ? 'hidden' : ''}`}>{date(item.isDone_at)}</div>
                   </div>
                 </div>
-                <form onSubmit={handleInput}action=""
-                >
-                  <Input
+                
+                //<form onSubmit={handleInput}action=""
+                //>
+                 // <Input
+                    //onKeyDown={(event) => {
+                //if (event.key === "Enter") {
+                        //console.log(event.target.value) 
+                      //handleInput(event)
+                       //}
+                      //}
+                     //
+                    //}
+                    //className={"w-10 h-6"}
+                    //type={"text"}
+                    //placeholder={item.amount} />
+                //</form>
+                <form className={`flex items-center gap-2 py-2`} onSubmit={handleSubmit}>
+                <Input
+                    className={`w-10 h-6`}
+                    type={'text'}
+                    name={'name'}
+                    //value={user.name || ''}
+                    placeholder={item.amount}
                     onKeyDown={(event) => {
-                    if (event.key === "Enter") {
-                        console.log(event.target.value) 
-                      handleInput(event)
-                       }
-                      }
-                     
-                    }
-                    className={"w-10 h-6"}
-                    type={"text"}
-                    placeholder={item.amount} />
-                </form>
+                        if (event.key === "Enter") {
+                            handleSubmit(event)
+                        }
+                    }}
+                    //required
+                />
+                
+                <Button className="text-xs px-2" type={"submit"}>
+                    Agregar
+                </Button>
+            </form>
 
                 <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-7 z-50 rounded-md text-[10px] text-center px-0.5 bg-slate-100 border border-gray-900`}>Urgente</div>
                 <EditDialog item={item} />
