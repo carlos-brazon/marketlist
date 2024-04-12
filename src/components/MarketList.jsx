@@ -172,7 +172,10 @@ const MarketList = () => {
             numberToAmount = numberToAmount + Number(numberFromInput)
             return { ...item2, amount: Number(numberFromInput) }
           }
-          numberToAmount = numberToAmount + item2.amount
+          if (item2.tags==userIn.last_tags){
+            numberToAmount = numberToAmount + item2.amount
+          }
+          
           return item2
         });
         setAmount(numberToAmount)
