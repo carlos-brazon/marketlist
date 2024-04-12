@@ -212,9 +212,9 @@ const MarketList = () => {
                   </div>
                 </div>
 
-                <form className={`flex items-center gap-2 py-2`} onSubmit={handleSubmit}>
+                <form className={`flex items-center`} onSubmit={handleSubmit}>
                   <input
-                    className={`text-center p-0.5 text-xs w-12 outline-1 border border-black rounded-md`}
+                    className={`text-center p-px text-xs w-14 outline-1 border border-black rounded-md`}
                     type={'text'}
                     name={item.id}
                     placeholder={item.amount || 0}
