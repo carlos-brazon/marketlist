@@ -13,7 +13,7 @@ const Tags = ({ setAmount }) => {
         let yyy = 0
         const arrayTagsFilter = selectedTag?.filter(item => {
             if (item.tags === string) {
-                yyy = yyy + item.amount
+                yyy = yyy + item.amount ||0
                 return item
             }
         })
