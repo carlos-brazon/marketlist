@@ -140,7 +140,7 @@ const MarketList = () => {
     //   setAmount(prev => prev + item.amount)
     // })
     const totalAmount = userIn.markeList.reduce((acc, item) => {
-      if (item.tags=== button) {
+      if (item.tags=== userIn.last_tags) {
         acc + item.amount
       }
     }, 0);
