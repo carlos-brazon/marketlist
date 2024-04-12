@@ -5,16 +5,21 @@ import Add from "./assets/add-black.svg";
 import { doc, updateDoc } from 'firebase/firestore';
 import { db2 } from './utils/firebase';
 
-const Tags = () => {
+const Tags = ({ setAmount }) => {
     const { userIn, setValueInputNewTags, setList, setAddTags, button, setButton, list, selectedTag } = useContext(AllItemsContext);
     const [tags, setTags] = useState([]);
 
     const handleClic = async (string) => {
-        setButton(tags.length === 1 ? tags[0] : string)
-        setList(() => {
-            const arrayTagsFilter = selectedTag?.filter(item => item.tags === string)
-            return arrayTagsFilter
+        let yyy = 0
+        const arrayTagsFilter = selectedTag?.filter(item => {
+            if (item.tags === string) {
+                yyy = yyy + item.amount
+                return item
+            }
         })
+        setAmount(Number(yyy))
+        setButton(tags.length === 1 ? tags[0] : string)
+        setList(() => arrayTagsFilter)
         await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { last_tags: string })
     }
 

@@ -136,13 +136,11 @@ const MarketList = () => {
   useEffect(() => {
     setList(userIn?.markeList)
     setSelectedTag(userIn?.markeList)
-    // const yyy = userIn?.markeList.map(item => {
-    //   setAmount(prev => prev + item.amount)
-    // })
     const totalAmount = userIn.markeList.reduce((acc, item) => {
-      if (item.tags=== userIn.last_tags) {
-        acc + item.amount
+      if (item.tags === userIn.last_tags) {
+        return acc + item.amount
       }
+      return acc
     }, 0);
     setAmount(totalAmount);
   }, [])
@@ -174,8 +172,6 @@ const MarketList = () => {
             numberToAmount = numberToAmount + Number(numberFromInput)
             return { ...item2, amount: Number(numberFromInput) }
           }
-          console.log(item2.amount);
-
           numberToAmount = numberToAmount + item2.amount
           return item2
         });
@@ -187,7 +183,7 @@ const MarketList = () => {
 
   return (
     <div className='flex flex-col items-center gap-4 h-full w-screen px-3'>
-      <Tags />
+      <Tags setAmount={setAmount} />
       <SeparatorList handleOrder={handleOrder} handleUrgente={handleUrgente} />
 
       <div className="w-full items-center flex gap-2 justify-end pr-[86px]">
