@@ -136,7 +136,7 @@ const MarketList = () => {
   useEffect(() => {
     setList(userIn?.markeList)
     setSelectedTag(userIn?.markeList)
-    const totalAmount = userIn.markeList.reduce((acc, item) => {
+    const totalAmount = userIn?.markeList.reduce((acc, item) => {
       if (item.tags === userIn.last_tags && item.amount) {
         return acc + item.amount
       }
