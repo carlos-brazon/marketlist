@@ -228,21 +228,7 @@ const MarketList = () => {
                     <div className={`${item.isDone ? 'line-through' : 'hidden'} ${item.priority && !item.isDone ? 'hidden' : ''}`}>{date(item.isDone_at)}</div>
                   </div>
                 </div>
-                
-                //<form onSubmit={handleInput}action=""
-                //>
-                 // <Input
-                    //onKeyDown={(event) => {
-                //if (event.key === "Enter") {
-                        //console.log(event.target.value) 
-                      //handleInput(event)
-                       //}
-                      //}
-                    //}
-                    //className={"w-10 h-6"}
-                    //type={"text"}
-                    //placeholder={item.amount} />
-                //</form>
+
                 <form className={`flex items-center gap-2 py-2`} onSubmit={handleSubmit}>
                 <Input
                     className={`w-10 h-6`}
