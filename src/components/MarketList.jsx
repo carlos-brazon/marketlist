@@ -138,7 +138,7 @@ const MarketList = () => {
     setSelectedTag(userIn?.markeList)
     const totalAmount = userIn.markeList.reduce((acc, item) => {
       if (item.tags === userIn.last_tags) {
-        return acc + item.amount
+        return acc + item.amount||0
       }
       return acc
     }, 0);
