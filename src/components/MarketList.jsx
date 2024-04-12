@@ -142,7 +142,7 @@ const MarketList = () => {
       }
       return acc
     }, 0);
-    setAmount(totalAmount||0);
+    setAmount(totalAmount || 0);
   }, [])
   const listFilterTags = list?.filter(item => item.tags === button)
   const date = (item) => {
@@ -162,7 +162,7 @@ const MarketList = () => {
   const handleSubmit = (numberFromInput, item) => {
     event.preventDefault();
     setInputValue('');
-    let numberToAmount = 0
+    let numberToAmount = 0;
     setTimeout(async () => {
       const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
       if (userDocSnapshot.exists()) {
@@ -172,13 +172,13 @@ const MarketList = () => {
             numberToAmount = numberToAmount + Number(numberFromInput)
             return { ...item2, amount: Number(numberFromInput) }
           }
-          if (item2.tags==userIn.last_tags){
-            numberToAmount = numberToAmount + item2.amount
+          if (item2.tags == item.tags) {
+            numberToAmount = numberToAmount + Number(item2.amount || 0)
           }
-          
+
           return item2
         });
-        setAmount(numberToAmount)
+        setAmount(Number(numberToAmount))
         await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
       }
     }, 1000);
