@@ -15,6 +15,7 @@ import Input from './Input';
 const MarketList = () => {
   const { userIn, list, setList, button, setAddTags, setButton, setSelectedTag } = useContext(AllItemsContext);
   const [lastTapTime, setLastTapTime] = useState(0);
+  const [amount, setAmount] = useState(0);
 
   const handlePriority = async (objitem) => {
     const newIsDoneValue2 = !objitem.priority;
@@ -136,6 +137,10 @@ const MarketList = () => {
   useEffect(() => {
     setList(userIn?.markeList)
     setSelectedTag(userIn?.markeList)
+    const yyy = userIn.markeList.map(item => {
+      console.log(item.amount);
+      setAmount(prev => prev + item.amount / 2)
+    })
   }, [])
   const listFilterTags = list?.filter(item => item.tags === button)
   const date = (item) => {
@@ -173,10 +178,16 @@ const MarketList = () => {
   //   // await updateDoc(doc(auth2, "marketList"))
 
   // }, 3000);
+
   return (
     <div className='flex flex-col items-center gap-4 h-full w-screen px-3'>
       <Tags />
       <SeparatorList handleOrder={handleOrder} handleUrgente={handleUrgente} />
+
+      <div>
+        <div>Total</div>
+        <div>{amount}</div>
+      </div>
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 340)}px` }}
         className={`w-full rounded-md`}
@@ -198,17 +209,35 @@ const MarketList = () => {
                     <div className={`${item.isDone ? 'line-through' : 'hidden'} ${item.priority && !item.isDone ? 'hidden' : ''}`}>{date(item.isDone_at)}</div>
                   </div>
                 </div>
-                <Input
-                  onChange={(event) => {
-                    const value = event.target.value;
-                    // Actualizar el estado con un retraso después de que el usuario deje de escribir durante 500 milisegundos
-                    clearTimeout(timer);
-                    const timer = setTimeout(() => {
-                      setAmount(value);
-                    }, 500);
-                  }}
-                  className={"w-10 h-6"}
-                  type={"text"} />
+                <form onSubmit={ } action=""
+                >
+                  <Input
+                    onKeyPress={(event) => {
+                      console.log(event);
+                      if (event.key === "Enter") {
+                        console.log(event.target.value);
+                      }
+                      // setTimeout(async () => {
+                      //   const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
+                      //   if (userDocSnapshot.exists()) {
+                      //     const userData = userDocSnapshot.data();
+                      //     const updatedMarkeList = userData.markeList.map(item2 => {
+                      //       if (item2.id == item.id) {
+                      //         return { ...item2, amount: Number(event.target.value) }
+                      //       }
+
+                      //       return item2
+                      //     });
+
+
+                      //     await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
+                      //   }
+                      // }, 1000);
+                    }}
+                    className={"w-10 h-6"}
+                    type={"text"}
+                    placeholder={item.amount} />
+                </form>
 
                 <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-7 z-50 rounded-md text-[10px] text-center px-0.5 bg-slate-100 border border-gray-900`}>Urgente</div>
                 <EditDialog item={item} />
