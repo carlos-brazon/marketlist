@@ -51,16 +51,16 @@ const Form = () => {
                 })
                 setButton(user.tags.trim());
                 const timestamp = Timestamp.fromDate(date);
-                setList(prev => [...prev, { ...user, isDone: false, priority: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim(), create_at:timestamp }]);
+                setList(prev => [...prev, { ...user, isDone: false, priority: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim(), create_at: timestamp, amount: 0 }]);
                 setSelectedTag(prev => [...prev, { ...user, isDone: false, priority: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }])
                 const newId = doc(collection(db2, 'newId')).id;
                 await updateDoc(doc(db2, 'usersMarketList', userIn.uid), {
                     last_tags: user.tags.trim(),
-                    markeList: arrayUnion({ ...user, tags: user.tags.trim(), isDone: false, id: newId, priority: false, create_at: date, })
+                    markeList: arrayUnion({ ...user, tags: user.tags.trim(), isDone: false, id: newId, priority: false, create_at: date, amount: 0 })
                 });
                 await updateDoc(doc(db2, 'usersData', userIn.uid), {
                     last_tags: user.tags.trim(),
-                    markeList: arrayUnion({ ...user, tags: user.tags.trim(), isDone: false, id: newId, priority: false, create_at: date })
+                    markeList: arrayUnion({ ...user, tags: user.tags.trim(), isDone: false, id: newId, priority: false, create_at: date, amount: 0 })
                 });
 
 

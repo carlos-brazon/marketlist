@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { collection, query, where, getDocs, getDoc, doc, updateDoc } from 'firebase/firestore';
-import { auth2, db2 } from '../utils/firebase';
+import { db2 } from '../utils/firebase';
 import { AllItemsContext } from './Contex';
 import Tags from '../Tags';
 import { firstLetterUpperCase } from '../utils/util';
@@ -9,13 +9,12 @@ import DeleteDialog from './DeleteDialog';
 import EditDialog from './EditDialog';
 import { SeparatorList } from './SeparatorList';
 import { Timestamp } from 'firebase/firestore';
-import Input from './Input';
-
 
 const MarketList = () => {
   const { userIn, list, setList, button, setAddTags, setButton, setSelectedTag } = useContext(AllItemsContext);
   const [lastTapTime, setLastTapTime] = useState(0);
   const [amount, setAmount] = useState(0);
+  const [inputValue, setInputValue] = useState({});
 
   const handlePriority = async (objitem) => {
     const newIsDoneValue2 = !objitem.priority;
@@ -55,7 +54,7 @@ const MarketList = () => {
     setList(prev => {
       const updatedList = prev.map(item => {
         if (item.id === objitem.id) {
-          return { ...item, isDone: newIsDoneValue };
+          return { ...item, isDone: newIsDoneValue, };
         }
         return item;
       });
@@ -137,9 +136,11 @@ const MarketList = () => {
   useEffect(() => {
     setList(userIn?.markeList)
     setSelectedTag(userIn?.markeList)
-    const yyy = userIn?.markeList.map(item =>{
-      setAmount(prev => prev + item.amount / 2)
-    })
+    // const yyy = userIn?.markeList.map(item => {
+    //   setAmount(prev => prev + item.amount)
+    // })
+    const totalAmount = userIn.markeList.reduce((acc, item) => acc + item.amount, 0);
+    setAmount(totalAmount);
   }, [])
   const listFilterTags = list?.filter(item => item.tags === button)
   const date = (item) => {
@@ -155,57 +156,39 @@ const MarketList = () => {
       return formattedDate
     }
   }
-  // setTimeout(async () => {
-  //   const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
-  //   if (userDocSnapshot.exists()) {
-  //     const userData = userDocSnapshot.data();
-  //     const updatedMarkeList = userData.markeList.map(item2 => {
-  //       if (item2.id == item.id) {
-  //         console.log(event.target.value);
-  //         return { ...item2 }
-  //       }
-  //       return item2
-  //     });
-  //     console.log(userData.markeList);
-  //     // await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
-  //     // console.log('Producto eliminado de Firestore correctamente.');
-  //     console.log(updatedMarkeList);
 
-
-  //   }
-
-  //   // await updateDoc(doc(auth2, "marketList"))
-
-  // }, 3000);
-  const handleSubmit = (algo)=>{
+  const handleSubmit = (numberFromInput, item) => {
     event.preventDefault();
-    console.log(algo);
+    setInputValue('');
+    let numberToAmount = 0
     setTimeout(async () => {
-                        const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
-                         if (userDocSnapshot.exists()) {
-                           const userData = userDocSnapshot.data();
-                          const updatedMarkeList = userData.markeList.map(item2 => {
-                            if (item2.id == item.id) {
-                               return { ...item2, amount: Number(algo) }
-                             }
+      const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
+      if (userDocSnapshot.exists()) {
+        const userData = userDocSnapshot.data();
+        const updatedMarkeList = userData.markeList.map(item2 => {
+          if (item2.id == item.id) {
+            numberToAmount = numberToAmount + Number(numberFromInput)
+            return { ...item2, amount: Number(numberFromInput) }
+          }
+          console.log(item2.amount);
 
-                             return item2
-                          });
-
-                           setList(updatedMarkeList)
-                           await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
-                         }
-                       }, 1000);
+          numberToAmount = numberToAmount + item2.amount
+          return item2
+        });
+        setAmount(numberToAmount)
+        await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
+      }
+    }, 1000);
   }
-                      
+
   return (
     <div className='flex flex-col items-center gap-4 h-full w-screen px-3'>
       <Tags />
       <SeparatorList handleOrder={handleOrder} handleUrgente={handleUrgente} />
 
-      <div className="flex gap-2">
-        <div>Total</div>
-        <div>{amount}</div>
+      <div className="w-full items-center flex gap-2 justify-end pr-[80px]">
+        <div className='text-md'>Total</div>
+        <div className='w-16 border text-center text-sm border-black rounded-md px-1 py-0.5 '>{amount}</div>
       </div>
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 340)}px` }}
@@ -230,21 +213,19 @@ const MarketList = () => {
                 </div>
 
                 <form className={`flex items-center gap-2 py-2`} onSubmit={handleSubmit}>
-                <Input
-                    className={`w-10 h-6`}
+                  <input
+                    className={`text-center p-0.5 text-xs w-12 outline-1 border border-black rounded-md`}
                     type={'text'}
-                    name={'name'}
-                    placeholder={item.amount|| 0}
+                    name={item.id}
+                    placeholder={item.amount || 0}
                     onKeyDown={(event) => {
-                        if (event.key === "Enter") {
-                            handleSubmit(event.target.value)
-                        }
+                      if (event.key === "Enter") {
+                        handleSubmit(event.target.value, item)
+                      }
                     }
-                />
-                <Button className="text-xs px-2" type={"submit"}>
-                    Agregar
-                </Button>
-            </form>
+                    }
+                  />
+                </form>
 
                 <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-7 z-50 rounded-md text-[10px] text-center px-0.5 bg-slate-100 border border-gray-900`}>Urgente</div>
                 <EditDialog item={item} />
@@ -252,7 +233,7 @@ const MarketList = () => {
             </li>
           })
           : <p className='text-base'>Lista vacia</p>}
-      </ScrollArea>
+      </ScrollArea >
       <DeleteDialog />
     </div >
   );
