@@ -177,15 +177,16 @@ const MarketList = () => {
   //   // await updateDoc(doc(auth2, "marketList"))
 
   // }, 3000);
-  const handleInput= (event)=>{
-    console.log(event);
+  const handleInput= (evento)=>{
+    event.preventDefault();
+    console.log(evento);
     setTimeout(async () => {
                         const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
                          if (userDocSnapshot.exists()) {
                            const userData = userDocSnapshot.data();
                           const updatedMarkeList = userData.markeList.map(item2 => {
                             if (item2.id == item.id) {
-                               return { ...item2, amount: Number(event.target.value) }
+                               return { ...item2, amount: Number(evento.target.value) }
                              }
 
                              return item2
