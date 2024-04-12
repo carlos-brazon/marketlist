@@ -177,7 +177,26 @@ const MarketList = () => {
   //   // await updateDoc(doc(auth2, "marketList"))
 
   // }, 3000);
+  const handleInput= (event)=>{
+    console.log(event);
+    setTimeout(async () => {
+                        const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
+                         if (userDocSnapshot.exists()) {
+                           const userData = userDocSnapshot.data();
+                          const updatedMarkeList = userData.markeList.map(item2 => {
+                            if (item2.id == item.id) {
+                               return { ...item2, amount: Number(event.target.value) }
+                             }
 
+                             return item2
+                          });
+
+                           setList(updatedMarkeList)
+                           await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
+                         }
+                       }, 1000);
+  }
+                      
   return (
     <div className='flex flex-col items-center gap-4 h-full w-screen px-3'>
       <Tags />
@@ -208,32 +227,17 @@ const MarketList = () => {
                     <div className={`${item.isDone ? 'line-through' : 'hidden'} ${item.priority && !item.isDone ? 'hidden' : ''}`}>{date(item.isDone_at)}</div>
                   </div>
                 </div>
-                <form onSubmit={ } action=""
+                <form onSubmit={handleInput}action=""
                 >
                   <Input
-                    onKeyPress={(event) => {
-                      console.log(event);
-                      if (event.key === "Enter") {
-                        console.log(event.target.value);
-                        setTimeout(async () => {
-                        const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
-                         if (userDocSnapshot.exists()) {
-                           const userData = userDocSnapshot.data();
-                          const updatedMarkeList = userData.markeList.map(item2 => {
-                            if (item2.id == item.id) {
-                               return { ...item2, amount: Number(event.target.value) }
-                             }
-
-                             return item2
-                          });
-
-                           setList(updatedMarkeList)
-                           await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
-                         }
-                       }, 1000);
+                    onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                        console.log(event.target.value) 
+                      handleInput(event)
+                       }
                       }
                      
-                    }}
+                    }
                     className={"w-10 h-6"}
                     type={"text"}
                     placeholder={item.amount} />
