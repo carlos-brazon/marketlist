@@ -177,16 +177,16 @@ const MarketList = () => {
   //   // await updateDoc(doc(auth2, "marketList"))
 
   // }, 3000);
-  const handleSubmit (evento)=>{
+  const handleSubmit (algo)=>{
     event.preventDefault();
-    console.log(evento);
+    console.log(algo);
     setTimeout(async () => {
                         const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
                          if (userDocSnapshot.exists()) {
                            const userData = userDocSnapshot.data();
                           const updatedMarkeList = userData.markeList.map(item2 => {
                             if (item2.id == item.id) {
-                               return { ...item2, amount: Number(evento.target.value) }
+                               return { ...item2, amount: Number(algo) }
                              }
 
                              return item2
@@ -248,10 +248,10 @@ const MarketList = () => {
                     className={`w-10 h-6`}
                     type={'text'}
                     name={'name'}
-                    placeholder={item.amount}
+                    placeholder={item.amount|| 0}
                     onKeyDown={(event) => {
                         if (event.key === "Enter") {
-                            handleSubmit(event)
+                            handleSubmit(event.target.value)
                         }
                     }
                 />
