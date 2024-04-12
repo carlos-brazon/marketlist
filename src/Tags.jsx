@@ -13,12 +13,12 @@ const Tags = ({ setAmount }) => {
         let yyy = 0
         const arrayTagsFilter = selectedTag?.filter(item => {
             if (item.tags === string) {
-                
+                if(item.amount){
+yyy = yyy + item.amount
+                }
                 return item
             }
-            if(item.amount){
-yyy = yyy + item.amount
-            }
+            
         })
         setAmount(Number(yyy))
         setButton(tags.length === 1 ? tags[0] : string)
