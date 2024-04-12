@@ -186,12 +186,12 @@ const MarketList = () => {
       <Tags />
       <SeparatorList handleOrder={handleOrder} handleUrgente={handleUrgente} />
 
-      <div className="w-full items-center flex gap-2 justify-end pr-[80px]">
+      <div className="w-full items-center flex gap-2 justify-end pr-[86px]">
         <div className='text-md'>Total</div>
         <div className='w-16 border text-center text-sm border-black rounded-md px-1 py-0.5 '>{amount}</div>
       </div>
       <ScrollArea
-        style={{ height: `${Math.round(window.innerHeight - 340)}px` }}
+        style={{ height: `${Math.round(window.innerHeight - 368)}px` }}
         className={`w-full rounded-md`}
       >
         {list?.length ?
