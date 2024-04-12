@@ -238,7 +238,6 @@ const MarketList = () => {
                       //handleInput(event)
                        //}
                       //}
-                     //
                     //}
                     //className={"w-10 h-6"}
                     //type={"text"}
@@ -249,16 +248,13 @@ const MarketList = () => {
                     className={`w-10 h-6`}
                     type={'text'}
                     name={'name'}
-                    //value={user.name || ''}
                     placeholder={item.amount}
                     onKeyDown={(event) => {
                         if (event.key === "Enter") {
                             handleSubmit(event)
                         }
-                    }}
-                    //required
+                    }
                 />
-                
                 <Button className="text-xs px-2" type={"submit"}>
                     Agregar
                 </Button>
