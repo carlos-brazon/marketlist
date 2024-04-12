@@ -177,7 +177,7 @@ const MarketList = () => {
   //   // await updateDoc(doc(auth2, "marketList"))
 
   // }, 3000);
-  const handleSubmit (algo)=>{
+  const handleSubmit = (algo)=>{
     event.preventDefault();
     console.log(algo);
     setTimeout(async () => {
