@@ -9,6 +9,7 @@ import DeleteDialog from './DeleteDialog';
 import EditDialog from './EditDialog';
 import { SeparatorList } from './SeparatorList';
 import { Timestamp } from 'firebase/firestore';
+import iconEditFalse from "../assets/edit-false.svg";
 
 const MarketList = () => {
   const { userIn, list, setList, button, setAddTags, setButton, setSelectedTag } = useContext(AllItemsContext);
@@ -199,6 +200,7 @@ const MarketList = () => {
           <button onClick={async () => { setIsDateControl(prev => !prev), await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { isDateControl: !isDateControl }) }} className={`px-0.5 h-7 text-[10px] rounded-md ${isDateControl ? 'bg-slate-700 text-white shadow-md shadow-gray-600' : 'bg-slate-400 shadow-md shadow-gray-300'}`}>Fecha</button >
           <button onClick={async () => { setAddControl(prev => !prev), await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { addControl: !addControl }) }} className={`px-0.5 h-7 text-[10px] rounded-md ${addControl ? 'bg-slate-700 text-white shadow-md shadow-gray-600' : 'bg-slate-400 shadow-md shadow-gray-300'}`}>Suma</button >
           <button onClick={async () => { setIsDoneControl(prev => !prev), await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { isDoneControl: !isDoneControl }) }} className={`px-0.5 h-7 text-[10px] rounded-md ${isDoneControl ? 'bg-slate-700 text-white shadow-md shadow-gray-600' : 'bg-slate-400 shadow-md shadow-gray-300'}`}>Urgente</button >
+          <img className='relative z-10 w-9 h-9' src={isEditControl ? <div>hola</div> : iconEditFalse} alt='Aquí va un icono de usuario' />
           <button onClick={async () => { setIsEditControl(prev => !prev), await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { isEditControl: !isEditControl }) }} className={`px-0.5 h-7 text-[10px] rounded-md ${isEditControl ? 'bg-slate-700 text-white shadow-md shadow-gray-600' : 'bg-slate-400 shadow-md shadow-gray-300'}`}>Editar</button >
         </div>
         <div className={`w-full items-center flex gap-2 justify-end pr-[86px] ${addControl || 'hidden'}`}>
