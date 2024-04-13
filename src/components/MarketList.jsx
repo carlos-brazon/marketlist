@@ -14,7 +14,10 @@ const MarketList = () => {
   const { userIn, list, setList, button, setAddTags, setButton, setSelectedTag } = useContext(AllItemsContext);
   const [lastTapTime, setLastTapTime] = useState(0);
   const [amount, setAmount] = useState(0);
-  const [inputValue, setInputValue] = useState({});
+  const [isEditControl, setIsEditControl] = useState(userIn?.isEditControl);
+  const [isDoneControl, setIsDoneControl] = useState(userIn?.isDoneControl);
+  const [addControl, setAddControl] = useState(userIn?.addControl);
+  const [isDateControl, setIsDateControl] = useState(userIn?.isDateControl);
 
   const handlePriority = async (objitem) => {
     const newIsDoneValue2 = !objitem.priority;
@@ -161,7 +164,6 @@ const MarketList = () => {
 
   const handleSubmit = (numberFromInput, item) => {
     event.preventDefault();
-    setInputValue('');
     let numberToAmount = 0;
     setTimeout(async () => {
       const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
@@ -189,14 +191,20 @@ const MarketList = () => {
       <Tags setAmount={setAmount} />
       <SeparatorList handleOrder={handleOrder} handleUrgente={handleUrgente} />
 
-      <div className="w-full items-center flex gap-2 justify-end pr-[86px]">
-        <div className='text-md'>Total</div>
-        <div className='w-16 border text-center text-sm border-black rounded-md px-1 py-0.5 '>{amount}</div>
-      </div>
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 368)}px` }}
         className={`w-full rounded-md`}
       >
+        <div className='flex gap-1 items-center justify-end pr-[10px] mb-2 '>
+          <button onClick={async () => { setIsDateControl(prev => !prev), await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { isDateControl: !isDateControl }) }} className={`px-0.5 h-7 text-[10px] rounded-md ${isDateControl ? 'bg-slate-700 text-white shadow-md shadow-gray-600' : 'bg-slate-400 shadow-md shadow-gray-300'}`}>Fecha</button >
+          <button onClick={async () => { setAddControl(prev => !prev), await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { addControl: !addControl }) }} className={`px-0.5 h-7 text-[10px] rounded-md ${addControl ? 'bg-slate-700 text-white shadow-md shadow-gray-600' : 'bg-slate-400 shadow-md shadow-gray-300'}`}>Suma</button >
+          <button onClick={async () => { setIsDoneControl(prev => !prev), await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { isDoneControl: !isDoneControl }) }} className={`px-0.5 h-7 text-[10px] rounded-md ${isDoneControl ? 'bg-slate-700 text-white shadow-md shadow-gray-600' : 'bg-slate-400 shadow-md shadow-gray-300'}`}>Urgente</button >
+          <button onClick={async () => { setIsEditControl(prev => !prev), await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { isEditControl: !isEditControl }) }} className={`px-0.5 h-7 text-[10px] rounded-md ${isEditControl ? 'bg-slate-700 text-white shadow-md shadow-gray-600' : 'bg-slate-400 shadow-md shadow-gray-300'}`}>Editar</button >
+        </div>
+        <div className={`w-full items-center flex gap-2 justify-end pr-[86px] ${addControl || 'hidden'}`}>
+          <div className='text-md'>Total</div>
+          <div className='w-16 border text-center text-sm border-black rounded-md px-1 py-0.5 '>{amount}</div>
+        </div>
         {list?.length ?
           listFilterTags?.map((item, index) => {
             return <li
@@ -209,7 +217,7 @@ const MarketList = () => {
               </div>
               <div className='flex gap-1 items-center'>
                 <div className=' whitespace-nowrap justify-center text-[9px] w-auto'>
-                  <div className='flex flex-col h-7'>
+                  <div className={`flex flex-col h-7 ${isDateControl || 'hidden'}`}>
                     <div>{date(item.create_at)}</div>
                     <div className={`${item.isDone ? 'line-through' : 'hidden'} ${item.priority && !item.isDone ? 'hidden' : ''}`}>{date(item.isDone_at)}</div>
                   </div>
@@ -217,7 +225,7 @@ const MarketList = () => {
 
                 <form className={`flex items-center`} onSubmit={handleSubmit}>
                   <input
-                    className={`text-center p-px text-xs w-14 outline-1 border border-black rounded-md`}
+                    className={`text-center p-px text-xs w-14 outline-1 border border-black rounded-md ${addControl || 'hidden'}`}
                     type={'text'}
                     name={item.id}
                     placeholder={item.amount || 0}
@@ -230,8 +238,8 @@ const MarketList = () => {
                   />
                 </form>
 
-                <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-7 z-50 rounded-md text-[10px] text-center px-0.5 bg-slate-100 border border-gray-900`}>Urgente</div>
-                <EditDialog item={item} />
+                <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-7 z-50 rounded-md text-[10px] text-center px-0.5 bg-slate-100 border border-gray-900 ${isDoneControl || 'hidden'}`}>Urgente</div>
+                <EditDialog item={item} isEditControl={isEditControl} />
               </div>
             </li>
           })

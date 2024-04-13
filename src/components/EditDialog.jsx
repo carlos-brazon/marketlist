@@ -13,14 +13,15 @@ import { db2 } from '../utils/firebase';
 import PropTypes from 'prop-types';
 import { Textarea } from './ui/textarea';
 
-const EditDialog = ({ item }) => {
+const EditDialog = ({ item, isEditControl }) => {
   const { userIn, setList, setSelectedTag } = useContext(AllItemsContext)
   const [user, setUser] = useState({});
   const [editBlocked, setEditBlocked] = useState(!item.name);
   const [isOpen, setIsOpen] = useState(false);
 
   EditDialog.propTypes = {
-    item: PropTypes.any.isRequired,
+    item: PropTypes.object.isRequired,
+    isEditControl: PropTypes.bool.isRequired
   }
 
   const handleInput = (event) => {
@@ -65,7 +66,7 @@ const EditDialog = ({ item }) => {
   }
   return (
     <Dialog open={isOpen} onChange={isOpen} setIsOpen={setIsOpen}>
-      <DialogTrigger onClick={() => [setUser(item), setIsOpen(true)]} className={'flex items-center w-auto h-7 z-50 rounded-md text-[10px] text-center px-0.5 bg-slate-100 border border-gray-900'}>Editar</DialogTrigger>
+      <DialogTrigger onClick={() => [setUser(item), setIsOpen(true)]} className={`flex items-center w-auto h-7 z-50 rounded-md text-[10px] text-center px-0.5 bg-slate-100 border border-gray-900 ${isEditControl || 'hidden'}`}>Editar</DialogTrigger>
       <DialogContent className={'rounded-lg'}>
         <DialogHeader className={'flex flex-col gap-5'}>
           <DialogTitle className={'text-base'}>¿Estás seguro que deseas editar este Item?</DialogTitle>

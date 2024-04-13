@@ -10,17 +10,17 @@ const Tags = ({ setAmount }) => {
     const [tags, setTags] = useState([]);
 
     const handleClic = async (string) => {
-        let yyy = 0
+        let numberToAmount = 0
         const arrayTagsFilter = selectedTag?.filter(item => {
             if (item.tags === string) {
-                if(item.amount){
-yyy = yyy + item.amount
+                if (item.amount) {
+                    numberToAmount = numberToAmount + item.amount
                 }
                 return item
             }
-            
+
         })
-        setAmount(Number(yyy))
+        setAmount(Number(numberToAmount))
         setButton(tags.length === 1 ? tags[0] : string)
         setList(() => arrayTagsFilter)
         await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { last_tags: string })
