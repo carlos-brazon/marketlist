@@ -240,7 +240,6 @@ const MarketList = () => {
                   <input
                     className={`text-center p-px text-xs w-14 outline-1 border border-black rounded-md ${addControl || 'hidden'}`}
                     type={'text'}
-
                     name={item.id}
                     placeholder={item.amount.toFixed(2) || 0}
                     onKeyDown={(event) => {
