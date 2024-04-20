@@ -209,9 +209,9 @@ const MarketList = () => {
             <div className='w-16 border text-center text-sm border-black rounded-md px-1 py-0.5 '>{amount}</div>
           </div>
 
-          <img onClick={async () => { setIsDateControl(prev => !prev), await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { isDateControl: !isDateControl }) }} className='w-9 h-9' src={isDateControl ? iconCalendarTrue : iconCalendarFalse} alt='Aquí va un icono de calendario' />
+          <img onClick={async () => { setIsDateControl(prev => !prev), await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { isDateControl: !isDateControl }) }} className='w-10 h-10' src={isDateControl ? iconCalendarTrue : iconCalendarFalse} alt='Aquí va un icono de calendario' />
 
-          <img onClick={async () => { setAddControl(prev => !prev), await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { addControl: !addControl }) }} className='w-9 h-9' src={addControl ? iconCalculatorTrue : iconCalculatorFalse} alt='Aquí va un icono de calculadora' />
+          <img onClick={async () => { setAddControl(prev => !prev), await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { addControl: !addControl }) }} className='w-10 h-10' src={addControl ? iconCalculatorTrue : iconCalculatorFalse} alt='Aquí va un icono de calculadora' />
 
           <img onClick={async () => { setIsDoneControl(prev => !prev), await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { isDoneControl: !isDoneControl }) }} className='w-10 h-10' src={isDoneControl ? iconUrgentTrue : iconUrgentFalse} alt='Aquí va un icono de urgente' />
 
