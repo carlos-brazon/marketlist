@@ -151,7 +151,7 @@ const MarketList = () => {
       if (item.tags === userIn.last_tags && item.amount) {
         return acc + item.amount
       }
-      return Number(acc.toFixed(2))
+      return acc
     }, 0);
     setAmount(totalAmount || 0);
   }, [])
