@@ -10,6 +10,13 @@ import EditDialog from './EditDialog';
 import { SeparatorList } from './SeparatorList';
 import { Timestamp } from 'firebase/firestore';
 import iconEditFalse from "../assets/edit-false.svg";
+import iconEditTrue from "../assets/edit-true.svg";
+import iconUrgentFalse from "../assets/urgent-false.svg";
+import iconUrgentTrue from "../assets/urgent-true.svg";
+import iconCalculatorFalse from "../assets/calculator-false.svg";
+import iconCalculatorTrue from "../assets/calculator-true.svg";
+import iconCalendarFalse from "../assets/calendar-false.svg";
+import iconCalendarTrue from "../assets/calendar-true.svg";
 
 const MarketList = () => {
   const { userIn, list, setList, button, setAddTags, setButton, setSelectedTag } = useContext(AllItemsContext);
@@ -146,7 +153,7 @@ const MarketList = () => {
       }
       return acc
     }, 0);
-    setAmount(totalAmount || 0);
+    setAmount(totalAmount.toFixed(2) || 0);
   }, [])
   const listFilterTags = list?.filter(item => item.tags === button)
   const date = (item) => {
@@ -181,7 +188,7 @@ const MarketList = () => {
 
           return item2
         });
-        setAmount(Number(numberToAmount))
+        setAmount(Number(numberToAmount.toFixed(2)))
         await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
       }
     }, 1000);
@@ -197,21 +204,25 @@ const MarketList = () => {
         className={`w-full rounded-md`}
       >
         <div className='flex gap-1 items-center justify-end pr-[10px] mb-2 '>
-          <button onClick={async () => { setIsDateControl(prev => !prev), await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { isDateControl: !isDateControl }) }} className={`px-0.5 h-7 text-[10px] rounded-md ${isDateControl ? 'bg-slate-700 text-white shadow-md shadow-gray-600' : 'bg-slate-400 shadow-md shadow-gray-300'}`}>Fecha</button >
-          <button onClick={async () => { setAddControl(prev => !prev), await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { addControl: !addControl }) }} className={`px-0.5 h-7 text-[10px] rounded-md ${addControl ? 'bg-slate-700 text-white shadow-md shadow-gray-600' : 'bg-slate-400 shadow-md shadow-gray-300'}`}>Suma</button >
-          <button onClick={async () => { setIsDoneControl(prev => !prev), await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { isDoneControl: !isDoneControl }) }} className={`px-0.5 h-7 text-[10px] rounded-md ${isDoneControl ? 'bg-slate-700 text-white shadow-md shadow-gray-600' : 'bg-slate-400 shadow-md shadow-gray-300'}`}>Urgente</button >
-          <img className='relative z-10 w-9 h-9' src={isEditControl ? <div>hola</div> : iconEditFalse} alt='Aquí va un icono de usuario' />
-          <button onClick={async () => { setIsEditControl(prev => !prev), await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { isEditControl: !isEditControl }) }} className={`px-0.5 h-7 text-[10px] rounded-md ${isEditControl ? 'bg-slate-700 text-white shadow-md shadow-gray-600' : 'bg-slate-400 shadow-md shadow-gray-300'}`}>Editar</button >
-        </div>
-        <div className={`w-full items-center flex gap-2 justify-end pr-[86px] ${addControl || 'hidden'}`}>
-          <div className='text-md'>Total</div>
-          <div className='w-16 border text-center text-sm border-black rounded-md px-1 py-0.5 '>{amount}</div>
+          <div className={`w-full items-center flex gap-2 justify-end ${addControl || 'hidden'}`}>
+            <div className='text-md'>Total</div>
+            <div className='w-16 border text-center text-sm border-black rounded-md px-1 py-0.5 '>{amount}</div>
+          </div>
+
+          <img onClick={async () => { setIsDateControl(prev => !prev), await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { isDateControl: !isDateControl }) }} className='w-8 h-8' src={isDateControl ? iconCalendarTrue : iconCalendarFalse} alt='Aquí va un icono de calendario' />
+
+          <img onClick={async () => { setAddControl(prev => !prev), await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { addControl: !addControl }) }} className='w-8 h-8' src={addControl ? iconCalculatorTrue : iconCalculatorFalse} alt='Aquí va un icono de calculadora' />
+
+          <img onClick={async () => { setIsDoneControl(prev => !prev), await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { isDoneControl: !isDoneControl }) }} className='w-8 h-8' src={isDoneControl ? iconUrgentTrue : iconUrgentFalse} alt='Aquí va un icono de urgente' />
+
+          <img onClick={async () => { setIsEditControl(prev => !prev), await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { isEditControl: !isEditControl }) }} className='w-8 h-8' src={isEditControl ? iconEditTrue : iconEditFalse} alt='Aquí va un icono de editar' />
+
         </div>
         {list?.length ?
           listFilterTags?.map((item, index) => {
             return <li
               key={index}
-              className={`list-disc list-inside break-normal items-center justify-end flex gap-2 m-0.5 rounded py-1 px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-200'}`}
+              className={`list-disc list-inside break-normal items-center justify-end min-h-[32px] flex gap-2 m-0.5 rounded py-1 px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-200'}`}
             >
               <div className={`flex w-full text-sm items-center ${item.isDone ? 'line-through' : ''}`} onClick={() => handleClick(item)}>
                 <div>{firstLetterUpperCase(item.name)}</div>
@@ -219,7 +230,7 @@ const MarketList = () => {
               </div>
               <div className='flex gap-1 items-center'>
                 <div className=' whitespace-nowrap justify-center text-[9px] w-auto'>
-                  <div className={`flex flex-col h-7 ${isDateControl || 'hidden'}`}>
+                  <div className={`flex flex-col h-6 ${isDateControl || 'hidden'}`}>
                     <div>{date(item.create_at)}</div>
                     <div className={`${item.isDone ? 'line-through' : 'hidden'} ${item.priority && !item.isDone ? 'hidden' : ''}`}>{date(item.isDone_at)}</div>
                   </div>
@@ -229,18 +240,20 @@ const MarketList = () => {
                   <input
                     className={`text-center p-px text-xs w-14 outline-1 border border-black rounded-md ${addControl || 'hidden'}`}
                     type={'text'}
+
                     name={item.id}
-                    placeholder={item.amount || 0}
+                    placeholder={item.amount.toFixed(2) || 0}
                     onKeyDown={(event) => {
                       if (event.key === "Enter") {
                         handleSubmit(event.target.value, item)
                       }
                     }
                     }
+                    step="0.01"
                   />
                 </form>
 
-                <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-7 z-50 rounded-md text-[10px] text-center px-0.5 bg-slate-100 border border-gray-900 ${isDoneControl || 'hidden'}`}>Urgente</div>
+                <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-6 z-50 rounded-md text-[10px] text-center px-0.5 py-0.5 bg-slate-100 border border-gray-900 ${isDoneControl || 'hidden'}`}>Urgente</div>
                 <EditDialog item={item} isEditControl={isEditControl} />
               </div>
             </li>
