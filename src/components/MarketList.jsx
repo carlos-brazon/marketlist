@@ -153,7 +153,7 @@ const MarketList = () => {
       }
       return acc
     }, 0);
-    setAmount(totalAmount.toFixed(2) || 0);
+    setAmount(totalAmount?.toFixed(2) || 0);
   }, [])
   const listFilterTags = list?.filter(item => item.tags === button)
   const date = (item) => {
