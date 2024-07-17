@@ -17,6 +17,8 @@ import iconCalculatorFalse from "../assets/calculator-false.svg";
 import iconCalculatorTrue from "../assets/calculator-true.svg";
 import iconCalendarFalse from "../assets/calendar-false.svg";
 import iconCalendarTrue from "../assets/calendar-true.svg";
+import EditDialogList from './EditDialogList';
+import DeleteDialogDone from './DeleteDialogDone';
 
 const MarketList = () => {
   const { userIn, list, setList, button, setAddTags, setButton, setSelectedTag } = useContext(AllItemsContext);
@@ -26,6 +28,7 @@ const MarketList = () => {
   const [isDoneControl, setIsDoneControl] = useState(userIn?.isDoneControl);
   const [addControl, setAddControl] = useState(userIn?.addControl);
   const [isDateControl, setIsDateControl] = useState(userIn?.isDateControl);
+  // const [listFilterTags, setListFilterTags] = useState(list?.filter(item => item.tags === button));
 
   const handlePriority = async (objitem) => {
     const newIsDoneValue2 = !objitem.priority;
@@ -144,6 +147,9 @@ const MarketList = () => {
     const urgentList = list?.filter(item => item.tags === button).sort((a, b) => (a.priority ? -1 : 1) - (b.priority ? -1 : 1));
     setList(urgentList);
   }
+
+
+
   useEffect(() => {
     setList(userIn?.markeList)
     setSelectedTag(userIn?.markeList)
@@ -154,8 +160,12 @@ const MarketList = () => {
       return acc
     }, 0);
     setAmount(totalAmount?.toFixed(2) || 0);
+
   }, [])
   const listFilterTags = list?.filter(item => item.tags === button)
+
+
+
   const date = (item) => {
     if (item) {
       const date = item.toDate() || ' ';
@@ -259,7 +269,11 @@ const MarketList = () => {
           })
           : <p className='text-base'>Lista vacia</p>}
       </ScrollArea >
-      <DeleteDialog />
+      <div className='flex gap-2'>
+        <EditDialogList />
+        <DeleteDialogDone />
+        <DeleteDialog />
+      </div>
     </div >
   );
 };
