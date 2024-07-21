@@ -39,7 +39,7 @@ const DeleteDialogDone = () => {
         <AlertDialog>
             <AlertDialogTrigger asChild>
                 <div className='flex gap-2'>
-                    <Button>Eliminar tachados</Button>
+                    <Button size='xs'>Eliminar tachados</Button>
                 </div>
             </AlertDialogTrigger>
             <AlertDialogContent>

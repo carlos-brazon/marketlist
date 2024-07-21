@@ -19,6 +19,8 @@ import iconCalendarFalse from "../assets/calendar-false.svg";
 import iconCalendarTrue from "../assets/calendar-true.svg";
 import EditDialogList from './EditDialogList';
 import DeleteDialogDone from './DeleteDialogDone';
+import more from "../assets/more.svg";
+import less from "../assets/less.svg";
 
 const MarketList = () => {
   const { userIn, list, setList, button, setAddTags, setButton, setSelectedTag } = useContext(AllItemsContext);
@@ -28,7 +30,8 @@ const MarketList = () => {
   const [isDoneControl, setIsDoneControl] = useState(userIn?.isDoneControl);
   const [addControl, setAddControl] = useState(userIn?.addControl);
   const [isDateControl, setIsDateControl] = useState(userIn?.isDateControl);
-  // const [listFilterTags, setListFilterTags] = useState(list?.filter(item => item.tags === button));
+  const [control, setControl] = useState(false)
+  const [hidden, setHidden] = useState(true)
 
   const handlePriority = async (objitem) => {
     const newIsDoneValue2 = !objitem.priority;
@@ -269,10 +272,23 @@ const MarketList = () => {
           })
           : <p className='text-base'>Lista vacia</p>}
       </ScrollArea >
-      <div className='flex gap-2'>
-        <EditDialogList />
-        <DeleteDialogDone />
-        <DeleteDialog />
+      <div className='flex justify-center items-center'>
+        <div className='flex p-2 items-center justify-center gap-2 h-14 relative'>
+          <div className={` flex gap-2 ease-in ${control ? 'w-[355px] duration-1000 overflow-hidden' : 'w-10 duration-1000 opacity-0 blur-sm'} h-12 p-1`}>
+            <div className={`flex gap-2 items-center transition-opacity duration-1000 ease-in-out ${hidden ? 'hidden' : ''} ${control ? 'opacity-100' : 'blur-sm overflow-hidden opacity-0'} `}>
+              <EditDialogList />
+              <DeleteDialogDone />
+              <DeleteDialog />
+            </div>
+          </div>
+
+        </div>
+        <img className={`w-10 h-10 ${!control || 'hidden'}`} onClick={() => { setControl(!control), setHidden(false) }} src={more} alt="" />
+        <img className={`w-10 h-10 ${control || 'hidden'}`} onClick={() => {
+          setControl(!control), setTimeout(() => {
+            setHidden(true)
+          }, 1000);
+        }} src={less} alt="" />
       </div>
     </div >
   );

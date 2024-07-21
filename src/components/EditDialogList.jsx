@@ -48,7 +48,7 @@ const EditDialogList = () => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button onClick={() => setIsOpen(true)}>Editar lista</Button>
+        <Button size='xs' onClick={() => setIsOpen(true)}>Editar lista</Button>
       </DialogTrigger>
       <DialogContent className="rounded-lg">
         <DialogHeader className="flex flex-col gap-5">

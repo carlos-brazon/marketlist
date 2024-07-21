@@ -40,7 +40,7 @@ const DeleteDialog = () => {
         <AlertDialog>
             <AlertDialogTrigger asChild>
                 <div className='flex gap-2'>
-                    <Button className="">Eliminar lista</Button>
+                    <Button size='xs'>Eliminar lista</Button>
                 </div>
             </AlertDialogTrigger>
             <AlertDialogContent>
