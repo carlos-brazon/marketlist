@@ -5,7 +5,6 @@ import { AllItemsContext } from './Contex';
 import Tags from '../Tags';
 import { firstLetterUpperCase } from '../utils/util';
 import { ScrollArea } from "@/components/ui/scroll-area"
-import DeleteDialog from './DeleteDialog';
 import EditDialog from './EditDialog';
 import { SeparatorList } from './SeparatorList';
 import { Timestamp } from 'firebase/firestore';
@@ -17,10 +16,6 @@ import iconCalculatorFalse from "../assets/calculator-false.svg";
 import iconCalculatorTrue from "../assets/calculator-true.svg";
 import iconCalendarFalse from "../assets/calendar-false.svg";
 import iconCalendarTrue from "../assets/calendar-true.svg";
-import EditDialogList from './EditDialogList';
-import DeleteDialogDone from './DeleteDialogDone';
-import more from "../assets/more.svg";
-import less from "../assets/less.svg";
 
 const MarketList = () => {
   const { userIn, list, setList, button, setAddTags, setButton, setSelectedTag } = useContext(AllItemsContext);
@@ -30,7 +25,6 @@ const MarketList = () => {
   const [isDoneControl, setIsDoneControl] = useState(userIn?.isDoneControl);
   const [addControl, setAddControl] = useState(userIn?.addControl);
   const [isDateControl, setIsDateControl] = useState(userIn?.isDateControl);
-  const [control, setControl] = useState(false)
 
   const handlePriority = async (objitem) => {
     const newIsDoneValue2 = !objitem.priority;
@@ -141,17 +135,6 @@ const MarketList = () => {
     }
   };
 
-  const handleOrder = () => {
-    const sortedList = list?.filter(item => item.tags === button).sort((a, b) => a.name.localeCompare(b.name));
-    setList(sortedList);
-  }
-  const handleUrgente = () => {
-    const urgentList = list?.filter(item => item.tags === button).sort((a, b) => (a.priority ? -1 : 1) - (b.priority ? -1 : 1));
-    setList(urgentList);
-  }
-
-
-
   useEffect(() => {
     setList(userIn?.markeList)
     setSelectedTag(userIn?.markeList)
@@ -209,10 +192,10 @@ const MarketList = () => {
   return (
     <div className='flex flex-col items-center gap-4 h-full w-screen px-3'>
       <Tags setAmount={setAmount} />
-      <SeparatorList handleOrder={handleOrder} handleUrgente={handleUrgente} />
+      <SeparatorList />
 
       <ScrollArea
-        style={{ height: `${Math.round(window.innerHeight - 368)}px` }}
+        style={{ height: `${Math.round(window.innerHeight - 300)}px` }}
         className={`w-full rounded-md`}
       >
         <div className='flex gap-1 items-center justify-end pr-[10px] mb-2 '>
@@ -271,19 +254,6 @@ const MarketList = () => {
           })
           : <p className='text-base'>Lista vacia</p>}
       </ScrollArea >
-      <div className='flex justify-center items-center p-1'>
-        <div className='flex p-0 items-center justify-center gap-2 h-14 relative'>
-          <div className={` flex gap-2 ease-in ${control ? 'w-[355px] duration-700 overflow-hidden' : 'w-[0px] duration-700 opacity-0 blur-sm p-0'} h-12 p-1`}>
-            <div className={`flex gap-2 items-center transition-opacity duration-700 ease-in-out ${control ? 'opacity-100' : 'blur-sm overflow-hidden opacity-0'} `}>
-              <EditDialogList />
-              <DeleteDialogDone />
-              <DeleteDialog />
-            </div>
-          </div>
-
-        </div>
-        <img className={`w-10 h-10`} onClick={() => { setControl(!control) }} src={control ? less : more} alt="" />
-      </div>
     </div >
   );
 };

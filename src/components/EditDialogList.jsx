@@ -11,6 +11,7 @@ import { AllItemsContext } from './Contex';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import { db2 } from '../utils/firebase';
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 
 const EditDialogList = () => {
   const { button, userIn, setList, setSelectedTag, setButton } = useContext(AllItemsContext);
@@ -48,7 +49,7 @@ const EditDialogList = () => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button size='xs' onClick={() => setIsOpen(true)}>Editar lista</Button>
+        <div className='px-2 py-1.5 text-sm hover:bg-slate-100 rounded-sm'>Editar Lista</div>
       </DialogTrigger>
       <DialogContent className="rounded-lg">
         <DialogHeader className="flex flex-col gap-5">
@@ -75,8 +76,9 @@ const EditDialogList = () => {
               </div>
             </div>
             <div className="flex gap-2 justify-end">
-              <DialogClose asChild ><Button variant='ghost' className='border'>Cancelar</Button></DialogClose>
-              <Button type="submit">Continuar</Button>
+
+              <DropdownMenuItem asChild><DialogClose ><Button variant='ghost' className='border'>Cancelar</Button></DialogClose></DropdownMenuItem>
+              <Button asChild type="submit">Continuar</Button>
             </div>
           </form>
         </DialogHeader>

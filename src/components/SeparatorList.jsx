@@ -1,7 +1,18 @@
 import { Separator } from "@/components/ui/separator"
 import { Button } from "./ui/button"
+import { useContext } from "react";
+import { AllItemsContext } from "./Contex";
 
-export function SeparatorList({ handleOrder, handleUrgente }) {
+export function SeparatorList() {
+    const { list, setList, button } = useContext(AllItemsContext)
+    const handleOrder = () => {
+        const sortedList = list?.filter(item => item.tags === button).sort((a, b) => a.name.localeCompare(b.name));
+        setList(sortedList);
+    }
+    const handleUrgente = () => {
+        const urgentList = list?.filter(item => item.tags === button).sort((a, b) => (a.priority ? -1 : 1) - (b.priority ? -1 : 1));
+        setList(urgentList);
+    }
     return (
         <div>
             <div className=" flex items-center justify-center space-y-1">

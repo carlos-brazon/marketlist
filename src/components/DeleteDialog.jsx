@@ -4,7 +4,7 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db2 } from '../utils/firebase';
 import { AllItemsContext } from './Contex';
 import { firstLetterUpperCase } from '../utils/util';
-import { Button } from './ui/button';
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 
 const DeleteDialog = () => {
     const { button, setButton, setList, userIn, setAddTags, setSelectedTag } = useContext(AllItemsContext);
@@ -39,9 +39,7 @@ const DeleteDialog = () => {
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <div className='flex gap-2'>
-                    <Button size='xs'>Eliminar lista</Button>
-                </div>
+                <div className='px-2 py-1.5 text-sm hover:bg-slate-100 rounded-sm'>Eliminar Lista</div>
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
@@ -51,7 +49,7 @@ const DeleteDialog = () => {
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <DropdownMenuItem asChild><AlertDialogCancel>Cancel</AlertDialogCancel></DropdownMenuItem>
                     <AlertDialogAction onClick={() => handleClick()}>Continuar</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

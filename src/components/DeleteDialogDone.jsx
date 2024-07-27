@@ -1,11 +1,11 @@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTrigger } from './ui/alert-dialog'
-import { Button } from './ui/button'
 import { AlertDialogTitle } from '@radix-ui/react-alert-dialog'
 import { firstLetterUpperCase } from '../utils/util'
 import { AllItemsContext } from './Contex'
 import { useContext } from 'react'
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import { db2 } from '../utils/firebase'
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 
 const DeleteDialogDone = () => {
     const { userIn, button, setButton, setList, setSelectedTag, setAddTags } = useContext(AllItemsContext)
@@ -37,10 +37,8 @@ const DeleteDialogDone = () => {
     }
     return (
         <AlertDialog>
-            <AlertDialogTrigger asChild>
-                <div className='flex gap-2'>
-                    <Button size='xs'>Eliminar tachados</Button>
-                </div>
+            <AlertDialogTrigger>
+                <div className='px-2 py-1.5 text-sm hover:bg-slate-100 rounded-sm'>Eliminar Tachados</div>
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
@@ -49,9 +47,9 @@ const DeleteDialogDone = () => {
                         Esta acción no se puede deshacer. Esto eliminará permanentemente los elementos tachados.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
-                <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => handleDeleteDone()}>Continuar</AlertDialogAction>
+                <AlertDialogFooter className={'flex items-center gap-1'}>
+                    <DropdownMenuItem asChild><AlertDialogCancel className='w-24'>Cancel</AlertDialogCancel></DropdownMenuItem>
+                    <AlertDialogAction className='w-24' onClick={() => handleDeleteDone()}><DropdownMenuItem className='focus:bg-gray-800 focus:text-white'>Continuar</DropdownMenuItem></AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
