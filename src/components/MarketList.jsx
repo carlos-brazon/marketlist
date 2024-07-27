@@ -6,7 +6,6 @@ import Tags from '../Tags';
 import { firstLetterUpperCase } from '../utils/util';
 import { ScrollArea } from "@/components/ui/scroll-area"
 import EditDialog from './EditDialog';
-import { SeparatorList } from './SeparatorList';
 import { Timestamp } from 'firebase/firestore';
 import iconEditFalse from "../assets/edit-false.svg";
 import iconEditTrue from "../assets/edit-true.svg";
@@ -192,10 +191,10 @@ const MarketList = () => {
   return (
     <div className='flex flex-col items-center gap-4 h-full w-screen px-3'>
       <Tags setAmount={setAmount} />
-      <SeparatorList />
+      <h4 className="text-base text-center font-medium leading-none">Lista</h4>
 
       <ScrollArea
-        style={{ height: `${Math.round(window.innerHeight - 300)}px` }}
+        style={{ height: `${Math.round(window.innerHeight - 250)}px` }}
         className={`w-full rounded-md`}
       >
         <div className='flex gap-1 items-center justify-end pr-[10px] mb-2 '>

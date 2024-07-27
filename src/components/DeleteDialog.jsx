@@ -49,8 +49,8 @@ const DeleteDialog = () => {
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <DropdownMenuItem asChild><AlertDialogCancel>Cancel</AlertDialogCancel></DropdownMenuItem>
-                    <AlertDialogAction onClick={() => handleClick()}>Continuar</AlertDialogAction>
+                    <DropdownMenuItem asChild><AlertDialogCancel className='w-24'>Cancel</AlertDialogCancel></DropdownMenuItem>
+                    <AlertDialogAction className='w-24' onClick={() => handleClick()}>Continuar</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

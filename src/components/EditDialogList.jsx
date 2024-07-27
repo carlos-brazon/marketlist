@@ -75,10 +75,10 @@ const EditDialogList = () => {
                 {editBlocked && <p className="text-red-700 text-[12px]">No se puede editar la información si el campo está vacío.</p>}
               </div>
             </div>
-            <div className="flex gap-2 justify-end">
-
-              <DropdownMenuItem asChild><DialogClose ><Button variant='ghost' className='border'>Cancelar</Button></DialogClose></DropdownMenuItem>
-              <Button asChild type="submit">Continuar</Button>
+            <div className="flex gap-2 items-center justify-end">
+              <DropdownMenuItem asChild className='border w-24 flex items-center justify-center'><DialogClose >Cancelar</DialogClose></DropdownMenuItem>
+              <Button className='w-24' type="submit">Continuar</Button>
+              {/* <button className='p-2 bg-gray-800 rounded-md text-white text-sm font-medium cursor-pointer text-center' type="submit">Continuar</button> */}
             </div>
           </form>
         </DialogHeader>
