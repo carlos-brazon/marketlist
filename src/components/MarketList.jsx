@@ -31,7 +31,6 @@ const MarketList = () => {
   const [addControl, setAddControl] = useState(userIn?.addControl);
   const [isDateControl, setIsDateControl] = useState(userIn?.isDateControl);
   const [control, setControl] = useState(false)
-  const [hidden, setHidden] = useState(true)
 
   const handlePriority = async (objitem) => {
     const newIsDoneValue2 = !objitem.priority;
@@ -272,10 +271,10 @@ const MarketList = () => {
           })
           : <p className='text-base'>Lista vacia</p>}
       </ScrollArea >
-      <div className='flex justify-center items-center'>
-        <div className='flex p-2 items-center justify-center gap-2 h-14 relative'>
-          <div className={` flex gap-2 ease-in ${control ? 'w-[355px] duration-1000 overflow-hidden' : 'w-10 duration-1000 opacity-0 blur-sm'} h-12 p-1`}>
-            <div className={`flex gap-2 items-center transition-opacity duration-1000 ease-in-out ${hidden ? 'hidden' : ''} ${control ? 'opacity-100' : 'blur-sm overflow-hidden opacity-0'} `}>
+      <div className='flex justify-center items-center p-1'>
+        <div className='flex p-0 items-center justify-center gap-2 h-14 relative'>
+          <div className={` flex gap-2 ease-in ${control ? 'w-[355px] duration-700 overflow-hidden' : 'w-[0px] duration-700 opacity-0 blur-sm p-0'} h-12 p-1`}>
+            <div className={`flex gap-2 items-center transition-opacity duration-700 ease-in-out ${control ? 'opacity-100' : 'blur-sm overflow-hidden opacity-0'} `}>
               <EditDialogList />
               <DeleteDialogDone />
               <DeleteDialog />
@@ -283,12 +282,7 @@ const MarketList = () => {
           </div>
 
         </div>
-        <img className={`w-10 h-10 ${!control || 'hidden'}`} onClick={() => { setControl(!control), setHidden(false) }} src={more} alt="" />
-        <img className={`w-10 h-10 ${control || 'hidden'}`} onClick={() => {
-          setControl(!control), setTimeout(() => {
-            setHidden(true)
-          }, 1000);
-        }} src={less} alt="" />
+        <img className={`w-10 h-10`} onClick={() => { setControl(!control) }} src={control ? less : more} alt="" />
       </div>
     </div >
   );
