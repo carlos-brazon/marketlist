@@ -47,9 +47,9 @@ const DeleteDialogDone = () => {
                         Esta acción no se puede deshacer. Esto eliminará permanentemente los elementos tachados.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
-                <AlertDialogFooter className={'flex items-center gap-1'}>
-                    <DropdownMenuItem asChild><AlertDialogCancel className='w-24'>Cancel</AlertDialogCancel></DropdownMenuItem>
+                <AlertDialogFooter className={'flex flex-row-reverse items-end gap-2'}>
                     <AlertDialogAction className='w-24' onClick={() => handleDeleteDone()}><DropdownMenuItem className='focus:bg-gray-800 focus:text-white'>Continuar</DropdownMenuItem></AlertDialogAction>
+                    <DropdownMenuItem asChild><AlertDialogCancel className='w-24'>Cancel</AlertDialogCancel></DropdownMenuItem>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

@@ -48,9 +48,9 @@ const DeleteDialog = () => {
                         Esta acción no se puede deshacer. Esto eliminará permanentemente la lista.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
-                <AlertDialogFooter>
-                    <DropdownMenuItem asChild><AlertDialogCancel className='w-24'>Cancel</AlertDialogCancel></DropdownMenuItem>
+                <AlertDialogFooter className='flex flex-row-reverse items-end gap-2'>
                     <AlertDialogAction className='w-24' onClick={() => handleClick()}>Continuar</AlertDialogAction>
+                    <DropdownMenuItem asChild><AlertDialogCancel className='w-24'>Cancel</AlertDialogCancel></DropdownMenuItem>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
