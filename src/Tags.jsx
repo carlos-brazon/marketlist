@@ -62,7 +62,7 @@ const Tags = ({ setAmount }) => {
             <img onClick={() => (setAddTags(prev => !prev), setValueInputNewTags(button))} className='w-8 h-8' src={Add} alt="Aquí va la imagen de un Add" />
 
             {tags?.map((string, i) =>
-                <div key={i} onClick={() => handleClic(string)} className={` cursor-pointer h-6 font-semibold text-xs rounded-md flex items-center ${button === string ? 'bg-slate-700 text-white shadow-md shadow-gray-600' : 'bg-slate-400 shadow-md shadow-gray-300'}`}>
+                <div key={i} onClick={() => handleClic(string)} className={` cursor-pointer h-7 font-semibold text-xs rounded-md flex items-center ${button === string ? 'bg-slate-700 text-white shadow-md shadow-gray-600' : 'bg-slate-400 shadow-md shadow-gray-300'}`}>
 
                     {button === string ?
                         <>
@@ -73,7 +73,7 @@ const Tags = ({ setAmount }) => {
                             <Separator orientation="vertical" className='h-4 font-bold' />
                             <DropdownMenu asChild>
                                 <DropdownMenuTrigger>
-                                    <img className='h-4 my-1 mr-1 ml-0.5' src={moremenu} alt="" />
+                                    <img className='h-4 my-1.5 mr-1 ml-0.5' src={moremenu} alt="" />
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className={'flex flex-col items-end'} >
                                     <EditDialogList />
