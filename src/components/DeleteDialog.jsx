@@ -41,16 +41,16 @@ const DeleteDialog = () => {
             <AlertDialogTrigger asChild>
                 <div className='px-2 py-1.5 text-sm hover:bg-slate-100 rounded-sm'>Eliminar Lista</div>
             </AlertDialogTrigger>
-            <AlertDialogContent>
+            <AlertDialogContent className='w-11/12 rounded-md'>
                 <AlertDialogHeader>
                     <AlertDialogTitle>{'¿Deseas borrar la lista'} {firstLetterUpperCase(button + '?' ?? '')}</AlertDialogTitle>
                     <AlertDialogDescription>
                         Esta acción no se puede deshacer. Esto eliminará permanentemente la lista.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
-                <AlertDialogFooter className='flex flex-row-reverse items-end gap-2'>
-                    <AlertDialogAction className='w-24' onClick={() => handleClick()}>Continuar</AlertDialogAction>
+                <AlertDialogFooter className='flex flex-row justify-end items-end gap-3'>
                     <DropdownMenuItem asChild><AlertDialogCancel className='w-24'>Cancel</AlertDialogCancel></DropdownMenuItem>
+                    <AlertDialogAction className='w-24' onClick={() => handleClick()}>Continuar</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

@@ -36,6 +36,15 @@ const MarketList = () => {
       });
       return updatedList;
     });
+    setSelectedTag(prev => {
+      const updatedList = prev.map(item => {
+        if (item.id === objitem.id) {
+          return { ...item, priority: newIsDoneValue2 };
+        }
+        return item;
+      });
+      return updatedList;
+    });
     try {
       const querySnapshot = await getDocs(query(collection(db2, 'usersMarketList'), where('email', '==', userIn.email)));
       const market = querySnapshot.docs[0]?.data()?.markeList || [];
