@@ -17,7 +17,7 @@ import DeleteDialogDone from './components/DeleteDialogDone';
 import DeleteDialog from './components/DeleteDialog';
 
 const Tags = ({ setAmount }) => {
-    const { userIn, setValueInputNewTags, setList, setAddTags, button, setButton, list, selectedTag } = useContext(AllItemsContext);
+    const { userIn, setValueInputNewTags, setList, setAddTags, button, setButton, list, selectedTag, setSelectedTag } = useContext(AllItemsContext);
     const [tags, setTags] = useState([]);
 
     const handleClic = async (string) => {
@@ -29,11 +29,12 @@ const Tags = ({ setAmount }) => {
                 }
                 return item
             }
-
+            return item
         })
+        setSelectedTag(arrayTagsFilter)
         setAmount(Number(numberToAmount))
         setButton(tags.length === 1 ? tags[0] : string)
-        setList(() => arrayTagsFilter)
+        setList(() => selectedTag.filter(item => item.tags === string))
         await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { last_tags: string })
     }
     const handleOrder = async () => {

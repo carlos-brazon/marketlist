@@ -40,16 +40,16 @@ const DeleteDialogDone = () => {
             <AlertDialogTrigger>
                 <div className='px-2 py-1.5 text-sm hover:bg-slate-100 rounded-sm'>Eliminar Tachados</div>
             </AlertDialogTrigger>
-            <AlertDialogContent>
+            <AlertDialogContent className='w-11/12 rounded-md'>
                 <AlertDialogHeader>
                     <AlertDialogTitle>{"¿Deseas borrar todos los elementos tachados de la lista"} {firstLetterUpperCase(button + '?' ?? '')}</AlertDialogTitle>
                     <AlertDialogDescription>
                         Esta acción no se puede deshacer. Esto eliminará permanentemente los elementos tachados.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
-                <AlertDialogFooter className={'flex flex-row-reverse items-end gap-2'}>
-                    <AlertDialogAction className='w-24' onClick={() => handleDeleteDone()}><DropdownMenuItem className='focus:bg-gray-800 focus:text-white'>Continuar</DropdownMenuItem></AlertDialogAction>
+                <AlertDialogFooter className={'flex flex-row justify-end items-end gap-3'}>
                     <DropdownMenuItem asChild><AlertDialogCancel className='w-24'>Cancel</AlertDialogCancel></DropdownMenuItem>
+                    <AlertDialogAction className='w-24' onClick={() => handleDeleteDone()}><DropdownMenuItem className='focus:bg-gray-800 focus:text-white'>Continuar</DropdownMenuItem></AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
