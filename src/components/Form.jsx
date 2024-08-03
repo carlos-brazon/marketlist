@@ -81,7 +81,6 @@ const Form = () => {
         }
 
     }
-    console.log(amoundPixel);
     return (
         <div className={userIn ? 'flex flex-col items-center pt-2 gap-2' : 'hidden'}>
             <form className={`flex items-start gap-2 py-2`} onSubmit={handleSubmit}>
