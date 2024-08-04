@@ -41,7 +41,7 @@ const DeleteDialog = () => {
             <AlertDialogTrigger asChild>
                 <div className='px-2 py-1.5 text-sm hover:bg-slate-100 rounded-sm'>Eliminar Lista</div>
             </AlertDialogTrigger>
-            <AlertDialogContent className='w-11/12 rounded-md'>
+            <AlertDialogContent className='w-11/12 rounded-md top-1/2'>
                 <AlertDialogHeader>
                     <AlertDialogTitle>{'¿Deseas borrar la lista'} {firstLetterUpperCase(button + '?' ?? '')}</AlertDialogTitle>
                     <AlertDialogDescription>

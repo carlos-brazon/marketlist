@@ -86,7 +86,7 @@ const Form = () => {
             <form className={`flex items-start gap-2 py-2`} onSubmit={handleSubmit}>
                 <div className={`relative ease-in-out duration-1000 flex items-start gap-1`} style={{ height: `${amoundPixel}px` }}>
                     <Textarea
-                        className={`rounded-md border border-gray-500  focus:border-black focus:border-[3px] focus-visible:ring-0 focus:outline-0 focus:ring-offset-0 focus-visible:ring-offset-0 h-full break-words resize-none pr-8 overflow-hidden ${addTags ? "w-[186px] " : "w-[290px]"}`}
+                        className={`rounded-md border border-gray-500  focus:border-black focus:border-[3px] focus-visible:ring-0 focus:outline-0 focus:ring-offset-0 focus-visible:ring-offset-0 h-full break-words resize-none pr-8 overflow-hidden ${addTags ? "w-[176px] " : "w-[280px]"}`}
                         type={'text'}
                         name={'name'}
                         onChange={handleInput}
@@ -99,10 +99,10 @@ const Form = () => {
                         placeholder={'Item'}
                         required
                     />
-                    <div className='h-9 w-9 absolute right-0'>
-                        <img className={`mt-0.5 ${amoundPixel > 40 ? 'hidden' : ''}`} onClick={() => setAmoundPixel(prev => prev + 50)} src={chevronDown} alt="" />
+                    <div className='h-7 w-7 absolute right-0'>
+                        <img className={`mt-[6px] ${amoundPixel > 40 ? 'hidden' : ''}`} onClick={() => setAmoundPixel(prev => prev + 50)} src={chevronDown} alt="" />
                         <div className='flex flex-col relative'>
-                            <img className={`mt-0.5 ${amoundPixel == 40 ? 'opacity-0 blur-3xl' : 'opacity-100 duration-[1000ms]'}`} onClick={() => setAmoundPixel(prev => {
+                            <img className={`mt-[6px] h-7 w-7 ${amoundPixel == 40 ? 'opacity-0 blur-3xl' : 'opacity-100 duration-[1000ms]'}`} onClick={() => setAmoundPixel(prev => {
                                 if (prev > 40) {
                                     return prev - 50
                                 }
@@ -111,10 +111,14 @@ const Form = () => {
                                 }
                             })} src={chevronUp} alt="" />
 
-                            <img className={`mt-0.5 ${amoundPixel == 40 ? 'opacity-0 blur-3xl' : 'opacity-100 duration-[1000ms]'}`} onClick={() => setAmoundPixel(prev => prev + 50)} src={chevronDown} alt="" />
-
+                            <img className={`mt-[6px] h-7 w-7 ${amoundPixel == 40 ? 'opacity-0 blur-3xl' : 'opacity-100 duration-[1000ms]'}`} onClick={() => setAmoundPixel(prev => {
+                                if (amoundPixel < 500) {
+                                    return prev + 50
+                                } else {
+                                    return prev
+                                }
+                            })} src={chevronDown} alt="" />
                         </div>
-
                     </div>
                 </div>
                 <Input
@@ -127,7 +131,7 @@ const Form = () => {
                     maxLength="25"
                     required
                 />
-                <Button className="text-xs px-2" type={"submit"}>
+                <Button className="text-[10px] px-2 mt-0.5" type={"submit"}>
                     Agregar
                 </Button>
             </form>

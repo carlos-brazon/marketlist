@@ -51,7 +51,7 @@ const EditDialogList = () => {
       <DialogTrigger asChild>
         <div className='px-2 py-1.5 text-sm hover:bg-slate-100 rounded-sm'>Editar Lista</div>
       </DialogTrigger>
-      <DialogContent className="rounded-lg">
+      <DialogContent className="rounded-lg top-1/2">
         <DialogHeader className="flex flex-col gap-5">
           <DialogTitle className="text-base">¿Estás seguro que deseas editar el nombre de la lista?</DialogTitle>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">

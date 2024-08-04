@@ -225,9 +225,9 @@ const MarketList = () => {
           listFilterTags?.map((item, index) => {
             return <li
               key={index}
-              className={`list-disc list-inside break-normal items-center justify-end min-h-[32px] flex gap-2 m-0.5 rounded py-1 px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-200'}`}
+              className={`list-disc list-inside break-normal items-center justify-end min-h-[28px] flex gap-2 m-0.5 rounded px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-200'}`}
             >
-              <div className={`flex w-full text-sm items-center ${item.isDone ? 'line-through' : ''}`} onClick={() => handleClick(item)}>
+              <div className={`flex w-full text-xs items-center ${item.isDone ? 'line-through' : ''}`} onClick={() => handleClick(item)}>
                 <div>{firstLetterUpperCase(item.name)}</div>
 
               </div>
@@ -255,7 +255,7 @@ const MarketList = () => {
                   />
                 </form>
 
-                <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-6 z-50 rounded-md text-[10px] text-center px-0.5 py-0.5 bg-slate-100 border border-gray-900 ${isDoneControl || 'hidden'}`}>Urgente</div>
+                <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-5 z-50 rounded-md text-[10px] text-center px-0.5 py-0.5 bg-slate-100 border border-gray-900 ${isDoneControl || 'hidden'}`}>Urgente</div>
                 <EditDialog item={item} isEditControl={isEditControl} />
               </div>
             </li>
