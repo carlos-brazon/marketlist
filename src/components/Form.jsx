@@ -101,7 +101,7 @@ const Form = () => {
                     />
                     <div className='h-7 w-7 absolute right-0'>
                         <img className={`mt-[6px] ${amoundPixel > 40 ? 'hidden' : ''}`} onClick={() => setAmoundPixel(prev => prev + 50)} src={chevronDown} alt="" />
-                        <div className='flex flex-col relative'>
+                        <div className={`flex flex-col relative ${amoundPixel == 40 ? '-z-20' : ''}`}>
                             <img className={`mt-[6px] h-7 w-7 ${amoundPixel == 40 ? 'opacity-0 blur-3xl' : 'opacity-100 duration-[1000ms]'}`} onClick={() => setAmoundPixel(prev => {
                                 if (prev > 40) {
                                     return prev - 50

@@ -63,18 +63,18 @@ const Tags = ({ setAmount }) => {
             <img onClick={() => (setAddTags(prev => !prev), setValueInputNewTags(button))} className='w-8 h-8' src={Add} alt="Aquí va la imagen de un Add" />
 
             {tags?.map((string, i) =>
-                <div key={i} onClick={() => handleClic(string)} className={` cursor-pointer h-7 font-semibold text-xs rounded-md flex items-center ${button === string ? 'bg-slate-700 text-white shadow-md shadow-gray-600' : 'bg-slate-400 shadow-md shadow-gray-300'}`}>
+                <div key={i} onClick={() => handleClic(string)} className={`cursor-pointer font-semibold text-xs rounded-md flex items-center ${button === string ? 'bg-slate-700 text-white shadow-md shadow-gray-600' : 'bg-slate-400 shadow-md shadow-gray-300'}`}>
 
                     {button === string ?
                         <>
                             <button onClick={() => handleClic(string)}
-                                className={`px-2 `}>
+                                className={`px-[10px]`}>
                                 <p >{firstLetterUpperCase(string)}</p>
                             </button >
                             <Separator orientation="vertical" className='h-4 font-bold' />
                             <DropdownMenu asChild>
                                 <DropdownMenuTrigger>
-                                    <img className='h-4 my-1.5 mr-1 ml-0.5' src={moremenu} alt="" />
+                                    <img className='h-5 my-1.5 mr-1.5 ml-1' src={moremenu} alt="" />
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className={'flex flex-col items-end'} >
                                     <EditDialogList />
@@ -89,7 +89,7 @@ const Tags = ({ setAmount }) => {
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </> : <button
-                            className={`px-2 `}>
+                            className={`px-2 h-6`}>
                             {firstLetterUpperCase(string)}
                         </button >}
 

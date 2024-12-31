@@ -225,7 +225,7 @@ const MarketList = () => {
           listFilterTags?.map((item, index) => {
             return <li
               key={index}
-              className={`list-disc list-inside break-normal items-center justify-end min-h-[28px] flex gap-2 m-0.5 rounded px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-200'}`}
+              className={`list-disc list-inside break-normal items-center justify-end min-h-[30px] flex gap-2 m-0.5 rounded px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-200'}`}
             >
               <div className={`flex w-full text-xs items-center ${item.isDone ? 'line-through' : ''}`} onClick={() => handleClick(item)}>
                 <div>{firstLetterUpperCase(item.name)}</div>
