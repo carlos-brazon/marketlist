@@ -72,7 +72,7 @@ const MarketList = () => {
     const currentTime = new Date().getTime();
     const timeSinceLastTap = currentTime - lastTapTime;
 
-    if (timeSinceLastTap < 50 && timeSinceLastTap > 0) {
+    if (timeSinceLastTap < 20 && timeSinceLastTap > 0) {
       const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
       // Doble toque detectado
       if (userDocSnapshot.exists()) {
