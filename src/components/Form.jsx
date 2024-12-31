@@ -19,8 +19,23 @@ const Form = () => {
     const [user, setUser] = useState({});
     const { toast } = useToast()
     const [amoundPixel, setAmoundPixel] = useState(40)
+    const [lastTap, setLastTap] = useState(0)
+    const [tachar, setTachar] = useState(false)
+    const [dobleClick, setDobleClick] = useState(false)
 
 
+    const handleTouch = () => {
+        const currentTime = new Date().getTime();
+        const timeDiff = currentTime - lastTap;
+
+        console.log(timeDiff);
+        if (timeDiff < 300 && timeDiff > 0) {
+            // Doble toque detectado
+
+            setDobleClick(prev => !prev);
+        }
+        setLastTap(currentTime);
+    };
     useEffect(() => {
         if (userIn) {
             setUser(prev => ({ ...prev, tags: selectedTag?.length ? button : 'Compras' }));
@@ -79,6 +94,7 @@ const Form = () => {
                 console.error('Error al realizar la consulta:', error);
             }
         }
+        console.log(test);
 
     }
     return (
@@ -135,7 +151,13 @@ const Form = () => {
                     Agregar
                 </Button>
             </form>
+            <div className='flex gap-2'>
+                <button className='p-2 rounded-md text-white font-semibold bg-slate-600' onClick={() => setTachar(prev => !prev)} onDoubleClick={() => setDobleClick(prev => !prev)} onTouchEnd={() => handleTouch()}>
+                    TEST DOBLE CLICK
+                </button>
+                <div className={`flex h-12 w-12 border bg-slate-400 items-center justify-center ${tachar ? 'line-through' : ''}`}>{dobleClick ? 'borrado' : 'test'}</div>
 
+            </div>
             <MarketList userIn={userIn} />
         </div>
     );

@@ -89,7 +89,7 @@ const Tags = ({ setAmount }) => {
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </> : <button
-                            className={`px-2 h-6`}>
+                            className={`px-2 h-8`}>
                             {firstLetterUpperCase(string)}
                         </button >}
 
