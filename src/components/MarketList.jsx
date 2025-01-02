@@ -73,10 +73,8 @@ const MarketList = () => {
   const handleDoubleTap = async (objitem) => {
     const currentTime = new Date().getTime();
     const timeSinceLastTap = currentTime - lastTapTime;
-    console.log(timeSinceLastTap);
 
-
-    if (timeSinceLastTap < 300 && lastTapData.id === objitem.id) {
+    if (lastTapData.id == objitem.id && timeSinceLastTap < 300) {
       const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
       // Doble toque detectado
       if (userDocSnapshot.exists()) {
@@ -242,7 +240,7 @@ const MarketList = () => {
   return (
     <div className='flex flex-col items-center gap-4 h-full w-screen px-3'>
       <Tags setAmount={setAmount} />
-      <h4 className="text-base text-center font-medium leading-none">{userIn.email == 'aa@gmail.com' ? 'Listo' : 'Lista'}</h4>
+      <h4 className="text-base text-center font-medium leading-none">{userIn.email == 'aa@gmail.com' ? 'Liste' : 'Lista'}</h4>
 
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 250)}px` }}
