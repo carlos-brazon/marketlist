@@ -16,6 +16,7 @@ import iconCalculatorTrue from "../assets/calculator-true.svg";
 import iconCalendarFalse from "../assets/calendar-false.svg";
 import iconCalendarTrue from "../assets/calendar-true.svg";
 
+
 const MarketList = () => {
   const { userIn, list, setList, button, setAddTags, setButton, setSelectedTag } = useContext(AllItemsContext);
   const [lastTapTime, setLastTapTime] = useState(0);
@@ -24,6 +25,7 @@ const MarketList = () => {
   const [isDoneControl, setIsDoneControl] = useState(userIn?.isDoneControl);
   const [addControl, setAddControl] = useState(userIn?.addControl);
   const [isDateControl, setIsDateControl] = useState(userIn?.isDateControl);
+  const [lastTapData, setLastTapData] = useState({ id: null, time: 0 });
 
 
 
@@ -72,7 +74,7 @@ const MarketList = () => {
     const currentTime = new Date().getTime();
     const timeSinceLastTap = currentTime - lastTapTime;
 
-    if (timeSinceLastTap < 20 && timeSinceLastTap > 0) {
+    if (timeSinceLastTap < 300 && timeSinceLastTap > 0 && lastTapData.id === objitem.id) {
       const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
       // Doble toque detectado
       if (userDocSnapshot.exists()) {
@@ -105,6 +107,7 @@ const MarketList = () => {
       }
     }
     setLastTapTime(new Date().getTime());
+    setLastTapData({ id: objitem.id, time: currentTime });
   };
   const handleDoubleClick = async (objitem) => {
     const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
