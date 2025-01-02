@@ -181,6 +181,7 @@ const MarketList = () => {
     } catch (error) {
       console.error('Error al actualizar isDone en Firestore:', error);
     }
+    setLastTapData({ id: objitem.id, time: 0 });
   };
 
   useEffect(() => {
