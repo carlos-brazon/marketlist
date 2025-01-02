@@ -240,7 +240,7 @@ const MarketList = () => {
   return (
     <div className='flex flex-col items-center gap-4 h-full w-screen px-3'>
       <Tags setAmount={setAmount} />
-      <h4 className="text-base text-center font-medium leading-none">{userIn.email == 'aa@gmail.com' ? 'Liste' : 'Lista'}</h4>
+      <h4 className="text-base text-center font-medium leading-none">{userIn.email == 'aa@gmail.com' ? 'Listi' : 'Lista'}</h4>
 
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 250)}px` }}
@@ -267,7 +267,7 @@ const MarketList = () => {
               key={index}
               className={`list-disc list-inside break-normal items-center justify-end min-h-[30px] flex gap-2 m-0.5 rounded px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-200'}`}
             >
-              <div className={`flex w-full text-xs items-center ${item.isDone ? 'line-through' : ''}`} onClick={() => handleClick(item)} onDoubleClick={() => handleDoubleClick(item)} onTouchStart={() => handleDoubleTap(item)}>
+              <div className={`flex w-full text-xs items-center ${item.isDone ? 'line-through' : ''}`} onClick={() => handleClick(item)} onDoubleClick={() => handleDoubleClick(item)} onTouchEnd={() => handleDoubleTap(item)}>
                 <div>{firstLetterUpperCase(item.name)}</div>
 
               </div>
