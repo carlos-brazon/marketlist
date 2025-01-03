@@ -185,7 +185,7 @@ const MarketList = () => {
       setTapTimeout(setTimeout(() => {
         // Reseteamos el contador después de un corto tiempo
         setTapCount(0);
-      }, 170)); // El tiempo puede ajustarse según lo necesites (300ms como ejemplo)
+      }, 50)); // El tiempo puede ajustarse según lo necesites (300ms como ejemplo)
     }
 
     try {
