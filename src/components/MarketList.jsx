@@ -156,7 +156,7 @@ const MarketList = () => {
       });
       return updatedList
     });
-    if (tapCount === 1) {
+    if (tapCount === 1 && lastTapData.id == objitem.id) {
       // Detectamos un doble toque
       console.log("Doble toque detectado");
       // Realiza la lógica de eliminación
@@ -181,6 +181,7 @@ const MarketList = () => {
     } else {
       // Si es el primer toque, aumentamos el contador y configuramos el timeout
       setTapCount(1);
+      setLastTapData({ id: objitem.id, time: 0 });
       setTapTimeout(setTimeout(() => {
         // Reseteamos el contador después de un corto tiempo
         setTapCount(0);
@@ -272,7 +273,7 @@ const MarketList = () => {
   return (
     <div className='flex flex-col items-center gap-4 h-full w-screen px-3'>
       <Tags setAmount={setAmount} />
-      <h4 className="text-base text-center font-medium leading-none">{userIn.email == 'aa@gmail.com' ? 'Listi' : 'Lista'}</h4>
+      <h4 className="text-base text-center font-medium leading-none">{userIn.email == 'aa@gmail.com' ? 'Listu' : 'Lista'}</h4>
 
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 250)}px` }}
