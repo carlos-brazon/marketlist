@@ -185,7 +185,7 @@ const MarketList = () => {
       setTapTimeout(setTimeout(() => {
         // Reseteamos el contador después de un corto tiempo
         setTapCount(0);
-      }, 50)); // El tiempo puede ajustarse según lo necesites (300ms como ejemplo)
+      }, 1)); // El tiempo puede ajustarse según lo necesites (300ms como ejemplo)
     }
 
     try {
@@ -273,7 +273,7 @@ const MarketList = () => {
   return (
     <div className='flex flex-col items-center gap-4 h-full w-screen px-3'>
       <Tags setAmount={setAmount} />
-      <h4 className="text-base text-center font-medium leading-none">{userIn.email == 'aa@gmail.com' ? 'Liste' : 'Lista'}</h4>
+      <h4 className="text-base text-center font-medium leading-none">{userIn.email == 'aa@gmail.com' ? 'Listu' : 'Lista'}</h4>
 
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 250)}px` }}
