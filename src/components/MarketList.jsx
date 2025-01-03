@@ -26,6 +26,8 @@ const MarketList = () => {
   const [addControl, setAddControl] = useState(userIn?.addControl);
   const [isDateControl, setIsDateControl] = useState(userIn?.isDateControl);
   const [lastTapData, setLastTapData] = useState({ id: null, time: 0 });
+  const [tapCount, setTapCount] = useState(0); // Para contar los toques
+  const [tapTimeout, setTapTimeout] = useState(null); // Para limpiar el contador
 
 
 
@@ -154,6 +156,36 @@ const MarketList = () => {
       });
       return updatedList
     });
+    if (tapCount === 1) {
+      // Detectamos un doble toque
+      console.log("Doble toque detectado");
+      // Realiza la lógica de eliminación
+      try {
+        const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
+        if (userDocSnapshot.exists()) {
+          const userData = userDocSnapshot.data();
+          const updatedMarkeList = userData.markeList.filter(item => item.id !== objitem.id);
+          await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
+
+          setList(updatedMarkeList);
+          setSelectedTag(updatedMarkeList);
+          setAddTags(false);
+
+          console.log('Producto eliminado correctamente.');
+        } else {
+          console.log('El documento no existe en Firestore.');
+        }
+      } catch (error) {
+        console.error('Error al eliminar el producto:', error);
+      }
+    } else {
+      // Si es el primer toque, aumentamos el contador y configuramos el timeout
+      setTapCount(1);
+      setTapTimeout(setTimeout(() => {
+        // Reseteamos el contador después de un corto tiempo
+        setTapCount(0);
+      }, 300)); // El tiempo puede ajustarse según lo necesites (300ms como ejemplo)
+    }
 
     try {
       const querySnapshot = await getDocs(query(collection(db2, 'usersMarketList'), where('email', '==', userIn.email)));
@@ -267,7 +299,7 @@ const MarketList = () => {
               key={index}
               className={`list-disc list-inside break-normal items-center justify-end min-h-[30px] flex gap-2 m-0.5 rounded px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-200'}`}
             >
-              <div className={`flex w-full text-xs items-center ${item.isDone ? 'line-through' : ''}`} onClick={() => handleClick(item)} onDoubleClick={() => handleDoubleClick(item)} onTouchEnd={() => handleDoubleTap(item)}>
+              <div className={`flex w-full text-xs items-center ${item.isDone ? 'line-through' : ''}`} onClick={() => handleClick(item)} onDoubleClick={() => handleDoubleClick(item)} >
                 <div>{firstLetterUpperCase(item.name)}</div>
 
               </div>
