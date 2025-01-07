@@ -19,17 +19,13 @@ import iconCalendarTrue from "../assets/calendar-true.svg";
 
 const MarketList = () => {
   const { userIn, list, setList, button, setAddTags, setButton, setSelectedTag } = useContext(AllItemsContext);
-  const [lastTapTime, setLastTapTime] = useState(0);
   const [amount, setAmount] = useState(0);
   const [isEditControl, setIsEditControl] = useState(userIn?.isEditControl);
   const [isDoneControl, setIsDoneControl] = useState(userIn?.isDoneControl);
   const [addControl, setAddControl] = useState(userIn?.addControl);
   const [isDateControl, setIsDateControl] = useState(userIn?.isDateControl);
   const [lastTapData, setLastTapData] = useState({ id: null, time: 0 });
-  const [tapCount, setTapCount] = useState(0); // Para contar los toques
-  const [tapTimeout, setTapTimeout] = useState(null); // Para limpiar el contador
-
-
+  const [tapCount, setTapCount] = useState(0);
 
   const handlePriority = async (objitem) => {
     const newIsDoneValue2 = !objitem.priority;
@@ -74,6 +70,50 @@ const MarketList = () => {
 
   const handleClick = async (objitem) => {
     const newIsDoneValue = !objitem.isDone;
+
+    //entrada del doble click
+    if (tapCount === 1 && lastTapData.id == objitem.id) {
+      try {
+        const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
+        if (userDocSnapshot.exists()) {
+          const userData = userDocSnapshot.data();
+          const updatedMarkeList = userData.markeList.filter(item => item.id !== objitem.id);
+          await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
+          console.log('Producto eliminado de Firestore correctamente.');
+
+          if (updatedMarkeList.length === 0 || list.length === 0) {
+            setAddTags(false)
+            setButton('Compras')
+          }
+          setList(updatedMarkeList);
+          setSelectedTag(updatedMarkeList);
+          setAddTags(false);
+          setButton(() => {
+            const arrayStringTags = updatedMarkeList?.reduce((acc, item) => {
+              if (item.tags) {
+                if (!acc.includes(item.tags)) {
+                  acc.push(item.tags);
+                }
+              }
+              return acc
+            }, []);
+            updateDoc(doc(db2, 'usersMarketList', userIn.uid), { last_tags: arrayStringTags.length > 1 && arrayStringTags.includes(button) ? button : arrayStringTags[0] || '' });
+            return arrayStringTags.length > 1 && arrayStringTags.includes(button) ? button : arrayStringTags[0]
+          });
+        } else {
+          console.log('El documento no existe en Firestore.');
+        }
+      } catch (error) {
+        console.error('Error al eliminar el producto:', error);
+      }
+    } else {
+      setTapCount(1);
+      setLastTapData({ id: objitem.id, time: 0 });
+      setTimeout(() => {
+        setTapCount(0);
+      }, 300);
+    }
+    //entrada click normal
     setList(prev => {
       const updatedList = prev.map(item => {
         if (item.id === objitem.id) {
@@ -83,38 +123,6 @@ const MarketList = () => {
       });
       return updatedList
     });
-    if (tapCount === 1 && lastTapData.id == objitem.id) {
-      // Detectamos un doble toque
-      console.log("Doble toque detectado");
-      // Realiza la lógica de eliminación
-      try {
-        const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
-        if (userDocSnapshot.exists()) {
-          const userData = userDocSnapshot.data();
-          const updatedMarkeList = userData.markeList.filter(item => item.id !== objitem.id);
-          await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
-
-          setList(updatedMarkeList);
-          setSelectedTag(updatedMarkeList);
-          setAddTags(false);
-
-          console.log('Producto eliminado correctamente.');
-        } else {
-          console.log('El documento no existe en Firestore.');
-        }
-      } catch (error) {
-        console.error('Error al eliminar el producto:', error);
-      }
-    } else {
-      // Si es el primer toque, aumentamos el contador y configuramos el timeout
-      setTapCount(1);
-      setLastTapData({ id: objitem.id, time: 0 });
-      setTapTimeout(setTimeout(() => {
-        // Reseteamos el contador después de un corto tiempo
-        setTapCount(0);
-      }, 300)); // El tiempo puede ajustarse según lo necesites (300ms como ejemplo)
-    }
-
     try {
       const querySnapshot = await getDocs(query(collection(db2, 'usersMarketList'), where('email', '==', userIn.email)));
       const market = querySnapshot.docs[0]?.data()?.markeList || [];
@@ -156,8 +164,6 @@ const MarketList = () => {
 
   }, [])
   const listFilterTags = list?.filter(item => item.tags === button)
-
-
 
   const date = (item) => {
     if (item) {
