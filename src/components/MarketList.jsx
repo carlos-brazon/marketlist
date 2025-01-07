@@ -72,79 +72,6 @@ const MarketList = () => {
 
   }
 
-  const handleDoubleTap = async (objitem) => {
-    const currentTime = new Date().getTime();
-    const timeSinceLastTap = currentTime - lastTapTime;
-
-    if (lastTapData.id == objitem.id && timeSinceLastTap < 300) {
-      const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
-      // Doble toque detectado
-      if (userDocSnapshot.exists()) {
-        const userData = userDocSnapshot.data();
-        const updatedMarkeList = userData.markeList.filter(item => item.id !== objitem.id);
-        await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
-        console.log('Producto eliminado de Firestore correctamente.');
-        if (updatedMarkeList.length === 0 || list.length === 0) {
-          setAddTags(false)
-          setButton('Compras')
-        }
-        setList(updatedMarkeList);
-        setSelectedTag(updatedMarkeList)
-        setAddTags(false);
-        setButton(() => {
-          const arrayStringTags = updatedMarkeList?.reduce((acc, item) => {
-            if (item.tags) {
-              if (!acc.includes(item.tags)) {
-                acc.push(item.tags);
-              }
-            }
-            return acc
-          }, []);
-          updateDoc(doc(db2, 'usersMarketList', userIn.uid), { last_tags: arrayStringTags.length > 1 && arrayStringTags.includes(button) ? button : arrayStringTags[0] || '' });
-          return arrayStringTags.length > 1 && arrayStringTags.includes(button) ? button : arrayStringTags[0]
-        });
-
-      } else {
-        console.log('El documento no existe en Firestore.');
-      }
-    }
-    setLastTapTime(new Date().getTime());
-    setLastTapData({ id: objitem.id, time: currentTime });
-  };
-  const handleDoubleClick = async (objitem) => {
-    const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
-
-    if (userDocSnapshot.exists()) {
-      const userData = userDocSnapshot.data();
-      const updatedMarkeList = userData.markeList.filter(item => item.id !== objitem.id);
-      await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
-      console.log('Producto eliminado de Firestore correctamente.');
-      if (updatedMarkeList.length === 0 || list.length === 0) {
-        setAddTags(false)
-        setButton('Compras')
-      }
-      setList(updatedMarkeList);
-      setSelectedTag(updatedMarkeList)
-      setAddTags(false);
-      setButton(() => {
-        const arrayStringTags = updatedMarkeList?.reduce((acc, item) => {
-          if (item.tags) {
-            if (!acc.includes(item.tags)) {
-              acc.push(item.tags);
-            }
-          }
-          return acc
-        }, []);
-        updateDoc(doc(db2, 'usersMarketList', userIn.uid), { last_tags: arrayStringTags.length > 1 && arrayStringTags.includes(button) ? button : arrayStringTags[0] || '' });
-        return arrayStringTags.length > 1 && arrayStringTags.includes(button) ? button : arrayStringTags[0]
-      });
-
-    } else {
-      console.log('El documento no existe en Firestore.');
-    }
-
-    setLastTapTime(new Date().getTime());
-  };
   const handleClick = async (objitem) => {
     const newIsDoneValue = !objitem.isDone;
     setList(prev => {
@@ -185,7 +112,7 @@ const MarketList = () => {
       setTapTimeout(setTimeout(() => {
         // Reseteamos el contador después de un corto tiempo
         setTapCount(0);
-      }, 1)); // El tiempo puede ajustarse según lo necesites (300ms como ejemplo)
+      }, 300)); // El tiempo puede ajustarse según lo necesites (300ms como ejemplo)
     }
 
     try {
@@ -219,7 +146,7 @@ const MarketList = () => {
   useEffect(() => {
     setList(userIn?.markeList)
     setSelectedTag(userIn?.markeList)
-    const totalAmount = userIn?.markeList.reduce((acc, item) => {
+    const totalAmount = userIn?.markeList?.reduce((acc, item) => {
       if (item.tags === userIn.last_tags && item.amount) {
         return acc + item.amount
       }
@@ -300,7 +227,7 @@ const MarketList = () => {
               key={index}
               className={`list-disc list-inside break-normal items-center justify-end min-h-[30px] flex gap-2 m-0.5 rounded px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-200'}`}
             >
-              <div className={`flex w-full text-xs items-center ${item.isDone ? 'line-through' : ''}`} onClick={() => handleClick(item)} onDoubleClick={() => handleDoubleClick(item)} >
+              <div className={`flex w-full text-xs items-center ${item.isDone ? 'line-through' : ''}`} onClick={() => handleClick(item)} >
                 <div>{firstLetterUpperCase(item.name)}</div>
 
               </div>
