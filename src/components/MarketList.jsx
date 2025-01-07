@@ -273,7 +273,7 @@ const MarketList = () => {
   return (
     <div className='flex flex-col items-center gap-4 h-full w-screen px-3'>
       <Tags setAmount={setAmount} />
-      <h4 className="text-base text-center font-medium leading-none">{userIn.email == 'aa@gmail.com' ? 'Listu' : 'Lista'}</h4>
+      <h4 className="text-base text-center font-medium leading-none">{userIn?.email == 'aa@gmail.com' ? 'Listu' : 'Lista'}</h4>
 
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 250)}px` }}
