@@ -4,7 +4,7 @@ import { firstLetterUpperCase } from '../utils/util'
 import { AllItemsContext } from './Contex'
 import { useContext } from 'react'
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
-import { db2 } from '../utils/firebase'
+import { db } from '../utils/firebase'
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 
 const DeleteDialogDone = () => {
@@ -12,7 +12,7 @@ const DeleteDialogDone = () => {
 
     const handleDeleteDone = async () => {
         setAddTags(false);
-        const userDocRef = doc(db2, 'usersMarketList', userIn.uid);
+        const userDocRef = doc(db, 'usersMarketList', userIn.uid);
         const userDocSnapshot = await getDoc(userDocRef);
 
         if (userDocSnapshot.exists()) {

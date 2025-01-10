@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { doc, setDoc } from 'firebase/firestore';
-import { auth2, db2 } from '../utils/firebase.js';
+import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
+import { auth, db } from '../utils/firebase.js';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router';
 import Input from './Input.jsx';
@@ -48,14 +48,15 @@ const CheckIn = () => {
         };
 
         const userToFirebase = { ...user, markeList: [], email: user.email.toLowerCase() };
-        createUserWithEmailAndPassword(auth2, user.email, user.password)
+        createUserWithEmailAndPassword(auth, user.email, user.password)
             .then(async (userCredential) => {
                 const newUser = userCredential.user;
                 delete userToFirebase.password;
                 setMessageLogIn('Usuario registrado correctamente');
                 showMessage();
-                await setDoc(doc(db2, "usersMarketList", newUser.uid), userToFirebase);
-                await setDoc(doc(db2, "usersData", newUser.uid), userToFirebase);
+                await addDoc(collection())
+                await setDoc(doc(db, "usersMarketList", newUser.uid), userToFirebase);
+                await setDoc(doc(db, "usersData", newUser.uid), userToFirebase);
             })
             .catch((error) => {
                 setMessageLogIn('Error al registrar usuario, inténtalo de nuevo');

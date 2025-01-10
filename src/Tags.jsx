@@ -3,7 +3,7 @@ import { AllItemsContext } from './components/Contex'
 import { firstLetterUpperCase } from './utils/util';
 import Add from "./assets/add-black.svg";
 import { doc, updateDoc } from 'firebase/firestore';
-import { db2 } from './utils/firebase';
+import { db } from './utils/firebase';
 import { Separator } from "@/components/ui/separator"
 import moremenu from "/src/assets/more-menu3.svg";
 import {
@@ -35,7 +35,7 @@ const Tags = ({ setAmount }) => {
         setAmount(Number(numberToAmount))
         setButton(tags.length === 1 ? tags[0] : string)
         setList(() => selectedTag.filter(item => item.tags === string))
-        await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { last_tags: string })
+        await updateDoc(doc(db, 'usersMarketList', userIn.uid), { last_tags: string })
     }
     const handleOrder = async () => {
         const sortedList = list?.filter(item => item.tags === button).sort((a, b) => a.name.localeCompare(b.name));

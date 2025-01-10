@@ -9,7 +9,7 @@ import {
 import { Button } from './ui/button';
 import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import { AllItemsContext } from './Contex';
-import { db2 } from '../utils/firebase';
+import { db } from '../utils/firebase';
 import PropTypes from 'prop-types';
 import { Textarea } from './ui/textarea';
 import chevronDown from "../assets/chevronDown.svg";
@@ -43,7 +43,7 @@ const EditDialog = ({ item, isEditControl }) => {
     event.preventDefault();
     try {
       if (user.name.trim()) {
-        const querySnapshot = await getDocs(query(collection(db2, 'usersMarketList'), where('email', '==', userIn.email)));
+        const querySnapshot = await getDocs(query(collection(db, 'usersMarketList'), where('email', '==', userIn.email)));
         const market = querySnapshot.docs[0]?.data()?.markeList || [];
         if (!querySnapshot.empty) {
           const updatedMarkeList = market.map(itemListFromFirebase => {
@@ -52,7 +52,7 @@ const EditDialog = ({ item, isEditControl }) => {
             }
             return itemListFromFirebase;
           });
-          await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
+          await updateDoc(doc(db, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
           setList(updatedMarkeList)
           setSelectedTag(updatedMarkeList)
           console.log('isDone actualizado en Firestore correctamente.');

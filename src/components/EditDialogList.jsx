@@ -10,7 +10,7 @@ import { useContext, useState } from 'react';
 import { AllItemsContext } from './Contex';
 import { DialogClose } from '@radix-ui/react-dialog';
 import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
-import { db2 } from '../utils/firebase';
+import { db } from '../utils/firebase';
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 
 const EditDialogList = () => {
@@ -28,7 +28,7 @@ const EditDialogList = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (user.name) {
-      const dataFirebase = await getDocs(query(collection(db2, 'usersMarketList'), where('email', '==', userIn.email)));
+      const dataFirebase = await getDocs(query(collection(db, 'usersMarketList'), where('email', '==', userIn.email)));
       const arrayMarketListFromFireBase = dataFirebase.docs[0]?.data()?.markeList || [];
       const updatedMarkeList = arrayMarketListFromFireBase.map(itemListFromFirebase => {
         if (itemListFromFirebase.tags === button) {
@@ -39,7 +39,7 @@ const EditDialogList = () => {
       setButton(user.name)
       setList(updatedMarkeList)
       setSelectedTag(updatedMarkeList)
-      await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { last_tags: user.name, markeList: updatedMarkeList });
+      await updateDoc(doc(db, 'usersMarketList', userIn.uid), { last_tags: user.name, markeList: updatedMarkeList });
       setIsOpen(false);
     } else {
       setEditBlocked(true)
