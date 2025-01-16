@@ -1,9 +1,9 @@
-import { useContext, useEffect, useState } from 'react'
-import { AllItemsContext } from './components/Contex'
-import { firstLetterUpperCase } from './utils/util';
-import Add from "./assets/add-black.svg";
+import { useContext, useEffect } from 'react'
+import { AllItemsContext } from './Contex'
+import { firstLetterUpperCase } from '../utils/util';
+import Add from "../assets/add-black.svg";
 import { doc, updateDoc } from 'firebase/firestore';
-import { db } from './utils/firebase';
+import { db } from '../utils/firebase';
 import { Separator } from "@/components/ui/separator"
 import moremenu from "/src/assets/more-menu3.svg";
 import {
@@ -12,30 +12,26 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import EditDialogList from './components/EditDialogList';
-import DeleteDialogDone from './components/DeleteDialogDone';
-import DeleteDialog from './components/DeleteDialog';
+import EditDialogList from './EditDialogList';
+import DeleteDialogDone from './DeleteDialogDone';
+import DeleteDialog from './DeleteDialog';
+import PropTypes from 'prop-types';
 
 const Tags = ({ setAmount }) => {
-    const { userIn, setValueInputNewTags, setList, setAddTags, button, setButton, list, selectedTag, setSelectedTag } = useContext(AllItemsContext);
-    const [tags, setTags] = useState([]);
+    Tags.propTypes = {
+        setAmount: PropTypes.func,
+    };
+    const { userIn, setValueInputNewTags, setList, setAddTags, button, setButton, list, tags, setTags, temporalCloud } = useContext(AllItemsContext);
+
 
     const handleClic = async (string) => {
-        let numberToAmount = 0
-        const arrayTagsFilter = selectedTag?.filter(item => {
-            if (item.tags === string) {
-                if (item.amount) {
-                    numberToAmount = numberToAmount + item.amount
-                }
-                return item
-            }
-            return item
-        })
-        setSelectedTag(arrayTagsFilter)
-        setAmount(Number(numberToAmount))
-        setButton(tags.length === 1 ? tags[0] : string)
-        setList(() => selectedTag.filter(item => item.tags === string))
-        await updateDoc(doc(db, 'usersMarketList', userIn.uid), { last_tags: string })
+        await updateDoc(doc(db, 'test', userIn.uid), { last_tags: string });
+        setButton(string)
+        setValueInputNewTags(string)
+        const listByTags = temporalCloud.filter(item => item.tags == string);
+        const totalAmountToPrint = listByTags.reduce((amountAccumulator, currentItem) => amountAccumulator + currentItem.amount, 0);
+        setList(listByTags);
+        setAmount(totalAmountToPrint);
     }
     const handleOrder = async () => {
         const sortedList = list?.filter(item => item.tags === button).sort((a, b) => a.name.localeCompare(b.name));
@@ -47,23 +43,29 @@ const Tags = ({ setAmount }) => {
     }
 
     useEffect(() => {
-        setTags(() => {
-            const tagsToPrint = selectedTag?.reduce((acc, obj) => {
-                if (obj.tags && !acc.includes(obj.tags)) {
-                    acc.push(obj.tags);
-                }
-                return acc
-            }, []);
-            return tagsToPrint
-        })
+        const itemsWithTagsAndDate = temporalCloud.map(doc => ({
+            tag: doc.tags,
+            createAt: doc.create_at || doc.create_at?.toDate(), // Asegurarse de que create_at sea un objeto de fecha
+        }));
 
-    }, [list]);
+        // Ordenar los elementos por `create_at`
+        itemsWithTagsAndDate.sort((a, b) => a.createAt - b.createAt);
+
+        // Extraer las tags únicas en orden
+        const uniqueTags = Array.from(new Set(itemsWithTagsAndDate.map(item => item.tag)));
+
+        // Actualizar el estado `tags`
+        setTags(uniqueTags);
+        setButton(uniqueTags.length === 1 ? uniqueTags[0] : button);
+
+
+    }, [temporalCloud]);
     return (
         <div className='w-full flex gap-2 flex-wrap break-all'>
             <img onClick={() => (setAddTags(prev => !prev), setValueInputNewTags(button))} className='w-8 h-8' src={Add} alt="Aquí va la imagen de un Add" />
 
             {tags?.map((string, i) =>
-                <div key={i} onClick={() => handleClic(string)} className={`cursor-pointer font-semibold text-xs rounded-md flex items-center ${button === string ? 'bg-slate-700 text-white shadow-md shadow-gray-600' : 'bg-slate-400 shadow-md shadow-gray-300'}`}>
+                <div key={i} className={`cursor-pointer font-semibold text-xs rounded-md flex items-center ${button === string ? 'bg-slate-700 text-white shadow-md shadow-gray-600' : 'bg-slate-400 shadow-md shadow-gray-300'}`}>
 
                     {button === string ?
                         <>
@@ -89,6 +91,7 @@ const Tags = ({ setAmount }) => {
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </> : <button
+                            onClick={() => handleClic(string)}
                             className={`px-2 h-8`}>
                             {firstLetterUpperCase(string)}
                         </button >}

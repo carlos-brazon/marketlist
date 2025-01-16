@@ -7,7 +7,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Button } from './ui/button';
-import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { doc, updateDoc } from 'firebase/firestore';
 import { AllItemsContext } from './Contex';
 import { db } from '../utils/firebase';
 import PropTypes from 'prop-types';
@@ -15,62 +15,50 @@ import { Textarea } from './ui/textarea';
 import chevronDown from "../assets/chevronDown.svg";
 import chevronUp from "../assets/chevronUp.svg";
 
-const EditDialog = ({ item, isEditControl }) => {
-  const { userIn, setList, setSelectedTag } = useContext(AllItemsContext)
-  const [user, setUser] = useState({});
+const EditDialog = ({ item }) => {
+  const { userIn, setList } = useContext(AllItemsContext)
+  const [newValueInput, setNewValueInput] = useState({ name: item.name });
   const [editBlocked, setEditBlocked] = useState(!item.name);
   const [isOpen, setIsOpen] = useState(false);
   const [amoundPixel, setAmoundPixel] = useState(40);
+  const hScreen = Math.round(window.innerHeight - 250)
 
   EditDialog.propTypes = {
     item: PropTypes.object.isRequired,
-    isEditControl: PropTypes.bool.isRequired
   }
 
   const handleInput = (event) => {
     const inputName = event.target.name;
-    const inputValue = event.target.value;
+    let inputValue = event.target.value;
+    // Eliminar espacios iniciales
+    inputValue = inputValue.replace(/^\s+/, '');
+    // Reemplazar más de dos espacios consecutivos por un solo espacio
+    inputValue = inputValue.replace(/\s{2,}/g, ' ');
+
     if (inputValue) {
       setEditBlocked(false)
     } else {
       setEditBlocked(true)
 
     }
-    setUser(prev => ({ ...prev, [inputName]: inputValue }));
+    setNewValueInput({ [inputName]: inputValue });
   }
 
   const handleSubmit = async () => {
     event.preventDefault();
+
     try {
-      if (user.name.trim()) {
-        const querySnapshot = await getDocs(query(collection(db, 'usersMarketList'), where('email', '==', userIn.email)));
-        const market = querySnapshot.docs[0]?.data()?.markeList || [];
-        if (!querySnapshot.empty) {
-          const updatedMarkeList = market.map(itemListFromFirebase => {
-            if (itemListFromFirebase.id === user.id) {
-              return { ...itemListFromFirebase, name: user.name };
-            }
-            return itemListFromFirebase;
-          });
-          await updateDoc(doc(db, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
-          setList(updatedMarkeList)
-          setSelectedTag(updatedMarkeList)
-          console.log('isDone actualizado en Firestore correctamente.');
-          setIsOpen(false)
-        } else {
-          console.log('El documento no existe en Firestore.');
-        }
-      } else {
-        setEditBlocked(item.name)
-      }
+      await updateDoc(doc(db, "testlist", item.id), { name: newValueInput.name.trim() })
+      setList(prev => prev.map(itemLocated => itemLocated.id == item.id ? { ...item, name: newValueInput.name.trim() } : itemLocated))
+      setIsOpen(false)
     } catch (error) {
       console.error('Error al actualizar isDone en Firestore:', error);
     }
   }
-  const hScreen = Math.round(window.innerHeight - 250)
+
   return (
     <Dialog open={isOpen} onChange={isOpen} setIsOpen={setIsOpen}>
-      <DialogTrigger onClick={() => [setUser(item), setIsOpen(true)]} className={`flex items-center w-auto h-5 z-50 rounded-md text-[10px] text-center px-0.5 bg-slate-100 border border-gray-900 ${isEditControl || 'hidden'}`}>Editar</DialogTrigger>
+      <DialogTrigger onClick={() => setIsOpen(true)} className={`flex items-center w-auto h-5 z-50 rounded-md text-[10px] text-center px-0.5 bg-slate-100 border border-gray-900 ${userIn?.isEditControl || 'hidden'}`}>Editar</DialogTrigger>
       <DialogContent className={'rounded-lg top-1/2'}>
         <DialogHeader className={'flex flex-col gap-5'}>
           <DialogTitle className={'text-base'}>¿Estás seguro que deseas editar este Item?</DialogTitle>
@@ -87,7 +75,7 @@ const EditDialog = ({ item, isEditControl }) => {
                       handleSubmit()
                     }
                   }}
-                  value={user.name || ''}
+                  value={newValueInput.name || ''}
                   placeholder={'Item'}
                   required
                 />
