@@ -3,7 +3,7 @@ import { Link, Outlet } from 'react-router-dom';
 import UserConectedIcon from "../assets/user-svgrepo-com-green.svg";
 import UserDisconectedIcon from "../assets/user-svgrepo-com-red.svg";
 import { signOut } from 'firebase/auth';
-import { auth, auth2 } from '../utils/firebase';
+import { auth } from '../utils/firebase';
 import { AllItemsContext } from './Contex';
 import { firstLetterUpperCase } from "../utils/util.js";
 import { Button } from './ui/button.jsx';
@@ -32,7 +32,6 @@ const Header = () => {
   const handleClick = async () => {
     await setUserIn(null)
     await signOut(auth);
-    await signOut(auth2);
   }
   return (
     <div className='flex flex-col gap-2 items-center'>

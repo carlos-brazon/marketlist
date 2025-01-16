@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { AllItemsContext } from './Contex';
 import { useContext } from 'react';
 import { arrayUnion, doc, updateDoc, collection, getDocs, query, where } from 'firebase/firestore';
-import { db2 } from '../utils/firebase';
+import { db } from '../utils/firebase';
 import MarketList from './MarketList';
 import Input from './Input';
 import { Button } from './ui/button';
@@ -42,7 +42,7 @@ const Form = () => {
         if (user.name) {
             try {
                 setUser(prev => ({ ...prev, name: '' }));
-                const dataUser = await getDocs(query(collection(db2, 'usersMarketList'), where('email', '==', userIn.email)));
+                const dataUser = await getDocs(query(collection(db, 'usersMarketList'), where('email', '==', userIn.email)));
                 const marketListUser = dataUser.docs[0]?.data().markeList || []
                 const listFilterTags = marketListUser.filter(item => item.tags === button)
                 const productExists = listFilterTags.some(item => item.tags === user.tags && item.name === user.name.trim());
@@ -57,12 +57,12 @@ const Form = () => {
                     const timestamp = Timestamp.fromDate(date);
                     setList(prev => [...prev, { ...user, isDone: false, priority: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim(), create_at: timestamp, amount: 0 }]);
                     setSelectedTag(prev => [...prev, { ...user, isDone: false, priority: false, id: newId, name: user.name.toLowerCase(), tags: user.tags.trim() }])
-                    const newId = doc(collection(db2, 'newId')).id;
-                    await updateDoc(doc(db2, 'usersMarketList', userIn.uid), {
+                    const newId = doc(collection(db, 'newId')).id;
+                    await updateDoc(doc(db, 'usersMarketList', userIn.uid), {
                         last_tags: user.tags.trim(),
                         markeList: arrayUnion({ ...user, tags: user.tags.trim(), isDone: false, id: newId, priority: false, create_at: date, amount: 0 })
                     });
-                    await updateDoc(doc(db2, 'usersData', userIn.uid), {
+                    await updateDoc(doc(db, 'usersData', userIn.uid), {
                         last_tags: user.tags.trim(),
                         markeList: arrayUnion({ ...user, tags: user.tags.trim(), isDone: false, id: newId, priority: false, create_at: date, amount: 0 })
                     });

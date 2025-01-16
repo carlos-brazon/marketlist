@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/sheet"
 import { Button } from './ui/button';
 import { useToast } from "@/components/ui/use-toast"
-import { auth2 } from '../utils/firebase';
+import { auth } from '../utils/firebase';
 
 const SingIn = () => {
     const { toast } = useToast()
@@ -25,7 +25,7 @@ const SingIn = () => {
 
     const handleSubmit = async () => {
         event.preventDefault();
-        await signInWithEmailAndPassword(auth2, user.email, user.password)
+        await signInWithEmailAndPassword(auth, user.email, user.password)
             .then((userCredential) => {
                 toast({
                     title: <div className='flex gap-2 items-center justify-center'><span className='text-green-700'>Sesión iniciada correctamente</span></div>,
@@ -105,7 +105,7 @@ export default SingIn;
 // } from "@/components/ui/sheet"
 // import { Button } from './ui/button';
 // import { useToast } from "@/components/ui/use-toast"
-// import { auth2, db, db2 } from '../utils/firebase';
+// import { auth, db, db2 } from '../utils/firebase';
 // import { collection, doc, getDocs, setDoc } from 'firebase/firestore';
 // import { AllItemsContext } from './Contex';
 
@@ -122,7 +122,7 @@ export default SingIn;
 //         event.preventDefault();
 //         try {
 //             // Intenta iniciar sesión en la nueva BBDD
-//             await signInWithEmailAndPassword(auth2, user.email, user.password);
+//             await signInWithEmailAndPassword(auth, user.email, user.password);
 
 //             // Si la autenticación en la nueva BBDD fue exitosa
 //             toast({
@@ -138,7 +138,7 @@ export default SingIn;
 //             if (foundUser) {
 //                 //si el usuario existe en la antigua base de datos se bebe crear el usuario en el nuevo firebase
 //                 const userToFirebase = { ...foundUser.data(), email: user.email.toLowerCase() };
-//                 await createUserWithEmailAndPassword(auth2, user.email, user.password)
+//                 await createUserWithEmailAndPassword(auth, user.email, user.password)
 //                     .then(async (userCredential) => {
 //                         const newUser = userCredential.user;
 //                         delete userToFirebase.password;

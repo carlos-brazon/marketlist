@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { db2 } from '../utils/firebase';
+import { db } from '../utils/firebase';
 import { AllItemsContext } from './Contex';
 import { firstLetterUpperCase } from '../utils/util';
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
@@ -11,7 +11,7 @@ const DeleteDialog = () => {
 
     const handleClick = async () => {
         setAddTags(false);
-        const userDocRef = doc(db2, 'usersMarketList', userIn.uid);
+        const userDocRef = doc(db, 'usersMarketList', userIn.uid);
         const userDocSnapshot = await getDoc(userDocRef);
 
         if (userDocSnapshot.exists()) {

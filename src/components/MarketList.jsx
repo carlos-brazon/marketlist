@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { collection, query, where, getDocs, getDoc, doc, updateDoc } from 'firebase/firestore';
-import { db2 } from '../utils/firebase';
+import { db } from '../utils/firebase';
 import { AllItemsContext } from './Contex';
 import Tags from '../Tags';
 import { firstLetterUpperCase } from '../utils/util';
@@ -48,7 +48,7 @@ const MarketList = () => {
       return updatedList;
     });
     try {
-      const querySnapshot = await getDocs(query(collection(db2, 'usersMarketList'), where('email', '==', userIn.email)));
+      const querySnapshot = await getDocs(query(collection(db, 'usersMarketList'), where('email', '==', userIn.email)));
       const market = querySnapshot.docs[0]?.data()?.markeList || [];
       if (!querySnapshot.empty) {
         const updatedMarkeList = market.map(item => {
@@ -57,7 +57,7 @@ const MarketList = () => {
           }
           return item;
         });
-        await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
+        await updateDoc(doc(db, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
         console.log('isDone actualizado en Firestore correctamente.');
       } else {
         console.log('El documento no existe en Firestore.');
@@ -74,11 +74,11 @@ const MarketList = () => {
     //entrada del doble click
     if (tapCount === 1 && lastTapData.id == objitem.id) {
       try {
-        const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
+        const userDocSnapshot = await getDoc(doc(db, 'usersMarketList', userIn.uid));
         if (userDocSnapshot.exists()) {
           const userData = userDocSnapshot.data();
           const updatedMarkeList = userData.markeList.filter(item => item.id !== objitem.id);
-          await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
+          await updateDoc(doc(db, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
           console.log('Producto eliminado de Firestore correctamente.');
 
           if (updatedMarkeList.length === 0 || list.length === 0) {
@@ -97,7 +97,7 @@ const MarketList = () => {
               }
               return acc
             }, []);
-            updateDoc(doc(db2, 'usersMarketList', userIn.uid), { last_tags: arrayStringTags.length > 1 && arrayStringTags.includes(button) ? button : arrayStringTags[0] || '' });
+            updateDoc(doc(db, 'usersMarketList', userIn.uid), { last_tags: arrayStringTags.length > 1 && arrayStringTags.includes(button) ? button : arrayStringTags[0] || '' });
             return arrayStringTags.length > 1 && arrayStringTags.includes(button) ? button : arrayStringTags[0]
           });
         } else {
@@ -124,7 +124,7 @@ const MarketList = () => {
       return updatedList
     });
     try {
-      const querySnapshot = await getDocs(query(collection(db2, 'usersMarketList'), where('email', '==', userIn.email)));
+      const querySnapshot = await getDocs(query(collection(db, 'usersMarketList'), where('email', '==', userIn.email)));
       const market = querySnapshot.docs[0]?.data()?.markeList || [];
       if (!querySnapshot.empty) {
         const date = new Date();
@@ -139,7 +139,7 @@ const MarketList = () => {
           }
           return item;
         });
-        await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
+        await updateDoc(doc(db, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
         setList(updatedMarkeList)
         setSelectedTag(updatedMarkeList)
         console.log('isDone actualizado en Firestore correctamente.');
@@ -183,7 +183,7 @@ const MarketList = () => {
     event.preventDefault();
     let numberToAmount = 0;
     setTimeout(async () => {
-      const userDocSnapshot = await getDoc(doc(db2, 'usersMarketList', userIn.uid));
+      const userDocSnapshot = await getDoc(doc(db, 'usersMarketList', userIn.uid));
       if (userDocSnapshot.exists()) {
         const userData = userDocSnapshot.data();
         const updatedMarkeList = userData.markeList.map(item2 => {
@@ -198,7 +198,7 @@ const MarketList = () => {
           return item2
         });
         setAmount(Number(numberToAmount.toFixed(2)))
-        await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
+        await updateDoc(doc(db, 'usersMarketList', userIn.uid), { markeList: updatedMarkeList });
       }
     }, 1000);
   }
@@ -218,13 +218,13 @@ const MarketList = () => {
             <div className='w-16 border text-center text-sm border-black rounded-md px-1 py-0.5 '>{amount}</div>
           </div>
 
-          <img onClick={async () => { setIsDateControl(prev => !prev), await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { isDateControl: !isDateControl }) }} className='w-8 h-w-8' src={isDateControl ? iconCalendarTrue : iconCalendarFalse} alt='Aquí va un icono de calendario' />
+          <img onClick={async () => { setIsDateControl(prev => !prev), await updateDoc(doc(db, 'usersMarketList', userIn.uid), { isDateControl: !isDateControl }) }} className='w-8 h-w-8' src={isDateControl ? iconCalendarTrue : iconCalendarFalse} alt='Aquí va un icono de calendario' />
 
-          <img onClick={async () => { setAddControl(prev => !prev), await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { addControl: !addControl }) }} className='w-8 h-w-8' src={addControl ? iconCalculatorTrue : iconCalculatorFalse} alt='Aquí va un icono de calculadora' />
+          <img onClick={async () => { setAddControl(prev => !prev), await updateDoc(doc(db, 'usersMarketList', userIn.uid), { addControl: !addControl }) }} className='w-8 h-w-8' src={addControl ? iconCalculatorTrue : iconCalculatorFalse} alt='Aquí va un icono de calculadora' />
 
-          <img onClick={async () => { setIsDoneControl(prev => !prev), await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { isDoneControl: !isDoneControl }) }} className='w-8 h-w-8' src={isDoneControl ? iconUrgentTrue : iconUrgentFalse} alt='Aquí va un icono de urgente' />
+          <img onClick={async () => { setIsDoneControl(prev => !prev), await updateDoc(doc(db, 'usersMarketList', userIn.uid), { isDoneControl: !isDoneControl }) }} className='w-8 h-w-8' src={isDoneControl ? iconUrgentTrue : iconUrgentFalse} alt='Aquí va un icono de urgente' />
 
-          <img onClick={async () => { setIsEditControl(prev => !prev), await updateDoc(doc(db2, 'usersMarketList', userIn.uid), { isEditControl: !isEditControl }) }} className='w-8 h-w-8' src={isEditControl ? iconEditTrue : iconEditFalse} alt='Aquí va un icono de editar' />
+          <img onClick={async () => { setIsEditControl(prev => !prev), await updateDoc(doc(db, 'usersMarketList', userIn.uid), { isEditControl: !isEditControl }) }} className='w-8 h-w-8' src={isEditControl ? iconEditTrue : iconEditFalse} alt='Aquí va un icono de editar' />
 
         </div>
         {list?.length ?
