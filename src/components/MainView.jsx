@@ -28,7 +28,7 @@ const MainView = () => {
 
         }} className='bg-slate-400 p-2 rounded-md'> traer usuario</button>
       </div>
-      <div>
+      {/* <div>
         <button onClick={async () => {
           usuariosOld.forEach(async (usuarioantiguo) => {
             try {
@@ -73,7 +73,7 @@ const MainView = () => {
           })
 
         }} className='bg-slate-400 p-2 rounded-md'> subir usuario a nueva coleccion</button>
-      </div>
+      </div> */}
       <ListControls amount={amount} />
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 250)}px` }}
