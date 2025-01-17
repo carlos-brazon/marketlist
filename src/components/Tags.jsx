@@ -25,7 +25,7 @@ const Tags = ({ setAmount }) => {
 
 
     const handleClic = async (string) => {
-        await updateDoc(doc(db, 'test', userIn.uid), { last_tags: string });
+        await updateDoc(doc(db, 'userMarketList', userIn.uid), { last_tags: string });
         setButton(string)
         setValueInputNewTags(string)
         const listByTags = temporalCloud.filter(item => item.tags == string);
@@ -39,7 +39,7 @@ const Tags = ({ setAmount }) => {
             ...prev,
             sortAscending: newValueOrder // Usamos 'prev' en lugar de 'userIn'
         }));
-        await updateDoc(doc(db, "test", userIn.uid), { sortAscending: newValueOrder });
+        await updateDoc(doc(db, "userMarketList", userIn.uid), { sortAscending: newValueOrder });
     }
     const handleUrgente = async () => {
         const newValueUrgent = !userIn.orderByUrgent
@@ -47,7 +47,7 @@ const Tags = ({ setAmount }) => {
             ...prev,
             orderByUrgent: newValueUrgent // Usamos 'prev' en lugar de 'userIn'
         }));
-        await updateDoc(doc(db, "test", userIn.uid), { orderByUrgent: newValueUrgent });
+        await updateDoc(doc(db, "userMarketList", userIn.uid), { orderByUrgent: newValueUrgent });
     }
 
     useEffect(() => {

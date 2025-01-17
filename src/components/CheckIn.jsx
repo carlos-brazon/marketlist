@@ -61,7 +61,7 @@ const CheckIn = () => {
             .then(async (userCredential) => {
                 const newUser = userCredential.user;
                 delete userToFirebase.password;
-                await setDoc(doc(db, "test", newUser.uid), userToFirebase)
+                await setDoc(doc(db, "userMarketList", newUser.uid), userToFirebase)
                 history('/', { replace: true });
             })
             .catch((error) => {

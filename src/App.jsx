@@ -21,8 +21,8 @@ function App() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        const userFirebase = await getDocs(query(collection(db, 'test'), where('email', '==', user.email)));
-        const dataFromFirebase = await getDocs(query(collection(db, "testlist"), where("userUid", "==", user.uid)));
+        const userFirebase = await getDocs(query(collection(db, 'userMarketList'), where('email', '==', user.email)));
+        const dataFromFirebase = await getDocs(query(collection(db, "dataItemsMarketList"), where("userUid", "==", user.uid)));
         let userConected;
         let dataUser = [];
 

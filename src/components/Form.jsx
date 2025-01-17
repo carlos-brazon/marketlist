@@ -58,9 +58,9 @@ const Form = () => {
                         create_at: serverTimestamp(),
                         amount: 0
                     };
-                    await setDoc(doc(db, "testlist", itemId), itemToMarketList); //aqui lo agrego a firebase
+                    await setDoc(doc(db, "dataItemsMarketList", itemId), itemToMarketList); //aqui lo agrego a firebase
                     if (user.tags) {
-                        await updateDoc(doc(db, "test", userIn.uid), { last_tags: user.tags })
+                        await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: user.tags })
                     }
                     setTemporalCloud(prev => [...prev, { ...itemToMarketList, create_at: new Date() }])
                     setButton(tagsFinal)

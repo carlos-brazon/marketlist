@@ -26,9 +26,9 @@ const DeleteDialog = () => {
             const newValueLastTags = updateTemporalCloud.length ? updateTemporalCloud[0].tags : "Compras"
             try {
                 await Promise.all(
-                    itemsToDelete.map((e) => deleteDoc(doc(db, "testlist", e.id)))
+                    itemsToDelete.map((e) => deleteDoc(doc(db, "dataItemsMarketList", e.id)))
                 );
-                await updateDoc(doc(db, "test", userIn.uid), { last_tags: newValueLastTags })
+                await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: newValueLastTags })
             } catch (error) {
                 console.error('Error al actualizar o eliminar documentos en Firestore:', error);
             }

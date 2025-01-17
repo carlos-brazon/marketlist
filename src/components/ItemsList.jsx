@@ -19,10 +19,10 @@ const ItemsList = ({ setAmount }) => {
         //entrada del doble click
         if (tapCount === 1 && lastTapData.id == itemSelected.id) {
             try {
-                await deleteDoc(doc(db, "testlist", itemSelected.id))
+                await deleteDoc(doc(db, "dataItemsMarketList", itemSelected.id))
                 const deleteItemInTemporalCloud = [...temporalCloud].filter(item => item.id !== itemSelected.id);
                 if (list.length == 1) {
-                    await updateDoc(doc(db, "test", userIn.uid), { last_tags: temporalCloud[0].tags });
+                    await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: temporalCloud[0].tags });
                     setButton(temporalCloud[0].tags)
                 } else {
                     setButton(itemSelected.tags)
@@ -40,7 +40,7 @@ const ItemsList = ({ setAmount }) => {
         }
         //entrada click normal
         try {
-            await updateDoc(doc(db, "testlist", itemSelected.id), { isDone: newIsDoneValue });
+            await updateDoc(doc(db, "dataItemsMarketList", itemSelected.id), { isDone: newIsDoneValue });
             setTemporalCloud(prev => [...prev].map(itemInCloud => itemInCloud.id === itemSelected.id ? { ...itemInCloud, isDone: newIsDoneValue } : itemInCloud));
         } catch (error) {
             console.error('Error al actualizar isDone en Firestore:', error);
@@ -49,7 +49,7 @@ const ItemsList = ({ setAmount }) => {
 
     const handleSubmit = async (numberFromInput, item) => {
         event.preventDefault();
-        await updateDoc(doc(db, "testlist", item.id), { amount: Number(numberFromInput) });
+        await updateDoc(doc(db, "dataItemsMarketList", item.id), { amount: Number(numberFromInput) });
 
         const updateItemInTemporalCloud = temporalCloud.map((itemfound) => {
             if (itemfound.id === item.id) {
@@ -65,7 +65,7 @@ const ItemsList = ({ setAmount }) => {
     const handlePriority = async (itemSelected) => {
         const newValuePriority = !itemSelected.priority;
         try {
-            await updateDoc(doc(db, "testlist", itemSelected.id), { priority: newValuePriority });
+            await updateDoc(doc(db, "dataItemsMarketList", itemSelected.id), { priority: newValuePriority });
             const updateItemPriorityInTemporalCloud = temporalCloud.map(itemInCloud => itemInCloud.id == itemSelected.id ? { ...itemInCloud, priority: newValuePriority } : itemInCloud);
             setTemporalCloud(updateItemPriorityInTemporalCloud)
         } catch (error) {
@@ -99,7 +99,8 @@ const ItemsList = ({ setAmount }) => {
             setList(sortedList);
             return;
         } else if (userIn?.sortAscending) {
-            const sortedList = [...temporalCloud]?.sort((a, b) => {
+            const filteredList = [...temporalCloud]?.filter(item => item.tags === button);
+            const sortedList = [...filteredList]?.sort((a, b) => {
                 const nameA = isNaN(a.name) ? a.name : parseFloat(a.name);
                 const nameB = isNaN(b.name) ? b.name : parseFloat(b.name);
                 if (typeof nameA === "string" && typeof nameB === "string") {

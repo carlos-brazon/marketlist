@@ -29,8 +29,8 @@ const ListControls = ({ amount }) => {
     const newValue = !userIn[item.stateKey];
     const key = item.stateKey;
     try {
-      await updateDoc(doc(db, 'test', userIn.uid), { [key]: newValue });
       setUserIn({ ...userIn, [key]: newValue })
+      await updateDoc(doc(db, 'userMarketList', userIn.uid), { [key]: newValue });
     } catch (error) {
       console.error(`Error al actualizar ${key}:`, error);
     }

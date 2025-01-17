@@ -47,13 +47,14 @@ const MainView = () => {
                 orderByUrgent: false,
                 sortAscending: false,
               };
-              // await setDoc(doc(db, "test", usuarioantiguo.uid), userToFirebase)
+              await setDoc(doc(db, "userMarketList", usuarioantiguo.uid), userToFirebase)
 
               usuarioantiguo.markeList.forEach(async (untiem) => {
-                console.log(untiem.amount || 0);
+
+                console.log(untiem.amount);
 
                 const itemTofirebase = {
-                  amound: untiem.amount || 0,
+                  amount: untiem.amount || 0,
                   create_at: untiem.create_at || serverTimestamp(),
                   id: untiem.id,//
                   isDone: untiem.isDone,//
@@ -64,7 +65,7 @@ const MainView = () => {
                   userUid: usuarioantiguo.uid
                 };
 
-                await setDoc(doc(db, "testlist", untiem.id), itemTofirebase)
+                await setDoc(doc(db, "dataItemsMarketList", untiem.id), itemTofirebase)
               })
             } catch (error) {
               console.error('Error al actualizar newuser en Firestore:', error);

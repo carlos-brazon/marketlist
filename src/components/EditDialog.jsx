@@ -48,7 +48,7 @@ const EditDialog = ({ item }) => {
     event.preventDefault();
 
     try {
-      await updateDoc(doc(db, "testlist", item.id), { name: newValueInput.name.trim() })
+      await updateDoc(doc(db, "dataItemsMarketList", item.id), { name: newValueInput.name.trim() })
       setList(prev => prev.map(itemLocated => itemLocated.id == item.id ? { ...item, name: newValueInput.name.trim() } : itemLocated))
       setIsOpen(false)
     } catch (error) {

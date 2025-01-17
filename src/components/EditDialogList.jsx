@@ -34,8 +34,8 @@ const EditDialogList = () => {
         }
         return itemListFromFirebase;
       });
-      await Promise.all(updatedMarkeList.map(async (item) => await updateDoc(doc(db, "testlist", item.id), { tags: item.tags })))
-      await updateDoc(doc(db, "test", userIn.uid), { last_tags: user.name })
+      await Promise.all(updatedMarkeList.map(async (item) => await updateDoc(doc(db, "dataItemsMarketList", item.id), { tags: item.tags })))
+      await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: user.name })
       setButton(user.name);
       setTemporalCloud(updatedMarkeList)
       setIsOpen(false);

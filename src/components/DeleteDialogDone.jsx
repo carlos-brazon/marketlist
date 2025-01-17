@@ -29,10 +29,10 @@ const DeleteDialogDone = () => {
                     if (!noFoundTagsInFirebase) {//sino consigue la tags en updateTemporalCloud lo hago true para cambiar el nuevo valor de button
                         const newValueLastTags = updateTemporalCloud[0]?.tags || "Compras";
                         setButton(newValueLastTags)
-                        await updateDoc(doc(db, "test", userIn.uid), { last_tags: newValueLastTags })
+                        await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: newValueLastTags })
                     }
                     await Promise.all(
-                        itemsToDelete.map(async (item) => await deleteDoc(doc(db, "testlist", item.id)))
+                        itemsToDelete.map(async (item) => await deleteDoc(doc(db, "dataItemsMarketList", item.id)))
                     )
                     setTemporalCloud(updateTemporalCloud);
                 }
