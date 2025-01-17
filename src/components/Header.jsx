@@ -42,7 +42,7 @@ const Header = () => {
         <div className='flex relative gap-3 items-center'>
           {!userIn ? <SingIn /> : ''}
           <div className='flex gap-2 items-center text-white' >
-            <p className='text-sm'>{!userIn || `Hola, ${firstLetterUpperCase(userIn.nombre)}`}</p>
+            <p className='text-sm'>{!userIn || `Hola, ${firstLetterUpperCase(userIn.name_)}`}</p>
 
             <div className='relative'>
               <DropdownMenu>

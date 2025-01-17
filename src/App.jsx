@@ -17,41 +17,7 @@ function App() {
   const [userIn, setUserIn] = useState(null);
   const [temporalCloud, setTemporalCloud] = useState(null);
   const [loading, setLoading] = useState(true);
-  console.log(temporalCloud);
 
-  // useEffect(() => {
-  //   const unsubscribe = onAuthStateChanged(auth, async (user) => {
-  //     if (user) {
-  //       const userFirebase = await getDocs(query(collection(db, 'test'), where('email', '==', user.email)));
-  //       const dataFromFirebase = await getDocs(query(collection(db, "testlist"), where("userUid", "==", user.uid)))
-  //       let userConected;
-  //       let dataUser = []
-
-  //       userFirebase.forEach(user => {
-  //         userConected = user.data();
-  //       });
-
-  //       dataFromFirebase.forEach(item => {
-  //         dataUser.push(item.data())
-
-  //       });
-  //       setUserIn({ ...userConected, uid: user.uid });
-  //       const dataSorted = dataUser.sort((a, b) => {
-  //         const dateA = a.create_at.toDate ? a.create_at.toDate() : new Date(a.create_at);
-  //         const dateB = b.create_at.toDate ? b.create_at.toDate() : new Date(b.create_at);
-  //         return dateA - dateB;
-  //       });
-  //       setTemporalCloud(dataSorted);
-  //     } else {
-  //       setUserIn(null);
-  //       setTemporalCloud([]);
-  //     }
-  //     setLoading(false);
-  //   });
-  //   return () => {
-  //     unsubscribe();
-  //   }
-  // }, []);
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -70,12 +36,9 @@ function App() {
 
         setUserIn({ ...userConected, uid: user.uid });
 
-        // Asegúrate de que create_at sea una fecha válida
-
         const dataSorted = dataUser.sort((a, b) => {
-          const dateA = a.create_at ? (a.create_at.toDate ? a.create_at.toDate() : new Date(a.create_at)) : new Date(0); // Fecha de fallback si no existe
-          const dateB = b.create_at ? (b.create_at.toDate ? b.create_at.toDate() : new Date(b.create_at)) : new Date(0); // Fecha de fallback si no existe
-
+          const dateA = a.create_at ? (a.create_at.toDate ? a.create_at.toDate() : new Date(a.create_at)) : new Date(0);
+          const dateB = b.create_at ? (b.create_at.toDate ? b.create_at.toDate() : new Date(b.create_at)) : new Date(0);
           return dateA - dateB;
         });
 

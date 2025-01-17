@@ -34,8 +34,6 @@ const DeleteDialog = () => {
             }
             setButton(newValueLastTags)
             setTemporalCloud(updateTemporalCloud)
-        } else {
-            console.log("No se encontraron documentos con el tag:", button);
         }
     }
 

@@ -21,7 +21,7 @@ const Tags = ({ setAmount }) => {
     Tags.propTypes = {
         setAmount: PropTypes.func,
     };
-    const { userIn, setValueInputNewTags, setList, setAddTags, button, setButton, list, tags, setTags, temporalCloud } = useContext(AllItemsContext);
+    const { userIn, setValueInputNewTags, setList, setAddTags, button, setButton, tags, setTags, temporalCloud, setUserIn } = useContext(AllItemsContext);
 
 
     const handleClic = async (string) => {
@@ -34,12 +34,20 @@ const Tags = ({ setAmount }) => {
         setAmount(totalAmountToPrint);
     }
     const handleOrder = async () => {
-        const sortedList = list?.filter(item => item.tags === button).sort((a, b) => a.name.localeCompare(b.name));
-        await setList(sortedList);
+        const newValueOrder = !userIn.sortAscending
+        setUserIn(prev => ({
+            ...prev,
+            sortAscending: newValueOrder // Usamos 'prev' en lugar de 'userIn'
+        }));
+        await updateDoc(doc(db, "test", userIn.uid), { sortAscending: newValueOrder });
     }
-    const handleUrgente = () => {
-        const urgentList = list?.filter(item => item.tags === button).sort((a, b) => (a.priority ? -1 : 1) - (b.priority ? -1 : 1));
-        setList(urgentList);
+    const handleUrgente = async () => {
+        const newValueUrgent = !userIn.orderByUrgent
+        setUserIn(prev => ({
+            ...prev,
+            orderByUrgent: newValueUrgent // Usamos 'prev' en lugar de 'userIn'
+        }));
+        await updateDoc(doc(db, "test", userIn.uid), { orderByUrgent: newValueUrgent });
     }
 
     useEffect(() => {

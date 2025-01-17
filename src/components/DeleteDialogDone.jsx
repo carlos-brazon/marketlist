@@ -3,37 +3,43 @@ import { AlertDialogTitle } from '@radix-ui/react-alert-dialog'
 import { firstLetterUpperCase } from '../utils/util'
 import { AllItemsContext } from './Contex'
 import { useContext } from 'react'
-import { doc, getDoc, updateDoc } from 'firebase/firestore'
+import { deleteDoc, doc, updateDoc } from 'firebase/firestore'
 import { db } from '../utils/firebase'
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 
 const DeleteDialogDone = () => {
-    const { userIn, button, setButton, setList, setSelectedTag, setAddTags } = useContext(AllItemsContext)
+    const { button, setButton, setAddTags, temporalCloud, setTemporalCloud, userIn } = useContext(AllItemsContext)
 
     const handleDeleteDone = async () => {
         setAddTags(false);
-        const userDocRef = doc(db, 'usersMarketList', userIn.uid);
-        const userDocSnapshot = await getDoc(userDocRef);
+        if (temporalCloud.length) {
+            try {
+                let itemsToDelete = []
 
-        if (userDocSnapshot.exists()) {
-            const userDocData = userDocSnapshot.data();
-            const updatedMarkeList = userDocData.markeList.filter(item => item.isDone == false);
-            const tags = updatedMarkeList.reduce((acc, itemList) => {
-                if (itemList.tags) {
-                    if (!acc.includes(itemList.tags)) {
-                        acc.push(itemList.tags);
+                const updateTemporalCloud = temporalCloud.filter(item => {
+                    if (item.isDone == true && item.tags == button) {
+                        itemsToDelete.push(item);
+                    } else {
+                        return item
                     }
-                }
-                return acc
-            }, []);
-            if (tags.length == 1) {
-                setButton(tags[0])
-            }
-            setList(updatedMarkeList);
-            setSelectedTag(updatedMarkeList);
-            await updateDoc(userDocRef, { last_tags: tags.length > 1 && tags.includes(button) ? button : tags[0] || '', markeList: updatedMarkeList });
-        }
+                });
+                const noFoundTagsInFirebase = updateTemporalCloud.find(item => item.tags == button)// si consigue un item no hay necesidad de cambiar el estado button
 
+                if (itemsToDelete.length) {
+                    if (!noFoundTagsInFirebase) {//sino consigue la tags en updateTemporalCloud lo hago true para cambiar el nuevo valor de button
+                        const newValueLastTags = updateTemporalCloud[0]?.tags || "Compras";
+                        setButton(newValueLastTags)
+                        await updateDoc(doc(db, "test", userIn.uid), { last_tags: newValueLastTags })
+                    }
+                    await Promise.all(
+                        itemsToDelete.map(async (item) => await deleteDoc(doc(db, "testlist", item.id)))
+                    )
+                    setTemporalCloud(updateTemporalCloud);
+                }
+            } catch (error) {
+                console.error('Error al actualizar Firestore:', error);
+            }
+        }
     }
     return (
         <AlertDialog>

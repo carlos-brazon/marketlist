@@ -6,7 +6,6 @@ export const AllItemsContext = createContext();
 const Context = ({ children, userIn, setUserIn, temporalCloud, setTemporalCloud }) => {
   const [list, setList] = useState([]);
   const [addTags, setAddTags] = useState(false);
-  // const [button, setButton] = useState(userIn ? userIn?.markeList[0]?.tags : 'Compras'); asi estaba funcionando siempre
   const [button, setButton] = useState(userIn?.last_tags.length ? userIn?.last_tags : 'Compras');
   const [valueInputNewTags, setValueInputNewTags] = useState();
   const [tags, setTags] = useState([]);

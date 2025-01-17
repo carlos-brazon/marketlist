@@ -36,25 +36,33 @@ const CheckIn = () => {
 
     const handleSubmit = async () => {
         event.preventDefault();
+        setUser({})
         if (!user.email || !user.email.includes('@')) {
             setEmailError('Formato de correo invalido, debe contener @.');
             return;
         }
 
-        const showMessage = () => {
-            setTimeout(() => {
-                history('/', { replace: true });
-            }, 2000);
-        };
         const userId = doc(collection(db, 'newId')).id;
-        const userToFirebase = { id: userId, ...user, email: user.email.toLowerCase(), create_at: serverTimestamp(), isDateControl: false, isEditControl: false, isDoneControl: false, last_tags: 'Compras', addControl: false };
+        const userToFirebase = {
+            ...user,
+            id: userId,
+            email: user.email.toLowerCase(),
+            create_at: serverTimestamp(),
+            isDateControl: false,
+            isEditControl: false,
+            isDoneControl: false,
+            addControl: false,
+            last_tags: 'Compras',
+            sortAscending: false,
+            orderByUrgent: false
+        };
+        setMessageLogIn('Usuario registrado correctamente');
         createUserWithEmailAndPassword(auth, user.email, user.password)
             .then(async (userCredential) => {
                 const newUser = userCredential.user;
                 delete userToFirebase.password;
                 await setDoc(doc(db, "test", newUser.uid), userToFirebase)
-                setMessageLogIn('Usuario registrado correctamente');
-                showMessage();
+                history('/', { replace: true });
             })
             .catch((error) => {
                 setMessageLogIn('Error al registrar usuario, inténtalo de nuevo');
@@ -73,18 +81,18 @@ const CheckIn = () => {
                         <Input
                             className={'w-28'}
                             type={'text'}
-                            name={'nombre'}
+                            name={'name_'}
                             onChange={handleInput}
-                            value={user.nombre || ''}
+                            value={user.name_ || ''}
                             placeholder={'Nombre'}
                             required
                         />
                         <Input
                             className={'w-28'}
                             type={'text'}
-                            name={'apellido'}
+                            name={'last_name'}
                             onChange={handleInput}
-                            value={user.apellido || ''}
+                            value={user.last_name || ''}
                             placeholder={'Apellido'}
                             required
                         />

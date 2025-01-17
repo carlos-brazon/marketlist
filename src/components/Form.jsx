@@ -45,7 +45,7 @@ const Form = () => {
                     toast({
                         title: <div className='flex gap-2 items-center justify-center'><span>Repetido</span> <img className='h-8 w-8' src={Cancel} alt="" /></div>,
                         duration: '1000',
-                    })
+                    });
                 } else {
                     const itemId = doc(collection(db, 'newId')).id;
                     const itemToMarketList = {
