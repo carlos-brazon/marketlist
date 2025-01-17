@@ -4,15 +4,75 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import Tags from './Tags';
 import ListControls from './ListControls';
 import ItemsList from './ItemsList';
+import { collection, doc, getDocs, serverTimestamp, setDoc } from 'firebase/firestore';
+import { db } from '../utils/firebase';
 
 const MainView = () => {
   const { userIn } = useContext(AllItemsContext);
   const [amount, setAmount] = useState(0);
+  const [usuariosOld, setUsuariosOld] = useState([]);
 
   return (
     <div className='flex flex-col items-center gap-4 h-full w-screen px-3'>
       <Tags setAmount={setAmount} />
       <h4 className="text-base text-center font-medium leading-none">{userIn?.email == 'aa@gmail.com' ? 'Listu' : 'Lista'}</h4>
+      <div>
+        <button onClick={async () => {
+          const dataFromFirebase = await getDocs(collection(db, "usersMarketList"));
+          const userAndId = []
+          dataFromFirebase.forEach(usuario => {
+            userAndId.push({ ...usuario.data(), uid: usuario.ref.id })
+          })
+
+          setUsuariosOld(userAndId)
+
+        }} className='bg-slate-400 p-2 rounded-md'> traer usuario</button>
+      </div>
+      <div>
+        <button onClick={async () => {
+          usuariosOld.forEach(async (usuarioantiguo) => {
+            try {
+              const userId = doc(collection(db, 'newId')).id;
+              const userToFirebase = {
+                addControl: false,
+                create_at: serverTimestamp(),
+                email: usuarioantiguo.email.toLowerCase(),
+                id: userId,
+                isDateControl: false,
+                isDoneControl: false,
+                isEditControl: false,
+                last_name: usuarioantiguo.apellido,
+                last_tags: 'Compras',
+                name_: usuarioantiguo.nombre,
+                orderByUrgent: false,
+                sortAscending: false,
+              };
+              // await setDoc(doc(db, "test", usuarioantiguo.uid), userToFirebase)
+
+              usuarioantiguo.markeList.forEach(async (untiem) => {
+                console.log(untiem.amount || 0);
+
+                const itemTofirebase = {
+                  amound: untiem.amount || 0,
+                  create_at: untiem.create_at || serverTimestamp(),
+                  id: untiem.id,//
+                  isDone: untiem.isDone,//
+                  isDone_at: untiem.isDone_at || serverTimestamp(),
+                  name: untiem.name,//
+                  priority: untiem.priority || false,
+                  tags: untiem.tags,//
+                  userUid: usuarioantiguo.uid
+                };
+
+                await setDoc(doc(db, "testlist", untiem.id), itemTofirebase)
+              })
+            } catch (error) {
+              console.error('Error al actualizar newuser en Firestore:', error);
+            }
+          })
+
+        }} className='bg-slate-400 p-2 rounded-md'> subir usuario a nueva coleccion</button>
+      </div>
       <ListControls amount={amount} />
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 250)}px` }}
