@@ -61,10 +61,8 @@ const CheckIn = () => {
             .then(async (userCredential) => {
                 const newUser = userCredential.user;
                 delete userToFirebase.password;
-                setMessageLogIn('Usuario registrado correctamente');
-                showMessage();
-                await setDoc(doc(db2, "usersMarketList", newUser.uid), userToFirebase);
-                await setDoc(doc(db2, "usersData", newUser.uid), userToFirebase);
+                await setDoc(doc(db, "userMarketList", newUser.uid), userToFirebase)
+                history('/', { replace: true });
             })
             .catch((error) => {
                 setMessageLogIn('Error al registrar usuario, inténtalo de nuevo');
