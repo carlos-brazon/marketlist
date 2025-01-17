@@ -4,19 +4,16 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import Tags from './Tags';
 import ListControls from './ListControls';
 import ItemsList from './ItemsList';
-import { collection, doc, getDocs, serverTimestamp, setDoc } from 'firebase/firestore';
-import { db } from '../utils/firebase';
 
 const MainView = () => {
   const { userIn } = useContext(AllItemsContext);
   const [amount, setAmount] = useState(0);
-  const [usuariosOld, setUsuariosOld] = useState([]);
 
   return (
     <div className='flex flex-col items-center gap-4 h-full w-screen px-3'>
       <Tags setAmount={setAmount} />
       <h4 className="text-base text-center font-medium leading-none">{userIn?.email == 'aa@gmail.com' ? 'Listu' : 'Lista'}</h4>
-      <div>
+      {/* <div>
         <button onClick={async () => {
           const dataFromFirebase = await getDocs(collection(db, "usersMarketList"));
           const userAndId = []
@@ -27,7 +24,7 @@ const MainView = () => {
           setUsuariosOld(userAndId)
 
         }} className='bg-slate-400 p-2 rounded-md'> traer usuario</button>
-      </div>
+      </div> */}
       {/* <div>
         <button onClick={async () => {
           usuariosOld.forEach(async (usuarioantiguo) => {
