@@ -6,6 +6,7 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../utils/firebase';
 import { Separator } from "@/components/ui/separator"
 import moremenu from "/src/assets/more-menu3.svg";
+import check from "/src/assets/check-true.svg";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -37,7 +38,7 @@ const Tags = ({ setAmount }) => {
         const newValueOrder = !userIn.sortAscending
         setUserIn(prev => ({
             ...prev,
-            sortAscending: newValueOrder // Usamos 'prev' en lugar de 'userIn'
+            sortAscending: newValueOrder
         }));
         await updateDoc(doc(db, "userMarketList", userIn.uid), { sortAscending: newValueOrder });
     }
@@ -45,9 +46,9 @@ const Tags = ({ setAmount }) => {
         const newValueUrgent = !userIn.orderByUrgent
         setUserIn(prev => ({
             ...prev,
-            orderByUrgent: newValueUrgent // Usamos 'prev' en lugar de 'userIn'
+            orderByUrgent: newValueUrgent
         }));
-        await updateDoc(doc(db, "userMarketList", userIn.uid), { orderByUrgent: newValueUrgent });
+        await updateDoc(doc(db, "userMarketList", userIn.uid), { orderByUrgent: !userIn.orderByUrgent });
     }
 
     useEffect(() => {
@@ -90,12 +91,30 @@ const Tags = ({ setAmount }) => {
                                     <EditDialogList />
                                     <DeleteDialogDone />
                                     <DeleteDialog />
+
                                     <DropdownMenuItem className='px-2 py-1.5 text-sm hover:bg-slate-100 rounded-sm' onClick={() => setTimeout(() => {
                                         handleOrder()
-                                    }, 10)}> Ordenar A-Z</DropdownMenuItem>
+                                    }, 10)}>
+                                        <div className='flex gap-2 items-center'>
+                                            {userIn?.sortAscending && (
+                                                <img className='w-4 h-4' src={check} alt="un check" />
+                                            )}
+
+                                            <div>Ordenar A-Z</div>
+                                        </div>
+                                    </DropdownMenuItem>
+
                                     <DropdownMenuItem className='px-2 py-1.5 text-sm hover:bg-slate-100 rounded-sm' onClick={() => setTimeout(() => {
                                         handleUrgente()
-                                    }, 10)}> Ordenar Urgente</DropdownMenuItem>
+                                    }, 10)}>
+                                        <div className='flex gap-2 items-center'>
+                                            {userIn?.orderByUrgent && (
+                                                <img className='w-4 h-4' src={check} alt="un check" />
+                                            )}
+
+                                            <div>Ordenar urgentes</div>
+                                        </div>
+                                    </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </> : <button

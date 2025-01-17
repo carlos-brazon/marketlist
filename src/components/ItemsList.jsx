@@ -82,7 +82,7 @@ const ItemsList = ({ setAmount }) => {
             }
         });
 
-        if (userIn?.sortAscending && userIn?.orderByUrgent) {
+        if (userIn?.sortAscending && userIn?.orderByUrgent) { // si los 2 son true
             // Filtrar elementos por el tag seleccionado
             const filteredList = [...temporalCloud]?.filter(item => item.tags === button);
 
