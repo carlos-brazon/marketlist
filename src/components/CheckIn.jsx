@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { doc, setDoc } from 'firebase/firestore';
+import { collection, doc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { auth, db } from '../utils/firebase.js';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router';
@@ -36,26 +36,35 @@ const CheckIn = () => {
 
     const handleSubmit = async () => {
         event.preventDefault();
+        setUser({})
         if (!user.email || !user.email.includes('@')) {
             setEmailError('Formato de correo invalido, debe contener @.');
             return;
         }
 
-        const showMessage = () => {
-            setTimeout(() => {
-                history('/', { replace: true });
-            }, 2000);
+        const userId = doc(collection(db, 'newId')).id;
+        const userToFirebase = {
+            ...user,
+            id: userId,
+            email: user.email.toLowerCase(),
+            create_at: serverTimestamp(),
+            isDateControl: false,
+            isEditControl: false,
+            isDoneControl: false,
+            addControl: false,
+            last_tags: 'Compras',
+            sortAscending: false,
+            orderByUrgent: false
         };
-
-        const userToFirebase = { ...user, markeList: [], email: user.email.toLowerCase() };
+        setMessageLogIn('Usuario registrado correctamente');
         createUserWithEmailAndPassword(auth, user.email, user.password)
             .then(async (userCredential) => {
                 const newUser = userCredential.user;
                 delete userToFirebase.password;
                 setMessageLogIn('Usuario registrado correctamente');
                 showMessage();
-                await setDoc(doc(db, "usersMarketList", newUser.uid), userToFirebase);
-                await setDoc(doc(db, "usersData", newUser.uid), userToFirebase);
+                await setDoc(doc(db2, "usersMarketList", newUser.uid), userToFirebase);
+                await setDoc(doc(db2, "usersData", newUser.uid), userToFirebase);
             })
             .catch((error) => {
                 setMessageLogIn('Error al registrar usuario, inténtalo de nuevo');
@@ -74,18 +83,18 @@ const CheckIn = () => {
                         <Input
                             className={'w-28'}
                             type={'text'}
-                            name={'nombre'}
+                            name={'name_'}
                             onChange={handleInput}
-                            value={user.nombre || ''}
+                            value={user.name_ || ''}
                             placeholder={'Nombre'}
                             required
                         />
                         <Input
                             className={'w-28'}
                             type={'text'}
-                            name={'apellido'}
+                            name={'last_name'}
                             onChange={handleInput}
-                            value={user.apellido || ''}
+                            value={user.last_name || ''}
                             placeholder={'Apellido'}
                             required
                         />

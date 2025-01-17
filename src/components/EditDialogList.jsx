@@ -9,12 +9,12 @@ import {
 import { useContext, useState } from 'react';
 import { AllItemsContext } from './Contex';
 import { DialogClose } from '@radix-ui/react-dialog';
-import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../utils/firebase';
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 
 const EditDialogList = () => {
-  const { button, userIn, setList, setSelectedTag, setButton } = useContext(AllItemsContext);
+  const { button, setTemporalCloud, setButton, temporalCloud, userIn } = useContext(AllItemsContext);
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState({});
   const [editBlocked, setEditBlocked] = useState(false);
@@ -28,18 +28,16 @@ const EditDialogList = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (user.name) {
-      const dataFirebase = await getDocs(query(collection(db, 'usersMarketList'), where('email', '==', userIn.email)));
-      const arrayMarketListFromFireBase = dataFirebase.docs[0]?.data()?.markeList || [];
-      const updatedMarkeList = arrayMarketListFromFireBase.map(itemListFromFirebase => {
+      const updatedMarkeList = temporalCloud.map(itemListFromFirebase => {
         if (itemListFromFirebase.tags === button) {
           return { ...itemListFromFirebase, tags: user.name };
         }
         return itemListFromFirebase;
       });
-      setButton(user.name)
-      setList(updatedMarkeList)
-      setSelectedTag(updatedMarkeList)
-      await updateDoc(doc(db, 'usersMarketList', userIn.uid), { last_tags: user.name, markeList: updatedMarkeList });
+      await Promise.all(updatedMarkeList.map(async (item) => await updateDoc(doc(db, "dataItemsMarketList", item.id), { tags: item.tags })))
+      await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: user.name })
+      setButton(user.name);
+      setTemporalCloud(updatedMarkeList)
       setIsOpen(false);
     } else {
       setEditBlocked(true)
@@ -78,7 +76,6 @@ const EditDialogList = () => {
             <div className="flex gap-2 items-center justify-end">
               <DropdownMenuItem asChild className='border w-24 flex items-center justify-center'><DialogClose >Cancelar</DialogClose></DropdownMenuItem>
               <Button className='w-24' type="submit">Continuar</Button>
-              {/* <button className='p-2 bg-gray-800 rounded-md text-white text-sm font-medium cursor-pointer text-center' type="submit">Continuar</button> */}
             </div>
           </form>
         </DialogHeader>

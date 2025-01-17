@@ -1,38 +1,39 @@
 import { useContext } from 'react'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from './ui/alert-dialog';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../utils/firebase';
 import { AllItemsContext } from './Contex';
 import { firstLetterUpperCase } from '../utils/util';
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
 
 const DeleteDialog = () => {
-    const { button, setButton, setList, userIn, setAddTags, setSelectedTag } = useContext(AllItemsContext);
+    const { button, userIn, setButton, setAddTags, setTemporalCloud, temporalCloud } = useContext(AllItemsContext);
 
     const handleClick = async () => {
         setAddTags(false);
-        const userDocRef = doc(db, 'usersMarketList', userIn.uid);
-        const userDocSnapshot = await getDoc(userDocRef);
+        let updateTemporalCloud = [];
+        let itemsToDelete = []
 
-        if (userDocSnapshot.exists()) {
-            const userDocData = userDocSnapshot.data();
-            const updatedMarkeList = userDocData.markeList.filter(item => item.tags !== button);
-            const tags = updatedMarkeList.reduce((acc, itemList) => {
-                if (itemList.tags) {
-                    if (!acc.includes(itemList.tags)) {
-                        acc.push(itemList.tags);
-                    }
+        if (temporalCloud.length) {
+            temporalCloud.forEach((item) => {
+                if (item.tags == button) {
+                    itemsToDelete.push(item)
+                } else {
+                    updateTemporalCloud.push(item);
                 }
-                return acc
-            }, []);
-            if (tags.length) {
-                setButton(tags[0])
-            } else {
-                setButton('Compras');
+            });
+
+            const newValueLastTags = updateTemporalCloud.length ? updateTemporalCloud[0].tags : "Compras"
+            try {
+                await Promise.all(
+                    itemsToDelete.map((e) => deleteDoc(doc(db, "dataItemsMarketList", e.id)))
+                );
+                await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: newValueLastTags })
+            } catch (error) {
+                console.error('Error al actualizar o eliminar documentos en Firestore:', error);
             }
-            setList(updatedMarkeList);
-            setSelectedTag(updatedMarkeList);
-            await updateDoc(userDocRef, { last_tags: tags[0] || '', markeList: updatedMarkeList });
+            setButton(newValueLastTags)
+            setTemporalCloud(updateTemporalCloud)
         }
     }
 
