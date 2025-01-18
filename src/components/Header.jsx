@@ -41,6 +41,8 @@ const Header = () => {
   const [by, setBy] = useState(true);
   const [temporalImg, setTemporalImg] = useState('');
   const [imgFromFirebase, setImgFromFirebase] = useState('');
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [isDropMenuOpen, setIsDropMenuOpen] = useState(false);
 
   const showMessage = () => {
     setTimeout(() => {
@@ -74,7 +76,6 @@ const Header = () => {
     await setUserIn(null)
     await signOut(auth);
   }
-
   return (
     <div className='flex flex-col gap-2 items-center'>
       <header className="flex items-center justify-between relative text-white bg-neutral-800 py-1 px-3 w-full">
@@ -87,8 +88,8 @@ const Header = () => {
             <p className='text-sm'>{!userIn || `Hola, ${firstLetterUpperCase(userIn.name_)}`}</p>
 
             <div className='relative'>
-              <Sheet>
-                <SheetTrigger >
+              <Sheet open={isSheetOpen} onOpenChange={isDropMenuOpen ? setIsDropMenuOpen : setIsSheetOpen}>
+                <SheetTrigger>
                   {userIn ? <div className=' flex items-center justify-center rounded-full border-[2px] border-gray-500 bg-white w-10 h-10'>
                     {<img className={`relative rounded-full z-10 w-8 h-8`} src={userIn.last_url} alt='imagen redonda' />}
                   </div> : <img className='relative z-10 w-9 h-9' src={UserDisconectedIcon} alt='Aquí va un icono de usuario' />}
@@ -99,7 +100,7 @@ const Header = () => {
                     <SheetTitle><img className='h-28 w-full relative' src={userIn ? userIn.last_url : UserDisconectedIcon} alt="Imagen cuadrada de fondo" /></SheetTitle>
 
 
-                    <DropdownMenu>
+                    <DropdownMenu className=" absolute z-50" open={isDropMenuOpen} onOpenChange={setIsDropMenuOpen}>
 
                       <DropdownMenuTrigger className="pl-2">
                         {userIn ? <div className=' flex items-center justify-center rounded-full border-[2px] border-gray-500 bg-white w-[106px] h-[106px] absolute top-[40px]'>
