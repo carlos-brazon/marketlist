@@ -45,47 +45,46 @@ const SingIn = () => {
     }
 
     return (
-        <Sheet>
-            <SheetTrigger asChild><Button variant='secondary'> Iniciar sesión</Button></SheetTrigger>
-            <SheetContent>
-                <SheetHeader>
-                    <SheetTitle>Inicia sesión en MarketList</SheetTitle>
-                    <SheetDescription asChild>
-                        <div className={`flex flex-col gap-4 items-center`}>
-                            <form className='flex flex-col gap-2 items-center justify-center'>
-                                <Input
-                                    type={'text'}
-                                    name={'email'}
-                                    onChange={handleInput}
-                                    value={user.email || ''}
-                                    placeholder={'Email'}
-                                    className={'w-64'}
-                                    required
-                                />
-                                <Input
-                                    type={'password'}
-                                    name={'password'}
-                                    onChange={handleInput}
-                                    value={user.password || ''}
-                                    placeholder={'Password'}
-                                    minLength={6}
-                                    className={'w-64'}
-                                    required
-                                />
-                                <Button type="submit" onClick={() => handleSubmit()}>Iniciar sesión</Button>
-                            </form>
+        <>
 
-                            <Link to={'/checkIn'} className='font-normal text-sm leading-4'>
-                                Si no estás registrado{' '}
-                                <SheetClose className='font-semibold text-sm leading-4 underline' >
-                                    pulsa aquí
-                                </SheetClose>
-                            </Link>
-                        </div>
-                    </SheetDescription>
-                </SheetHeader>
-            </SheetContent>
-        </Sheet>
+            <div>Inicia sesión en MarketList</div>
+            <div >
+                <div className={`flex flex-col gap-4 items-center`}>
+                    <form className='flex flex-col gap-2 items-center justify-center'>
+                        <Input
+                            type={'text'}
+                            name={'email'}
+                            onChange={handleInput}
+                            value={user.email || ''}
+                            placeholder={'Email'}
+                            className={'w-64'}
+                            required
+                        />
+                        <Input
+                            type={'password'}
+                            name={'password'}
+                            onChange={handleInput}
+                            value={user.password || ''}
+                            placeholder={'Password'}
+                            minLength={6}
+                            className={'w-64'}
+                            required
+                        />
+                        <Button type="submit" onClick={() => handleSubmit()}>Iniciar sesión</Button>
+                    </form>
+
+                    <div className='font-normal text-sm leading-4'>
+                        Si no estás registrado{' '}
+                        <Link to={'/checkIn'} className='font-semibold text-sm leading-4 underline' >
+                            pulsa aquí
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        </>
+
+
+
     )
 }
 
