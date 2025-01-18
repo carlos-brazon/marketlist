@@ -1,13 +1,11 @@
 import { useContext, useState, useEffect } from 'react';
 import { Link, Outlet } from 'react-router-dom';
-import UserConectedIcon from "../assets/user-svgrepo-com-green.svg";
 import UserDisconectedIcon from "../assets/user-svgrepo-com-red.svg";
 import { signOut } from 'firebase/auth';
 import { auth, db } from '../utils/firebase';
 import { AllItemsContext } from './Contex';
 import { firstLetterUpperCase } from "../utils/util.js";
 import { Button } from './ui/button.jsx';
-import SingIn from './SingIn.jsx';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,21 +25,15 @@ import {
 } from "@/components/ui/sheet"
 import {
   Command,
-  CommandDialog,
-  CommandEmpty,
   CommandGroup,
-  CommandInput,
   CommandItem,
   CommandList,
   CommandSeparator,
-  CommandShortcut,
 } from "@/components/ui/command"
 import { useToast } from "@/components/ui/use-toast"
 import loginIcon from "../assets/login.svg";
 import logOutIcon from "../assets/login.svg";
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-
-
 
 const Header = () => {
   const { toast } = useToast()
@@ -57,29 +49,24 @@ const Header = () => {
   };
   const ramdomDog = async () => {
     try {
-      // Realiza la solicitud
       const response = await fetch('https://dog.ceo/api/breed/hound/images/random/6');
-      // const response = await fetch('https://dog.ceo/api/breed/hound/images/random');
-      // Asegúrate de convertir la respuesta a JSON
       const data = await response.json();
-      // Accede a la URL de la imagen en la respuesta
-      setTemporalImg(data.message); // La URL está en la propiedad "message"
+      setTemporalImg(data.message);
       return data.message
     } catch (error) {
       console.error("Error fetching the image:", error);
     }
   }
-  const yyy = async () => {
-    const urlImagenesFromFirebas = await getDoc(doc(db, "urlDogs", "one"))
-    setImgFromFirebase(urlImagenesFromFirebas.data().urls)
+  const urlsFromFirebase = async () => {
+    const urlArray = await getDoc(doc(db, "urlDogs", "one"))
+    setImgFromFirebase(urlArray.data().urls)
     setTemporalImg([userIn.last_url || temporalImg[0]])
-
   }
   useEffect(() => {
     showMessage();
     if (userIn) {
-      yyy()
-      ramdomDog()
+      ramdomDog();
+      urlsFromFirebase();
     }
   }, []);
 
@@ -103,13 +90,13 @@ const Header = () => {
               <Sheet>
                 <SheetTrigger >
                   {userIn ? <div className=' flex items-center justify-center rounded-full border-[2px] border-gray-500 bg-white w-10 h-10'>
-                    {<img className={`relative rounded-full z-10 w-8 h-8`} src={userIn.last_url || temporalImg[0]} alt='imagen redonda' />}
+                    {<img className={`relative rounded-full z-10 w-8 h-8`} src={userIn.last_url} alt='imagen redonda' />}
                   </div> : <img className='relative z-10 w-9 h-9' src={UserDisconectedIcon} alt='Aquí va un icono de usuario' />}
                 </SheetTrigger>
                 <SheetContent className="p-0 w-64 flex flex-col justify-between">
                   <SheetHeader>
 
-                    <SheetTitle><img className='h-28 w-full relative' src={userIn ? userIn.last_url || temporalImg[0] : UserDisconectedIcon} alt="Imagen cuadrada de fondo" /></SheetTitle>
+                    <SheetTitle><img className='h-28 w-full relative' src={userIn ? userIn.last_url : UserDisconectedIcon} alt="Imagen cuadrada de fondo" /></SheetTitle>
 
 
                     <DropdownMenu>
@@ -117,8 +104,8 @@ const Header = () => {
                       <DropdownMenuTrigger className="pl-2">
                         {userIn ? <div className=' flex items-center justify-center rounded-full border-[2px] border-gray-500 bg-white w-[106px] h-[106px] absolute top-[40px]'>
                           <img onClick={async () => {
-                            yyy()
-                          }} className={`absolute z-10 rounded-full w-24 h-24`} src={userIn.last_url || temporalImg[0]} alt='imagen redonda' />
+                            urlsFromFirebase()
+                          }} className={`absolute z-10 rounded-full w-24 h-24`} src={userIn.last_url} alt='imagen redonda' />
                         </div> : <img className='relative z-10 w-9 h-9' src={UserDisconectedIcon} alt='Aquí va un icono de usuario' />}
                       </DropdownMenuTrigger>
 
@@ -156,7 +143,7 @@ const Header = () => {
                         </div>
                         <Command>
                           <CommandList className="">
-                            <CommandGroup className="text-center" heading="Suggestions">
+                            <CommandGroup className="text-center" heading="Sugerencias">
                               <CommandItem>
                                 <div onClick={() => {
                                   if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -191,21 +178,10 @@ const Header = () => {
                                 </CommandItem>
                               </Link >
 
-                              {/* <CommandItem  >
-                                <div className={userIn || 'hidden'} onClick={async () => {
-                                  const newArrayUrls = await ramdomDog()
-                                  await setDoc(doc(db, "urlDogs", "one"), { urls: newArrayUrls })
-                                }}>
-                                  Cambiar imagenes
-                                </div>
-
-                              </CommandItem> */}
-
                             </CommandGroup>
                             <CommandSeparator />
-                            <CommandGroup className="text-center" heading="Settings">
-                              <CommandItem>Profile</CommandItem>
-                              {/* <CommandItem>Settings</CommandItem> */}
+                            <CommandGroup className={`text-center ${userIn || "hidden"}`} heading="Ajustes">
+                              <CommandItem>Perfil</CommandItem>
                             </CommandGroup>
                           </CommandList>
                         </Command>

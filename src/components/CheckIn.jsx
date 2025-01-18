@@ -54,7 +54,8 @@ const CheckIn = () => {
             addControl: false,
             last_tags: 'Compras',
             sortAscending: false,
-            orderByUrgent: false
+            orderByUrgent: false,
+            last_url: "https://images.dog.ceo/breeds/hound-ibizan/n02091244_3240.jpg"
         };
         setMessageLogIn('Usuario registrado correctamente');
         createUserWithEmailAndPassword(auth, user.email, user.password)
