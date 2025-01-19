@@ -54,7 +54,7 @@ const SheetContent = React.forwardRef(({ side = "right", className, children, ..
         className="absolute right-2 top-2 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
         {/* <X className="h-4 w-4" /> */}
 
-        <img className='h-6 w-6' src={cancelX} alt="Imagen de una X" />
+        <img className='h-4 w-4' src={cancelX} alt="Imagen de una X" />
         <span className="sr-only">Close</span>
       </SheetPrimitive.Close>
     </SheetPrimitive.Content>

@@ -34,11 +34,8 @@ const Form = () => {
             const tagsFinal = user.tags ? user.tags.trim() : button
             try {
                 setUser(prev => ({ ...prev, name: '', tags: '' }));
-                const arrayItemFilterByTags = temporalCloud.filter(item => {// aqui busco todos los items de la misma etiqueta (compras)
-                    if (item.tags == tagsFinal) {
-                        return item
-                    }
-                });
+                // aqui busco todos los items de la misma etiqueta (compras)
+                const arrayItemFilterByTags = temporalCloud.filter(item => { item.tags == tagsFinal });
                 const itemFound = arrayItemFilterByTags.find(element => element.name === user.name) // aqui verifico si el tiem nuevo existe dentro de ese array de etiquetas
 
                 if (itemFound) {// si existe me indica repetido, sino lo agrego a la base detas
@@ -78,7 +75,7 @@ const Form = () => {
     }
 
     return (
-        <div className={userIn ? 'flex flex-col items-center pt-2 gap-2' : 'hidden'}>
+        <div className={userIn ? 'flex flex-col items-center pt-2 gap-2 w-full' : 'hidden'}>
             <form className={`flex items-start gap-2 py-2`} onSubmit={handleSubmit}>
                 <div className={`relative ease-in-out duration-1000 flex items-start gap-1`} style={{ height: `${amoundPixel}px` }}>
                     <Textarea

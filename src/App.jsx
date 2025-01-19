@@ -69,21 +69,19 @@ function App() {
 
   return (
     <RootLayout>
-      <div className="animate-fade flex items-start relative justify-center min-h-screen min-w-min pb-3">
-        <div className='w-screen'>
-          <Contex userIn={userIn} setUserIn={setUserIn} temporalCloud={temporalCloud} setTemporalCloud={setTemporalCloud}>
-            <BrowserRouter>
-              <Routes>
-                <Route path='/' element={<Header />}>
-                  <Route index element={<Form />} />
-                  <Route path='HowToUse' element={<HowUse />} />
-                  <Route path='singin' element={<SingIn />} />
-                  <Route path='checkIn' element={<CheckIn />} />
-                </Route>
-              </Routes>
-            </BrowserRouter>
-          </Contex>
-        </div>
+      <div className="animate-fade flex items-start relative justify-center w-full pb-3">
+        <Contex userIn={userIn} setUserIn={setUserIn} temporalCloud={temporalCloud} setTemporalCloud={setTemporalCloud}>
+          <BrowserRouter>
+            <Routes>
+              <Route path='/' element={<Header />}>
+                <Route index element={<Form />} />
+                <Route path='HowToUse' element={<HowUse />} />
+                <Route path='singin' element={<SingIn />} />
+                <Route path='checkIn' element={<CheckIn />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </Contex>
       </div>
       <Toaster />
     </RootLayout>

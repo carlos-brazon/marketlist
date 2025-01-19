@@ -10,7 +10,7 @@ const MainView = () => {
   const [amount, setAmount] = useState(0);
 
   return (
-    <div className='flex flex-col items-center gap-4 h-full w-screen px-3'>
+    <div className='flex flex-col items-center gap-4 h-full w-full px-3'>
       <Tags setAmount={setAmount} />
       <h4 className="text-base text-center font-medium leading-none">{userIn?.email == 'aa@gmail.com' ? 'Liste' : 'Lista'}</h4>
       {/* <div>
@@ -73,7 +73,7 @@ const MainView = () => {
       </div> */}
       <ListControls amount={amount} />
       <ScrollArea
-        style={{ height: `${Math.round(window.innerHeight - 250)}px` }}
+        style={{ height: `${Math.round(window.innerHeight - 270)}px` }}
         className={`w-full rounded-md`}
       >
         <ItemsList setAmount={setAmount} />

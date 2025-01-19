@@ -77,7 +77,7 @@ const Header = () => {
     await signOut(auth);
   }
   return (
-    <div className='flex flex-col gap-2 items-center'>
+    <div className='flex w-full flex-col gap-2 items-center'>
       <header className="flex items-center justify-between relative text-white bg-neutral-800 py-1 px-3 w-full">
         <Link to={'/'}>
           <Button size='xs' variant='secondary'>Inicio</Button>
@@ -87,17 +87,17 @@ const Header = () => {
           <div className='flex gap-2 items-center text-white' >
             <p className='text-sm'>{!userIn || `Hola, ${firstLetterUpperCase(userIn.name_)}`}</p>
 
-            <div className='relative'>
+            <div className='relative flex justify-center'>
               <Sheet open={isSheetOpen} onOpenChange={isDropMenuOpen ? setIsDropMenuOpen : setIsSheetOpen}>
                 <SheetTrigger>
                   {userIn ? <div className=' flex items-center justify-center rounded-full border-[2px] border-gray-500 bg-white w-10 h-10'>
                     {<img className={`relative rounded-full z-10 w-8 h-8`} src={userIn.last_url} alt='imagen redonda' />}
                   </div> : <img className='relative z-10 w-9 h-9' src={UserDisconectedIcon} alt='Aquí va un icono de usuario' />}
                 </SheetTrigger>
-                <SheetContent className="p-0 w-64 flex flex-col justify-between">
-                  <SheetHeader>
+                <SheetContent className="p-0 w-72 flex flex-col justify-between">
+                  <SheetHeader className="space-y-0">
 
-                    <SheetTitle><img className='h-28 w-full relative' src={userIn ? userIn.last_url : UserDisconectedIcon} alt="Imagen cuadrada de fondo" /></SheetTitle>
+                    <SheetTitle><img className={`h-28 w-full relative ${userIn || 'pt-2'}`} src={userIn ? userIn.last_url : UserDisconectedIcon} alt="Imagen cuadrada de fondo" /></SheetTitle>
 
 
                     <DropdownMenu className=" absolute z-50" open={isDropMenuOpen} onOpenChange={setIsDropMenuOpen}>
@@ -133,19 +133,19 @@ const Header = () => {
                       </DropdownMenuContent>
                     </DropdownMenu>
 
-                    <SheetDescription asChild className="p-0">
-                      <div className='px-2 pt-0'>
-                        <div className='h-5 flex'>
-                          <div className='w-[45%]'></div>
-                          <div className='flex items-center justify-end gap-2'>
+                    <SheetDescription asChild>
+                      <div className='px-2 pt-2'>
+                        <div className='flex'>
+                          <div className='w-[38%]'></div>
+                          <div className='flex items-center justify-end gap-1'>
                             <div>{userIn?.name_}</div>
                             <div>{userIn?.last_name}</div>
                           </div>
                         </div>
                         <Command>
-                          <CommandList className="">
+                          <CommandList className="mt-2">
                             <CommandGroup className="text-center" heading="Sugerencias">
-                              <CommandItem>
+                              {/* <CommandItem>
                                 <div onClick={() => {
                                   if (navigator.clipboard && navigator.clipboard.writeText) {
                                     navigator.clipboard.writeText(userIn.email)
@@ -169,8 +169,7 @@ const Header = () => {
                                     {userIn?.email}
                                   </SheetClose>
                                 </div>
-                              </CommandItem>
-
+                              </CommandItem> */}
                               <Link to={'HowToUse'}>
                                 <CommandItem >
                                   <SheetClose className="w-screen flex items-start">
@@ -192,20 +191,45 @@ const Header = () => {
                   </SheetHeader>
                   <Link className={`relative ${!userIn || 'hidden'}`} to={'/singin'}>
                     <SheetClose>
-                      <div className={`flex absolute z-10 bottom-5 left-2 `}>
-                        <div><img className=' absolute  rounded-full p-0.5 w-10 h-10 bg-slate-600' src={loginIcon} alt="" /></div>
-                        <div onClick={() => handleClick()} className={` bg-slate-400 py-2 pl-12 pr-4 rounded-full  `}>Log In</div>
+                      <div onClick={() => handleClick()} className={`flex absolute z-10 bottom-5 left-2 `}>
+                        <img className=' absolute  rounded-full p-0.5 w-10 h-10 bg-slate-600' src={loginIcon} alt="" />
+                        <div className={` bg-slate-400 py-2 pl-12 pr-4 rounded-full  `}>Log In</div>
                       </div>
                     </SheetClose>
                   </Link >
-                  <Link className={`relative ${userIn || 'hidden'}`} to={'/'}>
-                    <SheetClose>
-                      <div className={`flex absolute z-10 bottom-5 left-2`}>
-                        <div><img className=' absolute  rounded-full p-0.5 w-10 h-10 bg-slate-600' src={logOutIcon} alt="" /></div>
-                        <div onClick={() => handleClick()} className={` bg-slate-400 py-2 pl-12 pr-4 rounded-full `}>Log Out</div>
-                      </div>
-                    </SheetClose>
-                  </Link >
+                  <div className={`flex flex-col relative ${userIn || 'hidden'}`}>
+                    <div onClick={() => {
+                      if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(userIn.email)
+                          .then(() => {
+                            toast({
+                              className: "p-0",
+                              title: <div className='p-1 flex gap-1 items-center justify-center'><span className=''>Email copiado en clipboard</span></div>,
+                              duration: '1000',
+                            })
+                          })
+                          .catch(err => {
+                            console.error("Error al copiar el correo:", err);
+                            alert("No se pudo copiar el correo. Por favor, intenta de nuevo.");
+                          });
+                      } else {
+                        console.warn("Clipboard API no es compatible con este navegador.");
+                        alert("Tu navegador no soporta la función de copiar al portapapeles.");
+                      }
+                    }}>
+                      <SheetClose className="flex items-start pl-2 pb-12">
+                        {userIn?.email}
+                      </SheetClose>
+                    </div>
+                    <Link to={'/'}>
+                      <SheetClose>
+                        <div onClick={() => handleClick()} className={`flex absolute z-10 bottom-5 left-2`}>
+                          <img className=' absolute  rounded-full p-0.5 w-10 h-10 bg-slate-600' src={logOutIcon} alt="" />
+                          <div className={` bg-slate-400 py-2 pl-12 pr-4 rounded-full `}>Log Out</div>
+                        </div>
+                      </SheetClose>
+                    </Link >
+                  </div>
                 </SheetContent>
               </Sheet>
             </div>
