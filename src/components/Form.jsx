@@ -34,12 +34,12 @@ const Form = () => {
             const tagsFinal = user.tags ? user.tags.trim() : button
             try {
                 setUser(prev => ({ ...prev, name: '', tags: '' }));
-                const arrayItemFilterByTags = [...temporalCloud].filter(item => {// aqui busco todos los items de la misma etiqueta (compras)
+                const arrayItemFilterByTags = temporalCloud.filter(item => {// aqui busco todos los items de la misma etiqueta (compras)
                     if (item.tags == tagsFinal) {
                         return item
                     }
                 });
-                const itemFound = arrayItemFilterByTags.find(element => element.name == user.name) // aqui verifico si el tiem nuevo existe dentro de ese array de etiquetas
+                const itemFound = arrayItemFilterByTags.find(element => element.name === user.name) // aqui verifico si el tiem nuevo existe dentro de ese array de etiquetas
 
                 if (itemFound) {// si existe me indica repetido, sino lo agrego a la base detas
                     toast({
@@ -58,11 +58,11 @@ const Form = () => {
                         create_at: serverTimestamp(),
                         amount: 0
                     };
+                    setTemporalCloud(prev => [...prev, { ...itemToMarketList, create_at: new Date() }])
                     await setDoc(doc(db, "dataItemsMarketList", itemId), itemToMarketList); //aqui lo agrego a firebase
                     if (user.tags) {
                         await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: user.tags })
                     }
-                    setTemporalCloud(prev => [...prev, { ...itemToMarketList, create_at: new Date() }])
                     setButton(tagsFinal)
                     toast({
                         title: <div className='flex gap-2 items-center justify-center'><span>Agregado</span> <img className='h-8 w-8' src={Accepted} alt="" /></div>,

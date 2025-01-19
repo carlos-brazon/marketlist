@@ -12,7 +12,7 @@ const MainView = () => {
   return (
     <div className='flex flex-col items-center gap-4 h-full w-screen px-3'>
       <Tags setAmount={setAmount} />
-      <h4 className="text-base text-center font-medium leading-none">{userIn?.email == 'aa@gmail.com' ? 'Listu' : 'Lista'}</h4>
+      <h4 className="text-base text-center font-medium leading-none">{userIn?.email == 'aa@gmail.com' ? 'Liste' : 'Lista'}</h4>
       {/* <div>
         <button onClick={async () => {
           const dataFromFirebase = await getDocs(collection(db, "usersMarketList"));

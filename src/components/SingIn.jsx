@@ -2,15 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import Input from './Input';
-import {
-    Sheet,
-    SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
-    SheetClose
-} from "@/components/ui/sheet"
+
 import { Button } from './ui/button';
 import { useToast } from "@/components/ui/use-toast"
 import { auth } from '../utils/firebase';
