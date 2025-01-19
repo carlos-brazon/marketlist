@@ -12,9 +12,10 @@ import { Textarea } from './ui/textarea';
 import chevronDown from "../assets/chevronDown.svg";
 import chevronUp from "../assets/chevronUp.svg";
 import MainView from './MainView';
+import { firstLetterUpperCase } from '../utils/util';
 
 const Form = () => {
-    const { setValueInputNewTags, valueInputNewTags, userIn, addTags, setButton, temporalCloud, setTemporalCloud, button } = useContext(AllItemsContext);
+    const { setValueInputNewTags, valueInputNewTags, userIn, addTags, setButton, temporalCloud, setTemporalCloud, button, setAddTags, setList } = useContext(AllItemsContext);
     const [user, setUser] = useState({ name: '', tags: valueInputNewTags });
     const { toast } = useToast()
     const [amoundPixel, setAmoundPixel] = useState(40);
@@ -35,10 +36,13 @@ const Form = () => {
             try {
                 setUser(prev => ({ ...prev, name: '', tags: '' }));
                 // aqui busco todos los items de la misma etiqueta (compras)
-                const arrayItemFilterByTags = temporalCloud.filter(item => item.tags == tagsFinal );
+                const arrayItemFilterByTags = temporalCloud.filter(item => item.tags == tagsFinal);
                 const itemFound = arrayItemFilterByTags.find(element => element.name === user.name) // aqui verifico si el tiem nuevo existe dentro de ese array de etiquetas
 
                 if (itemFound) {// si existe me indica repetido, sino lo agrego a la base detas
+                    setButton(user.tags)
+                    setValueInputNewTags(user.tags)
+                    setList(arrayItemFilterByTags)
                     toast({
                         title: <div className='flex gap-2 items-center justify-center'><span>Repetido</span> <img className='h-8 w-8' src={Cancel} alt="" /></div>,
                         duration: '1000',
@@ -50,23 +54,24 @@ const Form = () => {
                         isDone: false,
                         priority: false,
                         id: itemId,
-                        name: user.name,
+                        name: user.name.toLowerCase(),
                         tags: tagsFinal,
                         create_at: serverTimestamp(),
                         amount: 0
                     };
+                    setButton(tagsFinal)
                     setTemporalCloud(prev => [...prev, { ...itemToMarketList, create_at: new Date() }])
                     await setDoc(doc(db, "dataItemsMarketList", itemId), itemToMarketList); //aqui lo agrego a firebase
                     if (user.tags) {
                         await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: user.tags })
                     }
-                    setButton(tagsFinal)
                     toast({
                         title: <div className='flex gap-2 items-center justify-center'><span>Agregado</span> <img className='h-8 w-8' src={Accepted} alt="" /></div>,
                         duration: '1000',
                     });
 
                 }
+                setAddTags(false)
             } catch (error) {
                 console.error('Error al realizar la consulta:', error);
             }
@@ -88,7 +93,7 @@ const Form = () => {
                                 handleSubmit()
                             }
                         }}
-                        value={user.name || ''}
+                        value={firstLetterUpperCase(user.name) || ''}
                         placeholder={'Item'}
                         required
                     />

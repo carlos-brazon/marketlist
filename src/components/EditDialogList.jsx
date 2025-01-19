@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { useContext, useState } from 'react';
 import { AllItemsContext } from './Contex';
-import { DialogClose } from '@radix-ui/react-dialog';
+import { DialogClose, DialogDescription } from '@radix-ui/react-dialog';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../utils/firebase';
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
@@ -49,9 +49,12 @@ const EditDialogList = () => {
       <DialogTrigger asChild>
         <div className='px-2 py-1.5 text-sm hover:bg-slate-100 rounded-sm'>Editar Lista</div>
       </DialogTrigger>
-      <DialogContent className="rounded-lg top-1/2">
+      <DialogContent aria-describedby="dialog-description" className="rounded-lg top-1/2">
         <DialogHeader className="flex flex-col gap-5">
           <DialogTitle className="text-base">¿Estás seguro que deseas editar el nombre de la lista?</DialogTitle>
+          <DialogDescription id="dialog-description">
+            This is the description of the dialog, providing context to the user.
+          </DialogDescription>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
               <input

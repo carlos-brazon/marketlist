@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 import { firstLetterUpperCase } from '../utils/util'
 import { AllItemsContext } from './Contex'
 import EditDialog from './EditDialog'
-import { deleteDoc, doc, updateDoc } from 'firebase/firestore'
+import { deleteDoc, doc, serverTimestamp, updateDoc } from 'firebase/firestore'
 import { db } from '../utils/firebase'
 import PropTypes from 'prop-types';
 
@@ -10,7 +10,7 @@ const ItemsList = ({ setAmount }) => {
     ItemsList.propTypes = {
         setAmount: PropTypes.func,
     };
-    const { userIn, list, setList, button, setButton, temporalCloud, setTemporalCloud } = useContext(AllItemsContext);
+    const { userIn, list, setList, button, setButton, temporalCloud, setTemporalCloud, setValueInputNewTags, setAddTags } = useContext(AllItemsContext);
     const [lastTapData, setLastTapData] = useState({ id: null, time: 0 });
     const [tapCount, setTapCount] = useState(0);
 
@@ -19,15 +19,17 @@ const ItemsList = ({ setAmount }) => {
         //entrada del doble click
         if (tapCount === 1 && lastTapData.id == itemSelected.id) {
             try {
-                await deleteDoc(doc(db, "dataItemsMarketList", itemSelected.id))
                 const deleteItemInTemporalCloud = [...temporalCloud].filter(item => item.id !== itemSelected.id);
                 if (list.length == 1) {
-                    await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: temporalCloud[0].tags });
-                    setButton(temporalCloud[0].tags)
+                    setButton(deleteItemInTemporalCloud[0].tags)//aqui cambio el nombre de la etiqueta con el set
+                    setValueInputNewTags(deleteItemInTemporalCloud[0].tags) // aqui hago el set para cambiar el valor del input de las tags
+                    setAddTags(false) // aqui hago el set para que se cierre el input de las tags
+                    await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: deleteItemInTemporalCloud[0].tags });
                 } else {
                     setButton(itemSelected.tags)
                 }
-                setTemporalCloud(deleteItemInTemporalCloud);
+                setTemporalCloud(deleteItemInTemporalCloud);// hago set con el array sin el item (item eliminado)
+                await deleteDoc(doc(db, "dataItemsMarketList", itemSelected.id))
             } catch (error) {
                 console.error('Error al eliminar el producto:', error);
             }
@@ -40,8 +42,8 @@ const ItemsList = ({ setAmount }) => {
         }
         //entrada click normal
         try {
-            await updateDoc(doc(db, "dataItemsMarketList", itemSelected.id), { isDone: newIsDoneValue });
-            setTemporalCloud(prev => [...prev].map(itemInCloud => itemInCloud.id === itemSelected.id ? { ...itemInCloud, isDone: newIsDoneValue } : itemInCloud));
+            await updateDoc(doc(db, "dataItemsMarketList", itemSelected.id), { isDone: newIsDoneValue, isDone_at: serverTimestamp() });
+            setTemporalCloud(prev => [...prev].map(itemInCloud => itemInCloud.id === itemSelected.id ? { ...itemInCloud, isDone: newIsDoneValue, isDone_at: new Date() } : itemInCloud));
         } catch (error) {
             console.error('Error al actualizar isDone en Firestore:', error);
         }
@@ -143,7 +145,7 @@ const ItemsList = ({ setAmount }) => {
                                         {new Date(item.create_at && item.create_at.toDate ? item.create_at.toDate() : item.create_at).toLocaleString()}
                                     </div>
 
-                                    <div className={`${item.isDone ? 'line-through' : 'hidden'} ${item.priority && !item.isDone ? 'hidden' : ''}`}>{ }</div>
+                                    <div className={`${item.isDone ? 'line-through' : 'hidden'}`}>{new Date(item.isDone_at && item.isDone_at.toDate ? item.isDone_at.toDate() : item.isDone_at).toLocaleString()}</div>
                                 </div>
                             </div>
 

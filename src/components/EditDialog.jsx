@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import { Textarea } from './ui/textarea';
 import chevronDown from "../assets/chevronDown.svg";
 import chevronUp from "../assets/chevronUp.svg";
+import { DialogDescription } from '@radix-ui/react-dialog';
 
 const EditDialog = ({ item }) => {
   const { userIn, setList } = useContext(AllItemsContext)
@@ -62,54 +63,56 @@ const EditDialog = ({ item }) => {
       <DialogContent className={'rounded-lg top-1/2'}>
         <DialogHeader className={'flex flex-col gap-5'}>
           <DialogTitle className={'text-base'}>¿Estás seguro que deseas editar este Item?</DialogTitle>
-          <form className={`flex flex-col gap-4`}>
-            <div className='flex flex-col gap-2'>
-              <div className={`relative ease-in-out duration-1000 flex items-start gap-1`} style={{ height: `${amoundPixel}px` }}>
-                <Textarea
-                  className={`w-[330px] md:w-full rounded-md border border-gray-500  focus:border-black focus:border-[3px] focus-visible:ring-0 focus:outline-0 focus:ring-offset-0 focus-visible:ring-offset-0 h-full break-words resize-none pr-8 overflow-hidden`}
-                  type={'text'}
-                  name={'name'}
-                  onChange={handleInput}
-                  onKeyDown={(event) => {
-                    if (event.key === 'Enter') {
-                      handleSubmit()
-                    }
-                  }}
-                  value={newValueInput.name || ''}
-                  placeholder={'Item'}
-                  required
-                />
-                <div className='h-7 w-7 absolute right-0'>
-                  <img className={`mt-[6px] ${amoundPixel > 40 ? 'hidden' : ''}`} onClick={() => setAmoundPixel(prev => prev + 50)} src={chevronDown} alt="" />
-                  <div className={`flex flex-col relative ${amoundPixel == 40 ? '-z-20' : ''}`}>
-                    <img className={`mt-[6px] h-7 w-7 ${amoundPixel == 40 ? 'opacity-0 blur-3xl' : 'opacity-100 duration-[1000ms]'}`} onClick={() => setAmoundPixel(prev => {
-                      if (prev > 40) {
-                        return prev - 50
+          <DialogDescription asChild>
+            <form className={`flex flex-col gap-4`}>
+              <div className='flex flex-col gap-2'>
+                <div className={`relative ease-in-out duration-1000 flex items-start gap-1`} style={{ height: `${amoundPixel}px` }}>
+                  <Textarea
+                    className={`w-[330px] md:w-full rounded-md border border-gray-500  focus:border-black focus:border-[3px] focus-visible:ring-0 focus:outline-0 focus:ring-offset-0 focus-visible:ring-offset-0 h-full break-words resize-none pr-8 overflow-hidden`}
+                    type={'text'}
+                    name={'name'}
+                    onChange={handleInput}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter') {
+                        handleSubmit()
                       }
-                      if (prev == 40) {
-                        return prev
-                      }
-                    })} src={chevronUp} alt="Icon of chervronUp" />
+                    }}
+                    value={newValueInput.name || ''}
+                    placeholder={'Item'}
+                    required
+                  />
+                  <div className='h-7 w-7 absolute right-0'>
+                    <img className={`mt-[6px] ${amoundPixel > 40 ? 'hidden' : ''}`} onClick={() => setAmoundPixel(prev => prev + 50)} src={chevronDown} alt="" />
+                    <div className={`flex flex-col relative ${amoundPixel == 40 ? '-z-20' : ''}`}>
+                      <img className={`mt-[6px] h-7 w-7 ${amoundPixel == 40 ? 'opacity-0 blur-3xl' : 'opacity-100 duration-[1000ms]'}`} onClick={() => setAmoundPixel(prev => {
+                        if (prev > 40) {
+                          return prev - 50
+                        }
+                        if (prev == 40) {
+                          return prev
+                        }
+                      })} src={chevronUp} alt="Icon of chervronUp" />
 
-                    <img className={`mt-[6px] h-7 w-7 ${amoundPixel == 40 ? 'opacity-0 blur-3xl' : 'opacity-100 duration-[1000ms]'}`} onClick={() => setAmoundPixel(prev => {
-                      if (amoundPixel < hScreen) {
-                        return prev + 50
-                      } else {
-                        return prev
-                      }
-                    })} src={chevronDown} alt="Icon of chervronDown" />
+                      <img className={`mt-[6px] h-7 w-7 ${amoundPixel == 40 ? 'opacity-0 blur-3xl' : 'opacity-100 duration-[1000ms]'}`} onClick={() => setAmoundPixel(prev => {
+                        if (amoundPixel < hScreen) {
+                          return prev + 50
+                        } else {
+                          return prev
+                        }
+                      })} src={chevronDown} alt="Icon of chervronDown" />
+                    </div>
                   </div>
                 </div>
+                <div className='h-6'>
+                  {editBlocked && <p className='text-red-700 text-[12px]'>No se puede editar la información si el campo está vacío.</p>}
+                </div>
               </div>
-              <div className='h-6'>
-                {editBlocked && <p className='text-red-700 text-[12px]'>No se puede editar la información si el campo está vacío.</p>}
+              <div className='flex gap-2 justify-end'>
+                <Button onClick={() => setIsOpen(false)} variant='outline'>Cancel</Button>
+                <Button disabled={editBlocked && item.name} type="submit" onClick={() => handleSubmit()}>Editar</Button>
               </div>
-            </div>
-            <div className='flex gap-2 justify-end'>
-              <Button onClick={() => setIsOpen(false)} variant='outline'>Cancel</Button>
-              <Button disabled={editBlocked && item.name} type="submit" onClick={() => handleSubmit()}>Editar</Button>
-            </div>
-          </form>
+            </form>
+          </DialogDescription>
         </DialogHeader>
       </DialogContent>
     </Dialog>

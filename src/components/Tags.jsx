@@ -24,7 +24,6 @@ const Tags = ({ setAmount }) => {
     };
     const { userIn, setValueInputNewTags, setList, setAddTags, button, setButton, tags, setTags, temporalCloud, setUserIn } = useContext(AllItemsContext);
 
-
     const handleClic = async (string) => {
         await updateDoc(doc(db, 'userMarketList', userIn.uid), { last_tags: string });
         setButton(string)

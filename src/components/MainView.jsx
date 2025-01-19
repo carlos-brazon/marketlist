@@ -74,7 +74,7 @@ const MainView = () => {
       <ListControls amount={amount} />
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 270)}px` }}
-        className={`w-full rounded-md`}
+        className={`w-full rounded-md border border-red-600`}
       >
         <ItemsList setAmount={setAmount} />
       </ScrollArea >
