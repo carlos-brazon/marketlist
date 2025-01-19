@@ -53,7 +53,7 @@ const Form = () => {
                         isDone: false,
                         priority: false,
                         id: itemId,
-                        name: user.name.toLowerCase(),
+                        name: user.name,
                         tags: tagsFinal,
                         create_at: serverTimestamp(),
                         amount: 0
