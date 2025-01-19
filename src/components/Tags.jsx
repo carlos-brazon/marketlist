@@ -88,7 +88,7 @@ const Tags = ({ setAmount }) => {
                                     <img className='h-5 my-1.5 mr-1.5 ml-1' src={moremenu} alt="" />
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className={'flex flex-col items-end'} >
-                                    <EditDialogList />
+                                    {/* <EditDialogList /> */}
                                     <DeleteDialogDone />
                                     <DeleteDialog />
 

@@ -197,7 +197,7 @@ const Header = () => {
                       </div>
                     </SheetClose>
                   </Link >
-                  <div className={`flex flex-col relative ${userIn || 'hidden'}`}>
+                  <div className={`pl-2 gap-3 pb-10 flex flex-col relative ${userIn || 'hidden'}`}>
                     <div onClick={() => {
                       if (navigator.clipboard && navigator.clipboard.writeText) {
                         navigator.clipboard.writeText(userIn.email)
@@ -205,7 +205,7 @@ const Header = () => {
                             toast({
                               className: "p-0",
                               title: <div className='p-1 flex gap-1 items-center justify-center'><span className=''>Email copiado en clipboard</span></div>,
-                              duration: '1000',
+                              duration: '1300',
                             })
                           })
                           .catch(err => {
@@ -217,14 +217,14 @@ const Header = () => {
                         alert("Tu navegador no soporta la función de copiar al portapapeles.");
                       }
                     }}>
-                      <SheetClose className="flex items-start pl-2 pb-12">
+                      <SheetClose className="flex items-start">
                         {userIn?.email}
                       </SheetClose>
                     </div>
                     <Link to={'/'}>
                       <SheetClose>
-                        <div onClick={() => handleClick()} className={`flex absolute z-10 bottom-5 left-2`}>
-                          <img className=' absolute  rounded-full p-0.5 w-10 h-10 bg-slate-600' src={logOutIcon} alt="" />
+                        <div onClick={() => handleClick()}>
+                          <img className=' absolute rounded-full p-0.5 w-10 h-10 bg-slate-600' src={logOutIcon} alt="" />
                           <div className={` bg-slate-400 py-2 pl-12 pr-4 rounded-full `}>Log Out</div>
                         </div>
                       </SheetClose>

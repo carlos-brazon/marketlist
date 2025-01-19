@@ -3,7 +3,7 @@ import * as React from "react"
 import * as SheetPrimitive from "@radix-ui/react-dialog"
 import { cva } from "class-variance-authority";
 import { X } from "lucide-react"
-import cancelX from "../../assets/cancel.svg"
+import cancell from "../../assets/cancel.svg"
 
 import { cn } from "@/lib/utils"
 
@@ -52,9 +52,10 @@ const SheetContent = React.forwardRef(({ side = "right", className, children, ..
       {children}
       <SheetPrimitive.Close
         className="absolute right-2 top-2 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary">
-        {/* <X className="h-4 w-4" /> */}
-
-        <img className='h-4 w-4' src={cancelX} alt="Imagen de una X" />
+        {/* <X className="h-4 w-4 border border-black text-white" /> */}
+        {/* <cancell className=" border border-black text-white" />
+         */}
+        <img className='h-4 w-4' src={cancell} alt="Imagen de una X" />
         <span className="sr-only">Close</span>
       </SheetPrimitive.Close>
     </SheetPrimitive.Content>
