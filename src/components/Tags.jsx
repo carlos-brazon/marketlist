@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { AllItemsContext } from './Contex'
 import { firstLetterUpperCase } from '../utils/util';
 import Add from "../assets/add-black.svg";
@@ -23,6 +23,8 @@ const Tags = ({ setAmount }) => {
         setAmount: PropTypes.func,
     };
     const { userIn, setValueInputNewTags, setList, setAddTags, button, setButton, tags, setTags, temporalCloud, setUserIn } = useContext(AllItemsContext);
+    const [isDropOpen, setIsDropOpen] = useState(false)
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
 
     const handleClic = async (string) => {
         await updateDoc(doc(db, 'userMarketList', userIn.uid), { last_tags: string });
@@ -81,13 +83,17 @@ const Tags = ({ setAmount }) => {
                                 className={`px-[10px]`}>
                                 <p >{firstLetterUpperCase(string)}</p>
                             </button >
+                            <div> {isDialogOpen ? <EditDialogList isDialogOpen={isDialogOpen} setIsDialogOpen={setIsDialogOpen} /> : <div></div>}</div>
                             <Separator orientation="vertical" className='h-4 font-bold' />
-                            <DropdownMenu asChild>
+                            <DropdownMenu asChild open={isDropOpen} onOpenChange={setIsDropOpen}>
                                 <DropdownMenuTrigger>
                                     <img className='h-5 my-1.5 mr-1.5 ml-1' src={moremenu} alt="" />
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className={'flex flex-col items-end'} >
-                                    {/* <EditDialogList /> */}
+                                    <div >
+                                        <div onClick={() => { setIsDropOpen(false), setIsDialogOpen(true), setIsDialogOpen(true) }} className="px-2 py-1.5 text-sm hover:bg-slate-100 rounded-sm">Editar Lista</div>
+                                    </div>
+
                                     <DeleteDialogDone />
                                     <DeleteDialog />
 
