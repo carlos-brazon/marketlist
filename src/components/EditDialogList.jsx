@@ -14,7 +14,7 @@ import PropTypes from 'prop-types';
 
 const EditDialogList = ({ isDialogOpen, setIsDialogOpen }) => {
   EditDialogList.propTypes = {
-    isDialogOpen: PropTypes.boolean,
+    isDialogOpen: PropTypes.bool,
     setIsDialogOpen: PropTypes.func,
   };
 
@@ -92,7 +92,7 @@ const EditDialogList = ({ isDialogOpen, setIsDialogOpen }) => {
                 </div>
               </div>
               <div className="flex gap-2 items-center justify-end">
-                <DialogClose onClick={() => setIsDialogOpen(false)}>
+                <DialogClose asChild onClick={() => setIsDialogOpen(false)}>
                   <Button variant='outline'>Cancel</Button>
                 </DialogClose>
                 <Button className="w-24" type="submit">
