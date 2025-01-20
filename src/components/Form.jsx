@@ -129,7 +129,7 @@ const Form = () => {
                     maxLength="25"
                     required
                 />
-                <Button className="text-[10px] px-2 mt-0.5" type={"submit"}>
+                <Button onClick={()=> handleSubmit()}className="text-[10px] px-2 mt-0.5" type={"submit"}>
                     Agregar
                 </Button>
             </form>
