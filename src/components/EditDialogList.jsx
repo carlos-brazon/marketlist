@@ -92,7 +92,7 @@ const EditDialogList = ({ isDialogOpen, setIsDialogOpen }) => {
                 </div>
               </div>
               <div className="flex gap-2 items-center justify-end">
-                <DialogClose asChild onClick={() => setIsDialogOpen(false)}>
+                <DialogClose onClick={() => setIsDialogOpen(false)}>
                   <Button variant='outline'>Cancel</Button>
                 </DialogClose>
                 <Button className="w-24" type="submit">
