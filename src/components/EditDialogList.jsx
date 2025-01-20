@@ -4,83 +4,103 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { useContext, useState } from 'react';
 import { AllItemsContext } from './Contex';
 import { DialogClose, DialogDescription } from '@radix-ui/react-dialog';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../utils/firebase';
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
+import PropTypes from 'prop-types';
 
-const EditDialogList = () => {
+const EditDialogList = ({ isDialogOpen, setIsDialogOpen }) => {
+  EditDialogList.propTypes = {
+    isDialogOpen: PropTypes.bool,
+    setIsDialogOpen: PropTypes.func,
+  };
+
   const { button, setTemporalCloud, setButton, temporalCloud, userIn } = useContext(AllItemsContext);
-  const [isOpen, setIsOpen] = useState(false);
-  const [user, setUser] = useState({});
-  const [editBlocked, setEditBlocked] = useState(false);
+  const [user, setUser] = useState({ name: button });
+  const [isTagsRepeat, setIsTagsRepeat] = useState(false);
 
   const handleInput = (event) => {
     const inputName = event.target.name;
     const inputValue = event.target.value;
-    setUser(prev => ({ ...prev, [inputName]: inputValue }));
+    setUser((prev) => ({ ...prev, [inputName]: inputValue }));
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (user.name) {
-      const updatedMarkeList = temporalCloud.map(itemListFromFirebase => {
+  const handleSubmit = async (event, string) => {
+    event?.preventDefault();
+    let tagsRepeatedFounded = temporalCloud.find(elemento => elemento.tags === user.name)
+    if (string) {
+      tagsRepeatedFounded = false;
+    } else {
+      string = 'continue'
+    }
+
+    if (user.name && !tagsRepeatedFounded && string) {
+      const updatedMarkeList = temporalCloud.map((itemListFromFirebase) => {
         if (itemListFromFirebase.tags === button) {
           return { ...itemListFromFirebase, tags: user.name };
         }
         return itemListFromFirebase;
       });
-      await Promise.all(updatedMarkeList.map(async (item) => await updateDoc(doc(db, "dataItemsMarketList", item.id), { tags: item.tags })))
-      await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: user.name })
+      await Promise.all(
+        updatedMarkeList.map(async (item) =>
+          await updateDoc(doc(db, "dataItemsMarketList", item.id), { tags: item.tags })
+        )
+      );
+      await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: user.name });
       setButton(user.name);
-      setTemporalCloud(updatedMarkeList)
-      setIsOpen(false);
+      setTemporalCloud(updatedMarkeList);
+      setIsDialogOpen(false);
     } else {
-      setEditBlocked(true)
+      if (tagsRepeatedFounded) {
+        setIsTagsRepeat(true)
+      }
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <div className='px-2 py-1.5 text-sm hover:bg-slate-100 rounded-sm'>Editar Lista</div>
-      </DialogTrigger>
-      <DialogContent aria-describedby="dialog-description" className="rounded-lg top-1/2">
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <DialogContent className="rounded-lg top-1/2">
         <DialogHeader className="flex flex-col gap-5">
-          <DialogTitle className="text-base">¿Estás seguro que deseas editar el nombre de la lista?</DialogTitle>
-          <DialogDescription id="dialog-description">
-            This is the description of the dialog, providing context to the user.
-          </DialogDescription>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <div className="flex flex-col gap-2">
-              <input
-                className="p-2 min-h-[40px] w-[330px] md:w-full"
-                type="text"
-                name="name"
-                onChange={handleInput}
-                value={user.name || ''}
-                placeholder={button}
-                required
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault();
-                    handleSubmit(event);
-                  }
-                }}
-              />
-              <div className="h-6">
-                {editBlocked && <p className="text-red-700 text-[12px]">No se puede editar la información si el campo está vacío.</p>}
+          <DialogTitle className="text-base">
+            ¿Estás seguro que deseas editar el nombre de la lista?
+          </DialogTitle>
+          <DialogDescription asChild>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2">
+                <input
+                  className="p-2 min-h-[40px] w-[330px] md:w-full"
+                  type="text"
+                  name="name"
+                  onChange={handleInput}
+                  value={user?.name ? user.name : ''}
+                  placeholder={button}
+                  required
+                />
+                <div className="h-6">
+                  {isTagsRepeat && (
+                    <div className="text-red-700 text-[12px]">
+                      {isTagsRepeat ?
+                        <div>
+                          <div className='flex gap-1 '>La lista esta repetida, si desea combinar ambas pulsa <div className='text-black underline font-semibold cursor-pointer' onClick={() => { setIsTagsRepeat(false), handleSubmit(event, 'continue') }}>aqui</div></div>
+
+                        </div> : ''}
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-            <div className="flex gap-2 items-center justify-end">
-              <DropdownMenuItem asChild className='border w-24 flex items-center justify-center'><DialogClose >Cancelar</DialogClose></DropdownMenuItem>
-              <Button className='w-24' type="submit">Continuar</Button>
-            </div>
-          </form>
+              <div className="flex gap-2 items-center justify-end">
+                <DialogClose asChild onClick={() => setIsDialogOpen(false)}>
+                  <Button variant='outline'>Cancel</Button>
+                </DialogClose>
+                <Button className="w-24" type="submit">
+                  Continuar
+                </Button>
+              </div>
+            </form>
+          </DialogDescription>
         </DialogHeader>
       </DialogContent>
     </Dialog>

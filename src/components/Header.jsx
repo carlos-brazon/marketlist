@@ -100,7 +100,7 @@ const Header = () => {
                     <SheetTitle><img className={`h-28 w-full relative ${userIn || 'pt-2'}`} src={userIn ? userIn.last_url : UserDisconectedIcon} alt="Imagen cuadrada de fondo" /></SheetTitle>
 
 
-                    <DropdownMenu className=" absolute z-50" open={isDropMenuOpen} onOpenChange={setIsDropMenuOpen}>
+                    <DropdownMenu className=" absolute z-40" open={isDropMenuOpen} onOpenChange={setIsDropMenuOpen}>
 
                       <DropdownMenuTrigger className="pl-2">
                         {userIn ? <div className=' flex items-center justify-center rounded-full border-[2px] border-gray-500 bg-white w-[106px] h-[106px] absolute top-[40px]'>
