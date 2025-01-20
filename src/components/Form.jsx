@@ -40,8 +40,8 @@ const Form = () => {
                 const itemFound = arrayItemFilterByTags.find(element => element.name === user.name) // aqui verifico si el tiem nuevo existe dentro de ese array de etiquetas
 
                 if (itemFound) {// si existe me indica repetido, sino lo agrego a la base detas
-                    setButton(user.tags)
-                    setValueInputNewTags(user.tags)
+                    setButton(tagsFinal)
+                    setValueInputNewTags(tagsFinal)
                     setList(arrayItemFilterByTags)
                     toast({
                         title: <div className='flex gap-2 items-center justify-center'><span>Repetido</span> <img className='h-8 w-8' src={Cancel} alt="" /></div>,
