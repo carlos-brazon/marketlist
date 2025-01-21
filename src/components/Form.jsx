@@ -32,12 +32,12 @@ const Form = () => {
     const handleSubmit = async () => {
         event.preventDefault();
         if (user.name) {
-            const tagsFinal = user.tags ? user.tags.trim() : button
+            const tagsFinal = user.tags ? user.tags.trim().toLowerCase() : button
             try {
                 setUser(prev => ({ ...prev, name: '', tags: '' }));
                 // aqui busco todos los items de la misma etiqueta (compras)
-                const arrayItemFilterByTags = temporalCloud.filter(item => item.tags == tagsFinal);
-                const itemFound = arrayItemFilterByTags.find(element => element.name === user.name) // aqui verifico si el tiem nuevo existe dentro de ese array de etiquetas
+                const arrayItemFilterByTags = temporalCloud.filter(item => item.tags === tagsFinal);
+                const itemFound = arrayItemFilterByTags.find(element => element.name.toLowerCase() === user.name.toLowerCase()) // aqui verifico si el tiem nuevo existe dentro de ese array de etiquetas
 
                 if (itemFound) {// si existe me indica repetido, sino lo agrego a la base detas
                     setButton(tagsFinal)
@@ -55,7 +55,7 @@ const Form = () => {
                         priority: false,
                         id: itemId,
                         name: user.name.toLowerCase(),
-                        tags: tagsFinal,
+                        tags: tagsFinal.toLowerCase(),
                         create_at: serverTimestamp(),
                         amount: 0
                     };
@@ -63,7 +63,7 @@ const Form = () => {
                     setTemporalCloud(prev => [...prev, { ...itemToMarketList, create_at: new Date() }])
                     await setDoc(doc(db, "dataItemsMarketList", itemId), itemToMarketList); //aqui lo agrego a firebase
                     if (user.tags) {
-                        await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: user.tags })
+                        await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: user.tags.toLowerCase() })
                     }
                     toast({
                         title: <div className='flex gap-2 items-center justify-center'><span>Agregado</span> <img className='h-8 w-8' src={Accepted} alt="" /></div>,
@@ -123,13 +123,13 @@ const Form = () => {
                     type={'text'}
                     name={'tags'}
                     onChange={handleInput}
-                    value={valueInputNewTags || ''}
+                    value={firstLetterUpperCase(valueInputNewTags) || ''}
                     placeholder={'Nueva lista'}
                     className={addTags ? 'w-24 text-sm h-10' : 'hidden'}
                     maxLength="25"
                     required
                 />
-                <Button onClick={()=> handleSubmit()}className="text-[10px] px-2 mt-0.5" type={"submit"}>
+                <Button onClick={() => handleSubmit()} className="text-[10px] px-2 mt-0.5" type={"submit"}>
                     Agregar
                 </Button>
             </form>
