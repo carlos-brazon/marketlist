@@ -15,9 +15,10 @@ import { Textarea } from './ui/textarea';
 import chevronDown from "../assets/chevronDown.svg";
 import chevronUp from "../assets/chevronUp.svg";
 import { DialogDescription } from '@radix-ui/react-dialog';
+import { firstLetterUpperCase } from '../utils/util';
 
 const EditDialog = ({ item }) => {
-  const { userIn, setList } = useContext(AllItemsContext)
+  const { userIn, setList, setTemporalCloud } = useContext(AllItemsContext)
   const [newValueInput, setNewValueInput] = useState({ name: item.name });
   const [editBlocked, setEditBlocked] = useState(!item.name);
   const [isOpen, setIsOpen] = useState(false);
@@ -49,8 +50,9 @@ const EditDialog = ({ item }) => {
     event.preventDefault();
 
     try {
-      await updateDoc(doc(db, "dataItemsMarketList", item.id), { name: newValueInput.name.trim() })
-      setList(prev => prev.map(itemLocated => itemLocated.id == item.id ? { ...item, name: newValueInput.name.trim() } : itemLocated))
+      await updateDoc(doc(db, "dataItemsMarketList", item.id), { name: newValueInput.name.trim().toLowerCase() })
+      setList(prev => prev.map(itemLocated => itemLocated.id == item.id ? { ...item, name: newValueInput.name.trim().toLowerCase() } : itemLocated))
+      setTemporalCloud(prev => prev.map(itemLocated => itemLocated.id == item.id ? { ...item, name: newValueInput.name.trim().toLowerCase() } : itemLocated))
       setIsOpen(false)
     } catch (error) {
       console.error('Error al actualizar isDone en Firestore:', error);
@@ -77,7 +79,7 @@ const EditDialog = ({ item }) => {
                         handleSubmit()
                       }
                     }}
-                    value={newValueInput.name || ''}
+                    value={firstLetterUpperCase(newValueInput.name) || ''}
                     placeholder={'Item'}
                     required
                   />

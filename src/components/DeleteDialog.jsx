@@ -16,14 +16,14 @@ const DeleteDialog = () => {
 
         if (temporalCloud.length) {
             temporalCloud.forEach((item) => {
-                if (item.tags == button) {
+                if (item.tags.toLowerCase() == button.toLowerCase()) {
                     itemsToDelete.push(item)
                 } else {
                     updateTemporalCloud.push(item);
                 }
             });
 
-            const newValueLastTags = updateTemporalCloud.length ? updateTemporalCloud[0].tags : "Compras"
+            const newValueLastTags = updateTemporalCloud.length ? updateTemporalCloud[0].tags.toLowerCase() : "compras"
             try {
                 await Promise.all(
                     itemsToDelete.map((e) => deleteDoc(doc(db, "dataItemsMarketList", e.id)))

@@ -21,12 +21,12 @@ const ItemsList = ({ setAmount }) => {
             try {
                 const deleteItemInTemporalCloud = [...temporalCloud].filter(item => item.id !== itemSelected.id);
                 if (list.length == 1) {
-                    setButton(deleteItemInTemporalCloud[0].tags)//aqui cambio el nombre de la etiqueta con el set
-                    setValueInputNewTags(deleteItemInTemporalCloud[0].tags) // aqui hago el set para cambiar el valor del input de las tags
+                    setButton(deleteItemInTemporalCloud[0].tags.toLowerCase())//aqui cambio el nombre de la etiqueta con el set
+                    setValueInputNewTags(deleteItemInTemporalCloud[0].tags.toLowerCase()) // aqui hago el set para cambiar el valor del input de las tags
                     setAddTags(false) // aqui hago el set para que se cierre el input de las tags
-                    await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: deleteItemInTemporalCloud[0].tags });
+                    await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: deleteItemInTemporalCloud[0].tags.toLowerCase() });
                 } else {
-                    setButton(itemSelected.tags)
+                    setButton(itemSelected.tags.toLowerCase())
                 }
                 setTemporalCloud(deleteItemInTemporalCloud);// hago set con el array sin el item (item eliminado)
                 await deleteDoc(doc(db, "dataItemsMarketList", itemSelected.id))
@@ -78,7 +78,7 @@ const ItemsList = ({ setAmount }) => {
     useEffect(() => {
         let totalAmount = 0
         const listFromFirebase = [...temporalCloud].filter(item => {//aqui saco de la temporal un array filtrado por etiquetas
-            if (item.tags == button) {
+            if (item.tags.toLowerCase() == button.toLowerCase()) {
                 totalAmount = totalAmount + item.amount
                 return item
             }
@@ -86,7 +86,7 @@ const ItemsList = ({ setAmount }) => {
 
         if (userIn?.sortAscending && userIn?.orderByUrgent) { // si los 2 son true
             // Filtrar elementos por el tag seleccionado
-            const filteredList = [...temporalCloud]?.filter(item => item.tags === button);
+            const filteredList = [...temporalCloud]?.filter(item => item.tags.toLowerCase() === button.toLowerCase());
 
             // Ordenar primero por urgencia (prioridad) y luego por nombre en orden ascendente
             const sortedList = filteredList.sort((a, b) => {
@@ -101,7 +101,7 @@ const ItemsList = ({ setAmount }) => {
             setList(sortedList);
             return;
         } else if (userIn?.sortAscending) {
-            const filteredList = [...temporalCloud]?.filter(item => item.tags === button);
+            const filteredList = [...temporalCloud]?.filter(item => item.tags.toLowerCase() === button.toLowerCase());
             const sortedList = [...filteredList]?.sort((a, b) => {
                 const nameA = isNaN(a.name) ? a.name : parseFloat(a.name);
                 const nameB = isNaN(b.name) ? b.name : parseFloat(b.name);
@@ -113,7 +113,7 @@ const ItemsList = ({ setAmount }) => {
             setList(sortedList);
 
         } else if (userIn?.orderByUrgent) {
-            const urgentList = [...temporalCloud]?.filter(item => item.tags === button).sort((a, b) => (a.priority ? -1 : 1) - (b.priority ? -1 : 1));
+            const urgentList = [...temporalCloud]?.filter(item => item.tags.toLowerCase() === button.toLowerCase()).sort((a, b) => (a.priority ? -1 : 1) - (b.priority ? -1 : 1));
             setList(urgentList)
         } else {
             const sortedList = listFromFirebase.sort((a, b) => {

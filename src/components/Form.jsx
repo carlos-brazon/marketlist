@@ -32,7 +32,7 @@ const Form = () => {
     const handleSubmit = async () => {
         event.preventDefault();
         if (user.name) {
-            const tagsFinal = user.tags ? user.tags.trim().toLowerCase() : button
+            const tagsFinal = user.tags ? user.tags.trim().toLowerCase() : button.toLowerCase()
             try {
                 setUser(prev => ({ ...prev, name: '', tags: '' }));
                 // aqui busco todos los items de la misma etiqueta (compras)

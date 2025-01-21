@@ -30,7 +30,7 @@ const Tags = ({ setAmount }) => {
         await updateDoc(doc(db, 'userMarketList', userIn.uid), { last_tags: string });
         setButton(string)
         setValueInputNewTags(string)
-        const listByTags = temporalCloud.filter(item => item.tags == string);
+        const listByTags = temporalCloud.filter(item => item.tags.toLowerCase() == string);
         const totalAmountToPrint = listByTags.reduce((amountAccumulator, currentItem) => amountAccumulator + currentItem.amount, 0);
         setList(listByTags);
         setAmount(totalAmountToPrint);
@@ -54,7 +54,7 @@ const Tags = ({ setAmount }) => {
 
     useEffect(() => {
         const itemsWithTagsAndDate = temporalCloud.map(doc => ({
-            tag: doc.tags,
+            tag: doc.tags.toLowerCase(),
             createAt: doc.create_at || doc.create_at?.toDate(), // Asegurarse de que create_at sea un objeto de fecha
         }));
 
@@ -62,11 +62,11 @@ const Tags = ({ setAmount }) => {
         itemsWithTagsAndDate.sort((a, b) => a.createAt - b.createAt);
 
         // Extraer las tags únicas en orden
-        const uniqueTags = Array.from(new Set(itemsWithTagsAndDate.map(item => item.tag)));
+        const uniqueTags = Array.from(new Set(itemsWithTagsAndDate.map(item => item.tag.toLowerCase())));
 
         // Actualizar el estado `tags`
         setTags(uniqueTags);
-        setButton(uniqueTags.length === 1 ? uniqueTags[0] : button);
+        setButton(uniqueTags.length === 1 ? uniqueTags[0].toLowerCase() : button.toLowerCase());
 
 
     }, [temporalCloud]);
@@ -75,11 +75,11 @@ const Tags = ({ setAmount }) => {
             <img onClick={() => (setAddTags(prev => !prev), setValueInputNewTags(button))} className='w-8 h-8' src={Add} alt="Aquí va la imagen de un Add" />
 
             {tags?.map((string, i) =>
-                <div key={i} className={`cursor-pointer font-semibold text-xs rounded-md flex items-center ${button === string ? 'bg-slate-700 text-white shadow-md shadow-gray-600' : 'bg-slate-400 shadow-md shadow-gray-300'}`}>
+                <div key={i} className={`cursor-pointer font-semibold text-xs rounded-md flex items-center ${button.toLowerCase() === string.toLowerCase() ? 'bg-slate-700 text-white shadow-md shadow-gray-600' : 'bg-slate-400 shadow-md shadow-gray-300'}`}>
 
-                    {button === string ?
+                    {button.toLowerCase() === string.toLowerCase() ?
                         <>
-                            <button onClick={() => handleClic(string)}
+                            <button onClick={() => handleClic(string.toLowerCase())}
                                 className={`px-[10px]`}>
                                 <p >{firstLetterUpperCase(string)}</p>
                             </button >
@@ -123,7 +123,7 @@ const Tags = ({ setAmount }) => {
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </> : <button
-                            onClick={() => handleClic(string)}
+                            onClick={() => handleClic(string.toLowerCase())}
                             className={`px-2 h-8`}>
                             {firstLetterUpperCase(string)}
                         </button >}

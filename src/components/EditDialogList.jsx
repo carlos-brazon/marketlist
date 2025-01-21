@@ -11,6 +11,7 @@ import { DialogClose, DialogDescription } from '@radix-ui/react-dialog';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../utils/firebase';
 import PropTypes from 'prop-types';
+import { firstLetterUpperCase } from '../utils/util';
 
 const EditDialogList = ({ isDialogOpen, setIsDialogOpen }) => {
   EditDialogList.propTypes = {
@@ -30,7 +31,9 @@ const EditDialogList = ({ isDialogOpen, setIsDialogOpen }) => {
 
   const handleSubmit = async (event, string) => {
     event?.preventDefault();
-    let tagsRepeatedFounded = temporalCloud.find(elemento => elemento.tags === user.name)
+
+    let newValueTags = { name: user.name.trim().toLowerCase() }
+    let tagsRepeatedFounded = temporalCloud.find(elemento => elemento.tags.toLowerCase() === newValueTags.name)
     if (string) {
       tagsRepeatedFounded = false;
     } else {
@@ -39,8 +42,8 @@ const EditDialogList = ({ isDialogOpen, setIsDialogOpen }) => {
 
     if (user.name && !tagsRepeatedFounded && string) {
       const updatedMarkeList = temporalCloud.map((itemListFromFirebase) => {
-        if (itemListFromFirebase.tags === button) {
-          return { ...itemListFromFirebase, tags: user.name };
+        if (itemListFromFirebase.tags.toLowerCase() === button.toLowerCase()) {
+          return { ...itemListFromFirebase, tags: newValueTags.name };
         }
         return itemListFromFirebase;
       });
@@ -49,8 +52,8 @@ const EditDialogList = ({ isDialogOpen, setIsDialogOpen }) => {
           await updateDoc(doc(db, "dataItemsMarketList", item.id), { tags: item.tags })
         )
       );
-      await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: user.name });
-      setButton(user.name);
+      await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: newValueTags.name });
+      setButton(newValueTags.name);
       setTemporalCloud(updatedMarkeList);
       setIsDialogOpen(false);
     } else {
@@ -75,7 +78,7 @@ const EditDialogList = ({ isDialogOpen, setIsDialogOpen }) => {
                   type="text"
                   name="name"
                   onChange={handleInput}
-                  value={user?.name ? user.name : ''}
+                  value={user?.name ? firstLetterUpperCase(user.name) : ''}
                   placeholder={button}
                   required
                 />
