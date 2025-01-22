@@ -22,7 +22,7 @@ const Tags = ({ setAmount }) => {
     Tags.propTypes = {
         setAmount: PropTypes.func,
     };
-    const { userIn, setValueInputNewTags, setList, setAddTags, button, setButton, tags, setTags, temporalCloud, setUserIn } = useContext(AllItemsContext);
+    const { userIn, setValueInputNewTags, setAddTags, button, setButton, tags, setTags, temporalCloud, setUserIn } = useContext(AllItemsContext);
     const [isDropOpen, setIsDropOpen] = useState(false)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
 
@@ -32,8 +32,8 @@ const Tags = ({ setAmount }) => {
         setValueInputNewTags(string)
         const listByTags = temporalCloud.filter(item => item.tags.toLowerCase() == string);
         const totalAmountToPrint = listByTags.reduce((amountAccumulator, currentItem) => amountAccumulator + currentItem.amount, 0);
-        setList(listByTags);
         setAmount(totalAmountToPrint);
+        setUserIn(prev => ({ ...prev }));
     }
     const handleOrder = async () => {
         const newValueOrder = !userIn.sortAscending

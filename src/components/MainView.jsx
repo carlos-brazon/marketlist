@@ -71,6 +71,7 @@ const MainView = () => {
 
         }} className='bg-slate-400 p-2 rounded-md'> subir usuario a nueva coleccion</button>
       </div> */}
+
       <ListControls amount={amount} />
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 270)}px` }}
