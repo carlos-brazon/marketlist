@@ -32,8 +32,8 @@ const EditDialogList = ({ isDialogOpen, setIsDialogOpen }) => {
   const handleSubmit = async (event, string) => {
     event?.preventDefault();
 
-    let newValueTags = { name: user.name.trim().toLowerCase() }
-    let tagsRepeatedFounded = temporalCloud.find(elemento => elemento.tags.toLowerCase() === newValueTags.name)
+    let newValueTagsLowerCase = { name: user.name.trim().toLowerCase() }
+    let tagsRepeatedFounded = temporalCloud.find(elemento => elemento.tags.toLowerCase() === newValueTagsLowerCase.name)
     if (string) {
       tagsRepeatedFounded = false;
     } else {
@@ -43,7 +43,7 @@ const EditDialogList = ({ isDialogOpen, setIsDialogOpen }) => {
     if (user.name && !tagsRepeatedFounded && string) {
       const updatedMarkeList = temporalCloud.map((itemListFromFirebase) => {
         if (itemListFromFirebase.tags.toLowerCase() === button.toLowerCase()) {
-          return { ...itemListFromFirebase, tags: newValueTags.name };
+          return { ...itemListFromFirebase, tags: newValueTagsLowerCase.name };
         }
         return itemListFromFirebase;
       });
@@ -52,8 +52,8 @@ const EditDialogList = ({ isDialogOpen, setIsDialogOpen }) => {
           await updateDoc(doc(db, "dataItemsMarketList", item.id), { tags: item.tags })
         )
       );
-      await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: newValueTags.name });
-      setButton(newValueTags.name);
+      await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: newValueTagsLowerCase.name });
+      setButton(newValueTagsLowerCase.name);
       setTemporalCloud(updatedMarkeList);
       setIsDialogOpen(false);
     } else {

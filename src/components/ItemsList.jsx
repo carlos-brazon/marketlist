@@ -20,15 +20,17 @@ const ItemsList = ({ setAmount }) => {
         if (tapCount === 1 && lastTapData.id == itemSelected.id) {
             try {
                 const deleteItemInTemporalCloud = [...temporalCloud].filter(item => item.id !== itemSelected.id);
+                setTemporalCloud(deleteItemInTemporalCloud);// hago set con el array sin el item (item eliminado)
                 if (list.length == 1) {
-                    setButton(deleteItemInTemporalCloud[0].tags.toLowerCase())//aqui cambio el nombre de la etiqueta con el set
-                    setValueInputNewTags(deleteItemInTemporalCloud[0].tags.toLowerCase()) // aqui hago el set para cambiar el valor del input de las tags
+                    const onlyOneTags = deleteItemInTemporalCloud[0]?.tags?.toLowerCase() || 'compras'
+                    setButton(onlyOneTags)//aqui cambio el nombre de la etiqueta con el set
+                    console.log(onlyOneTags);
+                    setValueInputNewTags(onlyOneTags) // aqui hago el set para cambiar el valor del input de las tags
                     setAddTags(false) // aqui hago el set para que se cierre el input de las tags
-                    await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: deleteItemInTemporalCloud[0].tags.toLowerCase() });
+                    await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: onlyOneTags });
                 } else {
                     setButton(itemSelected.tags.toLowerCase())
                 }
-                setTemporalCloud(deleteItemInTemporalCloud);// hago set con el array sin el item (item eliminado)
                 await deleteDoc(doc(db, "dataItemsMarketList", itemSelected.id))
             } catch (error) {
                 console.error('Error al eliminar el producto:', error);
@@ -123,7 +125,6 @@ const ItemsList = ({ setAmount }) => {
             });
             setList(sortedList);
         }
-
         setAmount(totalAmount);
     }, [temporalCloud, userIn]);
 

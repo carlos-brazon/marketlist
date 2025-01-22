@@ -95,7 +95,7 @@ const Tags = ({ setAmount }) => {
                                     </div>
 
                                     <DeleteDialogDone />
-                                    <DeleteDialog />
+                                    <DeleteDialog setIsDropOpen={setIsDropOpen} />
 
                                     <DropdownMenuItem className='px-2 py-1.5 text-sm hover:bg-slate-100 rounded-sm' onClick={() => setTimeout(() => {
                                         handleOrder()

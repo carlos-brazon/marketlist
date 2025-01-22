@@ -5,8 +5,12 @@ import { db } from '../utils/firebase';
 import { AllItemsContext } from './Contex';
 import { firstLetterUpperCase } from '../utils/util';
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu"
+import PropTypes from 'prop-types';
 
-const DeleteDialog = () => {
+const DeleteDialog = ({ setIsDropOpen }) => {
+    DeleteDialog.propTypes = {
+        setIsDropOpen: PropTypes.func,
+    };
     const { button, userIn, setButton, setAddTags, setTemporalCloud, temporalCloud } = useContext(AllItemsContext);
 
     const handleClick = async () => {
@@ -32,8 +36,10 @@ const DeleteDialog = () => {
             } catch (error) {
                 console.error('Error al actualizar o eliminar documentos en Firestore:', error);
             }
-            setButton(newValueLastTags)
             setTemporalCloud(updateTemporalCloud)
+            setButton(newValueLastTags)
+            setIsDropOpen(false)
+            console.log('aqui');
         }
     }
 

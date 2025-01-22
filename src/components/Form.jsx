@@ -69,7 +69,6 @@ const Form = () => {
                         title: <div className='flex gap-2 items-center justify-center'><span>Agregado</span> <img className='h-8 w-8' src={Accepted} alt="" /></div>,
                         duration: '1000',
                     });
-
                 }
                 setAddTags(false)
             } catch (error) {
