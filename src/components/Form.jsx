@@ -12,7 +12,7 @@ import { Textarea } from './ui/textarea';
 import chevronDown from "../assets/chevronDown.svg";
 import chevronUp from "../assets/chevronUp.svg";
 import MainView from './MainView';
-import { firstLetterUpperCase } from '../utils/util';
+import { cleanInputValueWithNumberOrLetters, firstLetterUpperCase } from '../utils/util';
 
 const Form = () => {
     const { setValueInputNewTags, valueInputNewTags, userIn, addTags, setButton, temporalCloud, setTemporalCloud, button, setAddTags, setList } = useContext(AllItemsContext);
@@ -22,7 +22,7 @@ const Form = () => {
 
     const handleInput = () => {
         const inputName = event.target.name;
-        const inputValue = event.target.value;
+        const inputValue = cleanInputValueWithNumberOrLetters(event.target.value)
         setUser(prev => ({ ...prev, [inputName]: inputValue }));
         if (inputName == 'tags') {
             setValueInputNewTags(inputValue);

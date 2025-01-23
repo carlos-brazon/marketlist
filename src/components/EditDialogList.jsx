@@ -11,7 +11,7 @@ import { DialogClose, DialogDescription } from '@radix-ui/react-dialog';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../utils/firebase';
 import PropTypes from 'prop-types';
-import { firstLetterUpperCase } from '../utils/util';
+import { cleanInputValueWithNumberOrLetters, firstLetterUpperCase } from '../utils/util';
 
 const EditDialogList = ({ isDialogOpen, setIsDialogOpen }) => {
   EditDialogList.propTypes = {
@@ -25,7 +25,7 @@ const EditDialogList = ({ isDialogOpen, setIsDialogOpen }) => {
 
   const handleInput = (event) => {
     const inputName = event.target.name;
-    const inputValue = event.target.value;
+    let inputValue = cleanInputValueWithNumberOrLetters(event.target.value);
     setUser((prev) => ({ ...prev, [inputName]: inputValue }));
   };
 

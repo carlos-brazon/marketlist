@@ -145,31 +145,6 @@ const Header = () => {
                         <Command>
                           <CommandList className="mt-2">
                             <CommandGroup className="text-center" heading="Sugerencias">
-                              {/* <CommandItem>
-                                <div onClick={() => {
-                                  if (navigator.clipboard && navigator.clipboard.writeText) {
-                                    navigator.clipboard.writeText(userIn.email)
-                                      .then(() => {
-                                        toast({
-                                          className: "p-0",
-                                          title: <div className='p-1 flex gap-1 items-center justify-center'><span className=''>Email copiado en clipboard</span></div>,
-                                          duration: '1000',
-                                        })
-                                      })
-                                      .catch(err => {
-                                        console.error("Error al copiar el correo:", err);
-                                        alert("No se pudo copiar el correo. Por favor, intenta de nuevo.");
-                                      });
-                                  } else {
-                                    console.warn("Clipboard API no es compatible con este navegador.");
-                                    alert("Tu navegador no soporta la función de copiar al portapapeles.");
-                                  }
-                                }}>
-                                  <SheetClose className="w-screen flex items-start">
-                                    {userIn?.email}
-                                  </SheetClose>
-                                </div>
-                              </CommandItem> */}
                               <Link to={'HowToUse'}>
                                 <CommandItem >
                                   <SheetClose className="w-screen flex items-start">
@@ -192,8 +167,8 @@ const Header = () => {
                   <Link className={`relative ${!userIn || 'hidden'}`} to={'/singin'}>
                     <SheetClose>
                       <div onClick={() => handleClick()} className={`flex absolute z-10 bottom-5 left-2 `}>
-                        <img className=' absolute  rounded-full p-0.5 w-10 h-10 bg-slate-600' src={loginIcon} alt="" />
-                        <div className={` bg-slate-400 py-2 pl-12 pr-4 rounded-full  `}>Log In</div>
+                        <img className=' absolute  rounded-full p-0.5 w-10 h-10 bg-slate-500' src={loginIcon} alt="" />
+                        <div className={` bg-slate-300 py-2 pl-12 pr-4 rounded-full  `}>Log In</div>
                       </div>
                     </SheetClose>
                   </Link >
@@ -224,8 +199,8 @@ const Header = () => {
                     <Link to={'/'}>
                       <SheetClose>
                         <div onClick={() => handleClick()}>
-                          <img className=' absolute rounded-full p-0.5 w-10 h-10 bg-slate-600' src={logOutIcon} alt="" />
-                          <div className={` bg-slate-400 py-2 pl-12 pr-4 rounded-full `}>Log Out</div>
+                          <img className=' absolute rounded-full p-0.5 w-10 h-10 bg-slate-500' src={logOutIcon} alt="" />
+                          <div className={` bg-slate-300 py-2 pl-12 pr-4 rounded-full `}>Log Out</div>
                         </div>
                       </SheetClose>
                     </Link >

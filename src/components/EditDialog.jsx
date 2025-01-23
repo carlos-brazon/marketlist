@@ -15,12 +15,13 @@ import { Textarea } from './ui/textarea';
 import chevronDown from "../assets/chevronDown.svg";
 import chevronUp from "../assets/chevronUp.svg";
 import { DialogDescription } from '@radix-ui/react-dialog';
-import { firstLetterUpperCase } from '../utils/util';
+import { cleanInputValueWithNumberOrLetters, firstLetterUpperCase } from '../utils/util';
 
 const EditDialog = ({ item }) => {
-  const { userIn, setList, setTemporalCloud } = useContext(AllItemsContext)
+  const { userIn, setTemporalCloud, list } = useContext(AllItemsContext)
   const [newValueInput, setNewValueInput] = useState({ name: item.name });
   const [editBlocked, setEditBlocked] = useState(!item.name);
+  const [itemRepeated, setItemRepeated] = useState(!item.name);
   const [isOpen, setIsOpen] = useState(false);
   const [amoundPixel, setAmoundPixel] = useState(40);
   const hScreen = Math.round(window.innerHeight - 250)
@@ -31,16 +32,13 @@ const EditDialog = ({ item }) => {
 
   const handleInput = (event) => {
     const inputName = event.target.name;
-    let inputValue = event.target.value;
-    // Eliminar espacios iniciales
-    inputValue = inputValue.replace(/^\s+/, '');
-    // Reemplazar más de dos espacios consecutivos por un solo espacio
-    inputValue = inputValue.replace(/\s{2,}/g, ' ');
+    let inputValue = cleanInputValueWithNumberOrLetters(event.target.value);
 
     if (inputValue) {
-      setEditBlocked(false)
+      setEditBlocked(false);
     } else {
-      setEditBlocked(true)
+      setItemRepeated(false);
+      setEditBlocked(true);
 
     }
     setNewValueInput({ [inputName]: inputValue });
@@ -48,19 +46,27 @@ const EditDialog = ({ item }) => {
 
   const handleSubmit = async () => {
     event.preventDefault();
+    if (newValueInput.name.length) {// aqui miro si el valor del input es real
+      const newNameItemLowerCase = newValueInput.name.trim().toLowerCase()
+      const itemFounded = list.find(item => item.name === newNameItemLowerCase)
 
-    try {
-      await updateDoc(doc(db, "dataItemsMarketList", item.id), { name: newValueInput.name.trim().toLowerCase() })
-      setList(prev => prev.map(itemLocated => itemLocated.id == item.id ? { ...item, name: newValueInput.name.trim().toLowerCase() } : itemLocated))
-      setTemporalCloud(prev => prev.map(itemLocated => itemLocated.id == item.id ? { ...item, name: newValueInput.name.trim().toLowerCase() } : itemLocated))
-      setIsOpen(false)
-    } catch (error) {
-      console.error('Error al actualizar isDone en Firestore:', error);
+      if (itemFounded) { // aqui miro si el nuevo nombre del item que estoy intentando editar es el mismo o ya existe en la lista seleccionada
+        setItemRepeated(true);
+        setEditBlocked(true);
+      } else {
+        try {
+          setTemporalCloud(prev => prev.map(itemLocated => itemLocated.id == item.id ? { ...item, name: newNameItemLowerCase } : itemLocated));
+          await updateDoc(doc(db, "dataItemsMarketList", item.id), { name: newNameItemLowerCase });
+          setIsOpen(false);
+        } catch (error) {
+          console.error('Error al actualizar isDone en Firestore:', error);
+        }
+      }
     }
   }
 
   return (
-    <Dialog open={isOpen} onChange={isOpen} setIsOpen={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger onClick={() => setIsOpen(true)} className={`flex items-center w-auto h-5 z-50 rounded-md text-[10px] text-center px-0.5 bg-slate-100 border border-gray-900 ${userIn?.isEditControl || 'hidden'}`}>Editar</DialogTrigger>
       <DialogContent className={'rounded-lg top-1/2'}>
         <DialogHeader className={'flex flex-col gap-5'}>
@@ -80,7 +86,7 @@ const EditDialog = ({ item }) => {
                       }
                     }}
                     value={firstLetterUpperCase(newValueInput.name) || ''}
-                    placeholder={'Item'}
+                    placeholder={firstLetterUpperCase(item.name)}
                     required
                   />
                   <div className='h-7 w-7 absolute right-0'>
@@ -106,11 +112,14 @@ const EditDialog = ({ item }) => {
                   </div>
                 </div>
                 <div className='h-6'>
-                  {editBlocked && <p className='text-red-700 text-[12px]'>No se puede editar la información si el campo está vacío.</p>}
+                  {editBlocked && <p className='text-red-700 text-[12px] text-start'>
+                    {itemRepeated ?
+                      "El valor ingresado ya está asociado a un artículo existente."
+                      : "No se puede editar la información si el campo está vacío."}</p>}
                 </div>
               </div>
               <div className='flex gap-2 justify-end'>
-                <Button onClick={() => setIsOpen(false)} variant='outline'>Cancel</Button>
+                <Button onClick={() => { setIsOpen(false), setEditBlocked(false) }} variant='outline'>Cancel</Button>
                 <Button disabled={editBlocked && item.name} type="submit" onClick={() => handleSubmit()}>Editar</Button>
               </div>
             </form>

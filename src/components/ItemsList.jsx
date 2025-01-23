@@ -5,6 +5,7 @@ import EditDialog from './EditDialog'
 import { deleteDoc, doc, serverTimestamp, updateDoc } from 'firebase/firestore'
 import { db } from '../utils/firebase'
 import PropTypes from 'prop-types';
+import AmountDialog from './AmountDialog'
 
 const ItemsList = ({ setAmount }) => {
     ItemsList.propTypes = {
@@ -51,20 +52,6 @@ const ItemsList = ({ setAmount }) => {
         }
     };
 
-    const handleSubmit = async (numberFromInput, item) => {
-        event.preventDefault();
-        await updateDoc(doc(db, "dataItemsMarketList", item.id), { amount: Number(numberFromInput) });
-
-        const updateItemInTemporalCloud = temporalCloud.map((itemfound) => {
-            if (itemfound.id === item.id) {
-                return { ...itemfound, amount: Number(numberFromInput) };
-            }
-            return itemfound;
-        });
-        const totalAmountToPrint = updateItemInTemporalCloud.reduce((amountAccumulator, currentItem) => amountAccumulator + currentItem.amount, 0);
-        setAmount(totalAmountToPrint);
-        setTemporalCloud(updateItemInTemporalCloud);
-    }
 
     const handlePriority = async (itemSelected) => {
         const newValuePriority = !itemSelected.priority;
@@ -149,23 +136,8 @@ const ItemsList = ({ setAmount }) => {
                                     <div className={`${item.isDone ? 'line-through' : 'hidden'}`}>{new Date(item.isDone_at && item.isDone_at.toDate ? item.isDone_at.toDate() : item.isDone_at).toLocaleString()}</div>
                                 </div>
                             </div>
+                            <AmountDialog item={item} setAmount={setAmount} />
 
-                            <form className={`flex items-center`} onSubmit={handleSubmit}>
-                                <input
-                                    className={`text-center p-px text-xs w-14 outline-1 border border-black rounded-md ${userIn?.addControl || 'hidden'}`}
-                                    type={'text'}
-                                    name={item.id}
-                                    placeholder={item.amount?.toFixed(2) || 0}
-                                    onKeyDown={(event) => {
-                                        if (event.key === "Enter") {
-                                            handleSubmit(event.target.value, item)
-                                            event.target.value = ""
-                                        }
-                                    }
-                                    }
-                                    step="0.01"
-                                />
-                            </form>
                             <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-5 z-50 rounded-md text-[10px] text-center px-0.5 py-0.5 bg-slate-100 border border-gray-900 ${userIn?.isDoneControl || 'hidden'}`}>Urgente</div>
                             <EditDialog item={item} />
                         </div>
