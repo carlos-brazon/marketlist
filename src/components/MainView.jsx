@@ -4,6 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import Tags from './Tags';
 import ListControls from './ListControls';
 import ItemsList from './ItemsList';
+import { Textarea } from './ui/textarea';
 
 const MainView = () => {
   const { userIn } = useContext(AllItemsContext);
@@ -71,7 +72,13 @@ const MainView = () => {
 
         }} className='bg-slate-400 p-2 rounded-md'> subir usuario a nueva coleccion</button>
       </div> */}
-
+      <Textarea
+        className={`rounded-md border border-gray-500  focus:border-black focus:border-[3px] focus-visible:ring-0 focus:outline-0 focus:ring-offset-0 focus-visible:ring-offset-0 h-full break-words pr-8 overflow-hidden w-96`}
+        type={'text'}
+        name={'name'}
+        placeholder={'Item'}
+        required
+      />
       <ListControls amount={amount} />
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 270)}px` }}
