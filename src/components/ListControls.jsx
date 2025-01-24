@@ -43,7 +43,7 @@ const ListControls = ({ amount }) => {
   return (
     <div className=" relative w-full flex gap-1 items-center justify-end pr-[10px]">
 
-      <div className={`bg-white w-72 h-10 absolute -right-[10px] flex items-end justify-end border-slate-300 border-l ${hideControls ? 'w-72 translate-x-0' : 'w-0 translate x-72'} transition-all duration-[1200ms] ease-in `}></div>
+      <div className={`bg-white h-10 absolute -right-[10px] flex items-end justify-end border-slate-300 border-l ${hideControls ? 'w-72 translate-x-0' : 'w-0'} transition-all duration-[1200ms] ease-in`}></div>
 
       <div className="w-full items-center flex gap-2 justify-end">
         <img onClick={() => {
