@@ -26,8 +26,7 @@ const ListControls = ({ amount }) => {
     { stateKey: 'isDoneControl', iconTrue: iconUrgentTrue, iconFalse: iconUrgentFalse },
     { stateKey: 'isEditControl', iconTrue: iconEditTrue, iconFalse: iconEditFalse },
   ];
-  const [hideControls, setHideControls] = useState(false);
-  const [changeIcons, setChangeIcons] = useState(false);
+  const [changeIcons, setChangeIcons] = useState(userIn?.control_items);
 
   const toggleControl = async (item) => {
     const newValue = !userIn[item.stateKey];
@@ -39,22 +38,23 @@ const ListControls = ({ amount }) => {
       console.error(`Error al actualizar ${key}:`, error);
     }
   };
-
   return (
     <div className=" relative w-full flex gap-1 items-center justify-end pr-[10px]">
 
-      <div className={`bg-white h-10 absolute -right-[10px] flex items-end justify-end border-slate-300 border-l ${hideControls ? 'w-72 translate-x-0' : 'w-0'} transition-all duration-[1200ms] ease-in`}></div>
+      <div className={`bg-white h-10 absolute -right-[10px] flex items-end justify-end border-slate-300 border-l ${userIn?.control_items ? 'w-72 translate-x-0' : 'w-0'} transition-all duration-[1200ms] ease-in`}></div>
 
       <div className="w-full items-center flex gap-2 justify-end">
         <img onClick={() => {
-          setHideControls(prev => !prev), setTimeout(() => {
+          setUserIn(prev => ({ ...prev, control_items: !userIn.control_items })), setTimeout(async () => {
             setChangeIcons(prev => !prev)
+            await updateDoc(doc(db, "userMarketList", userIn.uid), { control_items: !userIn.control_items })
           }, 1200);
         }} className='w-5 h-10 cursor-pointer z-10 absolute -right-[10px]' src={changeIcons ? arrowRight : arrowLeft} alt="" />
         <div className="text-md">Total</div>
         <div className="w-16 border text-center text-sm border-black rounded-md px-1 py-0.5">
-          {amount}
+          {(Number(amount) || 0).toFixed(2)}
         </div>
+
       </div>
       {controls.map(item => (
         <img

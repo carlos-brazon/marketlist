@@ -97,7 +97,21 @@ const Header = () => {
                 <SheetContent className="p-0 w-72 flex flex-col justify-between">
                   <SheetHeader className="space-y-0">
 
-                    <SheetTitle><img className={`h-28 w-full relative ${userIn || 'pt-2'}`} src={userIn ? userIn.last_url : UserDisconectedIcon} alt="Imagen cuadrada de fondo" /></SheetTitle>
+                    <SheetTitle>
+                      {/* <img className={`h-28 w-full relative bg-repeat ${userIn || 'pt-2'}`} src={userIn ? userIn.last_url : UserDisconectedIcon} alt="Imagen cuadrada de fondo" />  asi estaba funcionando bien*/}
+
+                      <div
+                        style={{
+                          backgroundImage: `url(${userIn ? userIn.last_url : UserDisconectedIcon})`,
+                          backgroundSize: `${userIn ? "cover" : 'contain'}`,
+                          backgroundPosition: "center",
+                          backgroundRepeat: 'no-repeat',
+                        }}
+                        className={`h-28 w-full relative bg-repeat ${userIn || 'mt-2'}`} src={userIn ? userIn.last_url : UserDisconectedIcon} alt="Imagen cuadrada de fondo"
+                      ></div>
+
+
+                    </SheetTitle>
 
 
                     <DropdownMenu className=" absolute z-40" open={isDropMenuOpen} onOpenChange={setIsDropMenuOpen}>
