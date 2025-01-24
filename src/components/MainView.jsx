@@ -72,13 +72,16 @@ const MainView = () => {
 
         }} className='bg-slate-400 p-2 rounded-md'> subir usuario a nueva coleccion</button>
       </div> */}
-      <Textarea
-        className={`rounded-md border border-gray-500  focus:border-black focus:border-[3px] focus-visible:ring-0 focus:outline-0 focus:ring-offset-0 focus-visible:ring-offset-0 h-full break-words pr-8 overflow-hidden w-96`}
-        type={'text'}
-        name={'name'}
-        placeholder={'Item'}
-        required
-      />
+      <div className='relative flex'>
+        <Textarea
+          className={` focus:bg-inherit bg-inherit relative rounded-md border border-gray-500  focus:border-black focus:border-[3px] focus-visible:ring-0 focus:outline-0 focus:ring-offset-0 focus-visible:ring-offset-0 h-full break-words pr-8 overflow-hidden w-96`}
+          type={'text'}
+          name={'name'}
+          placeholder={'Item'}
+          required
+        />
+        <div className='w-4 h-4 bg-black rounded-tl-md rounded-br-md absolute right-0 bottom-0 -z-10'></div>
+      </div>
       <ListControls amount={amount} />
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 270)}px` }}
