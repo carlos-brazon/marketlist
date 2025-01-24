@@ -65,7 +65,7 @@ const EditDialogList = ({ isDialogOpen, setIsDialogOpen }) => {
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <DialogContent className="rounded-lg top-1/2">
+      <DialogContent className="rounded-lg top-1/3 md:top-1/2">
         <DialogHeader className="flex flex-col gap-5">
           <DialogTitle className="text-base">
             ¿Estás seguro que deseas editar el nombre de la lista?

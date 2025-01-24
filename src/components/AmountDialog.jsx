@@ -24,8 +24,11 @@ const AmountDialog = ({ item, setAmount }) => {
     const [numberFromInput, setNumberFromInput] = useState(item.amount);
 
     const handleInput = () => {
-        const inputValue = Number(event.target.value)
-        setNumberFromInput(inputValue)
+        const inputValue = event.target.value;
+        const decimalRegex = /^\d*\.?\d*$/;
+        if (decimalRegex.test(inputValue)) {
+            setNumberFromInput(inputValue);
+        }
     }
 
     const handleSubmit = async (event, item) => {
@@ -48,19 +51,19 @@ const AmountDialog = ({ item, setAmount }) => {
             <DialogTrigger>
                 <div onClick={() => setIsOpen(true)} className={`text-center p-px text-xs w-14 border border-black rounded-md ${userIn?.addControl || 'hidden'}`}>{item.amount?.toFixed(2) || 0}</div>
             </DialogTrigger>
-            <DialogContent className="flex flex-col rounded-lg">
+            <DialogContent className="flex flex-col items-center gap-6 justify-center rounded-lg">
                 <DialogHeader>
                     <DialogTitle className="text-base">Agrega el monto deseado</DialogTitle>
                 </DialogHeader>
                 <DialogDescription asChild>
-                    <form onSubmit={(event) => handleSubmit(event, item)} className="flex w-full max-w-sm items-center justify-center space-x-2">
+                    <form onSubmit={(event) => handleSubmit(event, item)} className="flex w-full gap-2 max-w-sm items-center justify-center space-x-2">
                         <Input
                             type={'text'}
                             name={item.id}
                             onChange={handleInput}
                             value={numberFromInput || 0}
                             placeholder={item.amount?.toFixed(2) || 0}
-                            className={'w-24 h-9 p-1'}
+                            className={'w-24 h-9 p-1 text-black'}
                             maxLength="25"
                             required
                         />
