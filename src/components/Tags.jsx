@@ -72,7 +72,7 @@ const Tags = ({ setAmount }) => {
     }, [temporalCloud]);
     return (
         <div className='w-full flex gap-2 flex-wrap break-all'>
-            <img onClick={() => (setAddTags(prev => !prev), setValueInputNewTags(button))} className='w-8 h-8' src={Add} alt="Aquí va la imagen de un Add" />
+            <img onClick={() => (setAddTags(prev => !prev), setValueInputNewTags(button))} className='w-8 h-8 cursor-pointer' src={Add} alt="Aquí va la imagen de un Add" />
 
             {tags?.map((string, i) =>
                 <div key={i} className={`cursor-pointer font-semibold text-xs rounded-md flex items-center ${button.toLowerCase() === string.toLowerCase() ? 'bg-slate-700 text-white shadow-md shadow-gray-600' : 'bg-slate-400 shadow-md shadow-gray-300'}`}>

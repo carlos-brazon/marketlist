@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/command"
 import { useToast } from "@/components/ui/use-toast"
 import loginIcon from "../assets/login.svg";
-import logOutIcon from "../assets/login.svg";
+import logOutIcon from "../assets/logout.svg";
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 
 const Header = () => {

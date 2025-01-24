@@ -49,7 +49,7 @@ const AmountDialog = ({ item, setAmount }) => {
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger>
-                <div onClick={() => setIsOpen(true)} className={`text-center p-px text-xs w-14 border border-black rounded-md ${userIn?.addControl || 'hidden'}`}>{item.amount?.toFixed(2) || 0}</div>
+                <div onClick={() => setIsOpen(true)} className={`cursor-text text-center p-px text-xs w-14 border border-black rounded-md ${userIn?.addControl || 'hidden'}`}>{item.amount?.toFixed(2) || 0}</div>
             </DialogTrigger>
             <DialogContent className="flex flex-col items-center gap-6 justify-center rounded-lg">
                 <DialogHeader>

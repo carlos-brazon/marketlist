@@ -68,7 +68,7 @@ const EditDialog = ({ item }) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger onClick={() => setIsOpen(true)} className={`flex items-center w-auto h-5 z-50 rounded-md text-[10px] text-center px-0.5 bg-slate-100 border border-gray-900 ${userIn?.isEditControl || 'hidden'}`}>Editar</DialogTrigger>
-      <DialogContent className={'rounded-lg top-1/2'}>
+      <DialogContent className={'rounded-lg top-1/3 md:top-1/2'}>
         <DialogHeader className={'flex flex-col gap-5'}>
           <DialogTitle className={'text-base'}>¿Estás seguro que deseas editar este Item?</DialogTitle>
           <DialogDescription asChild>
