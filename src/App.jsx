@@ -12,6 +12,7 @@ import Contex from './components/Contex'
 import HowUse from './components/HowUse'
 import { Toaster } from "@/components/ui/toaster";
 import RootLayout from './components/Toaster'
+import Settings from './components/Settings'
 
 function App() {
   const [userIn, setUserIn] = useState(null);
@@ -79,6 +80,7 @@ function App() {
                 <Route path='singin' element={<SingIn />} />
                 <Route path='checkIn' element={<CheckIn />} />
               </Route>
+              <Route path='setting' element={<Settings />} />
             </Routes>
           </BrowserRouter>
         </Contex>

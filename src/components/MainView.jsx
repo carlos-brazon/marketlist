@@ -4,15 +4,29 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import Tags from './Tags';
 import ListControls from './ListControls';
 import ItemsList from './ItemsList';
+import chevUp from "../assets/chevron-up-item.svg";
+import chevDown from "../assets/chevron-down-item.svg";
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '../utils/firebase';
 
 const MainView = () => {
-  const { userIn } = useContext(AllItemsContext);
+  const { userIn, setUserIn } = useContext(AllItemsContext);
   const [amount, setAmount] = useState(0);
+  const [changeIcons, setChangeIcons] = useState(userIn?.control_items);
 
   return (
-    <div className='flex flex-col items-center gap-4 h-full w-full px-3'>
+    <div className='flex flex-col items-center gap-2 h-full w-full px-3'>
       <Tags setAmount={setAmount} />
-      <h4 className="text-base text-center font-medium leading-none">{userIn?.email == 'aa@gmail.com' ? 'Liste' : 'Lista'}</h4>
+      <div className='flex justify-center items-center gap-3'>
+        <h4 className="text-base text-center font-medium leading-none">{userIn?.email == 'aa@gmail.com' ? 'Liste' : 'Lista'}</h4>
+        <img onClick={() => {
+          setUserIn(prev => ({ ...prev, control_items: !userIn.control_items })), setTimeout(async () => {
+            setChangeIcons(prev => !prev)
+            await updateDoc(doc(db, "userMarketList", userIn.uid), { control_items: !userIn.control_items })
+          }, 1200);
+        }} className='w-5 h-5 cursor-pointer z-10 absolute right-[10px]' src={changeIcons ? chevUp : chevDown} alt="" />
+      </div>
+
       {/* <div>
         <button onClick={async () => {
           const dataFromFirebase = await getDocs(collection(db, "usersMarketList"));

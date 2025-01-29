@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext } from 'react'
 import { AllItemsContext } from './Contex'
 import iconEditFalse from "../assets/edit-false.svg";
 import iconEditTrue from "../assets/edit-true.svg";
@@ -8,8 +8,6 @@ import iconCalculatorFalse from "../assets/calculator-false.svg";
 import iconCalculatorTrue from "../assets/calculator-true.svg";
 import iconCalendarFalse from "../assets/calendar-false.svg";
 import iconCalendarTrue from "../assets/calendar-true.svg";
-import arrowLeft from "../assets/arrow-left.svg";
-import arrowRight from "../assets/arrow-right.svg";
 import PropTypes from 'prop-types';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../utils/firebase';
@@ -26,7 +24,6 @@ const ListControls = ({ amount }) => {
     { stateKey: 'isDoneControl', iconTrue: iconUrgentTrue, iconFalse: iconUrgentFalse },
     { stateKey: 'isEditControl', iconTrue: iconEditTrue, iconFalse: iconEditFalse },
   ];
-  const [changeIcons, setChangeIcons] = useState(userIn?.control_items);
 
   const toggleControl = async (item) => {
     const newValue = !userIn[item.stateKey];
@@ -39,33 +36,26 @@ const ListControls = ({ amount }) => {
     }
   };
   return (
-    <div className=" relative w-full flex gap-1 items-center justify-end pr-[10px]">
+    <div className={`w-full flex gap-1 items-start justify-end ${userIn?.control_items ? 'h-10 md:h-8  translate-x-0' : 'h-0'} overflow-hidden transition-all duration-[1200ms] ease-in`}>
+      <div className='flex gap-1'>
+        <div className="w-full items-center flex gap-2 justify-end">
+          <div className="text-md">Total</div>
+          <div className="w-16 border text-center text-sm border-black rounded-md px-1 py-0.5">
+            {(Number(amount) || 0).toFixed(2)}
+          </div>
 
-      <div className={`bg-white h-10 absolute -right-[10px] flex items-end justify-end border-slate-300 border-l ${userIn?.control_items ? 'w-72 translate-x-0' : 'w-0'} transition-all duration-[1200ms] ease-in`}></div>
-
-      <div className="w-full items-center flex gap-2 justify-end">
-        <img onClick={() => {
-          setUserIn(prev => ({ ...prev, control_items: !userIn.control_items })), setTimeout(async () => {
-            setChangeIcons(prev => !prev)
-            await updateDoc(doc(db, "userMarketList", userIn.uid), { control_items: !userIn.control_items })
-          }, 1200);
-        }} className='w-5 h-10 cursor-pointer z-10 absolute -right-[10px]' src={changeIcons ? arrowRight : arrowLeft} alt="" />
-        <div className="text-md">Total</div>
-        <div className="w-16 border text-center text-sm border-black rounded-md px-1 py-0.5">
-          {(Number(amount) || 0).toFixed(2)}
         </div>
-
+        {controls.map(item => (
+          <img
+            key={item.stateKey}
+            onClick={() => toggleControl(item)}
+            className="w-10 h-w-10 md:w-8 md:h-8"
+            src={userIn && userIn[item.stateKey] ? item.iconTrue : item.iconFalse}
+            alt={`Icono de ${item.stateKey}`}
+          />
+        )
+        )}
       </div>
-      {controls.map(item => (
-        <img
-          key={item.stateKey}
-          onClick={() => toggleControl(item)}
-          className="w-8 h-w-8"
-          src={userIn && userIn[item.stateKey] ? item.iconTrue : item.iconFalse}
-          alt={`Icono de ${item.stateKey}`}
-        />
-      )
-      )}
     </div>
   );
 };

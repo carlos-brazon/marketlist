@@ -170,7 +170,14 @@ const Header = () => {
                             </CommandGroup>
                             <CommandSeparator />
                             <CommandGroup className={`text-center ${userIn || "hidden"}`} heading="Ajustes">
-                              <CommandItem>Perfil</CommandItem>
+                              <Link to={'setting'}>
+                                <CommandItem >
+                                  <SheetClose className="w-screen flex items-start">
+                                    Perfil
+                                  </SheetClose>
+                                </CommandItem>
+                              </Link >
+
                             </CommandGroup>
                           </CommandList>
                         </Command>
