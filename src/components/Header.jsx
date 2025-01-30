@@ -85,7 +85,7 @@ const Header = () => {
                       <div className='px-2 pt-2'>
                         <div className='flex'>
                           <div className='w-[38%]'></div>
-                          <div className='flex items-center justify-end gap-1'>
+                          <div className={`flex items-center justify-end gap-1 ${userIn || 'hidden'}`}>
                             <div>{firstLetterUpperCase(userIn?.name_)}</div>
                             <div>{firstLetterUpperCase(userIn?.last_name)}</div>
                           </div>
