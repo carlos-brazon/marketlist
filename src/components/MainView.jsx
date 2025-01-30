@@ -24,7 +24,7 @@ const MainView = () => {
             setChangeIcons(prev => !prev)
             await updateDoc(doc(db, "userMarketList", userIn.uid), { control_items: !userIn.control_items })
           }, 1200);
-        }} className='w-5 h-5 cursor-pointer z-10 absolute right-[10px]' src={changeIcons ? chevUp : chevDown} alt="" />
+        }} className='w-7 h-7 cursor-pointer z-10 absolute right-[10px]' src={changeIcons ? chevUp : chevDown} alt="" />
       </div>
 
       {/* <div>

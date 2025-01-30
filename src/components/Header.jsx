@@ -2,18 +2,10 @@ import { useContext, useState, useEffect } from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import UserDisconectedIcon from "../assets/user-svgrepo-com-red.svg";
 import { signOut } from 'firebase/auth';
-import { auth, db } from '../utils/firebase';
+import { auth } from '../utils/firebase';
 import { AllItemsContext } from './Contex';
 import { firstLetterUpperCase } from "../utils/util.js";
 import { Button } from './ui/button.jsx';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import {
   Sheet,
   SheetContent,
@@ -33,14 +25,11 @@ import {
 import { useToast } from "@/components/ui/use-toast"
 import loginIcon from "../assets/login.svg";
 import logOutIcon from "../assets/logout.svg";
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 
 const Header = () => {
   const { toast } = useToast()
   const { userIn, setUserIn } = useContext(AllItemsContext);
   const [by, setBy] = useState(true);
-  const [temporalImg, setTemporalImg] = useState('');
-  const [imgFromFirebase, setImgFromFirebase] = useState('');
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isDropMenuOpen, setIsDropMenuOpen] = useState(false);
 
@@ -49,27 +38,9 @@ const Header = () => {
       setBy(false);
     }, 3000);
   };
-  const ramdomDog = async () => {
-    try {
-      const response = await fetch('https://dog.ceo/api/breed/hound/images/random/6');
-      const data = await response.json();
-      setTemporalImg(data.message);
-      return data.message
-    } catch (error) {
-      console.error("Error fetching the image:", error);
-    }
-  }
-  const urlsFromFirebase = async () => {
-    const urlArray = await getDoc(doc(db, "urlDogs", "one"))
-    setImgFromFirebase(urlArray.data().urls)
-    setTemporalImg([userIn.last_url || temporalImg[0]])
-  }
+
   useEffect(() => {
     showMessage();
-    if (userIn) {
-      ramdomDog();
-      urlsFromFirebase();
-    }
   }, []);
 
   const handleClick = async () => {
@@ -98,62 +69,25 @@ const Header = () => {
                   <SheetHeader className="space-y-0">
 
                     <SheetTitle>
-                      {/* <img className={`h-28 w-full relative bg-repeat ${userIn || 'pt-2'}`} src={userIn ? userIn.last_url : UserDisconectedIcon} alt="Imagen cuadrada de fondo" />  asi estaba funcionando bien*/}
-
-                      <div
-                        style={{
-                          backgroundImage: `url(${userIn ? userIn.last_url : UserDisconectedIcon})`,
-                          backgroundSize: `${userIn ? "cover" : 'contain'}`,
-                          backgroundPosition: "center",
-                          backgroundRepeat: 'no-repeat',
-                        }}
-                        className={`h-28 w-full relative bg-repeat ${userIn || 'mt-2'}`} src={userIn ? userIn.last_url : UserDisconectedIcon} alt="Imagen cuadrada de fondo"
-                      ></div>
-
-
+                      <img className={`h-28 w-full relative bg-repeat ${userIn || 'pt-2'}`} src={userIn ? userIn.last_url : UserDisconectedIcon} alt="Imagen cuadrada de fondo" />
                     </SheetTitle>
 
 
-                    <DropdownMenu className=" absolute z-40" open={isDropMenuOpen} onOpenChange={setIsDropMenuOpen}>
-
-                      <DropdownMenuTrigger className="pl-2">
-                        {userIn ? <div className=' flex items-center justify-center rounded-full border-[2px] border-gray-500 bg-white w-[106px] h-[106px] absolute top-[40px]'>
+                    <Link to={'/setting'} className="pl-2">
+                      {userIn ?
+                        <div className=' flex items-center justify-center rounded-full border-[2px] border-gray-500 bg-white w-[106px] h-[106px] absolute top-[40px]'>
                           <img onClick={async () => {
-                            urlsFromFirebase()
                           }} className={`absolute z-10 rounded-full w-24 h-24`} src={userIn.last_url} alt='imagen redonda' />
-                        </div> : <img className='relative z-10 w-9 h-9' src={UserDisconectedIcon} alt='Aquí va un icono de usuario' />}
-                      </DropdownMenuTrigger>
-
-                      <DropdownMenuContent>
-                        <DropdownMenuLabel className="text-center">Selecciona una nueva imagen</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          <div className='grid grid-cols-3 gap-2'>
-                            {imgFromFirebase.length ? imgFromFirebase?.map(url => <img key={url} onClick={async () => { await updateDoc(doc(db, "userMarketList", userIn.uid), { last_url: url }), setUserIn(prev => ({ ...prev, last_url: url })) }} className='w-24 h-24 relative rounded-full' src={url} alt="" />) : ''}
-                          </div>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          <div className={userIn || 'hidden'} onClick={async () => {
-                            const newArrayUrls = await ramdomDog()
-                            await setDoc(doc(db, "urlDogs", "one"), { urls: newArrayUrls })
-                          }}>
-                            Cambiar imagenes de muestra
-                          </div>
-
-
-                        </DropdownMenuItem>
-
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-
+                        </div>
+                        : <img className='relative z-10 w-9 h-9' src={UserDisconectedIcon} alt='Aquí va un icono de usuario' />}
+                    </Link>
                     <SheetDescription asChild>
                       <div className='px-2 pt-2'>
                         <div className='flex'>
                           <div className='w-[38%]'></div>
                           <div className='flex items-center justify-end gap-1'>
-                            <div>{userIn?.name_}</div>
-                            <div>{userIn?.last_name}</div>
+                            <div>{firstLetterUpperCase(userIn?.name_)}</div>
+                            <div>{firstLetterUpperCase(userIn?.last_name)}</div>
                           </div>
                         </div>
                         <Command>

@@ -14,6 +14,7 @@ import { Toaster } from "@/components/ui/toaster";
 import RootLayout from './components/Toaster'
 import Settings from './components/Settings'
 
+
 function App() {
   const [userIn, setUserIn] = useState(null);
   const [temporalCloud, setTemporalCloud] = useState(null);
@@ -72,7 +73,7 @@ function App() {
     <RootLayout>
       <div className="animate-fade flex items-start relative justify-center w-full pb-3">
         <Contex userIn={userIn} setUserIn={setUserIn} temporalCloud={temporalCloud} setTemporalCloud={setTemporalCloud}>
-          <BrowserRouter>
+          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
             <Routes>
               <Route path='/' element={<Header />}>
                 <Route index element={<Form />} />
