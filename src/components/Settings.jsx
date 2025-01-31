@@ -104,7 +104,7 @@ const Settings = () => {
                 </TabsContent>
                 <TabsContent value="password">
                     <EditPassword />
-                    .</TabsContent>
+                </TabsContent>
             </Tabs>
 
 
