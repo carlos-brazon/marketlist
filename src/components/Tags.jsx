@@ -51,6 +51,14 @@ const Tags = ({ setAmount }) => {
         }));
         await updateDoc(doc(db, "userMarketList", userIn.uid), { orderByUrgent: !userIn.orderByUrgent });
     }
+    const handleDoneSort = async () => {
+        const newValuyByDone = !userIn.orderByDone
+        setUserIn(prev => ({
+            ...prev,
+            orderByDone: newValuyByDone
+        }));
+        await updateDoc(doc(db, "userMarketList", userIn.uid), { orderByDone: newValuyByDone });
+    }
 
     useEffect(() => {
         const itemsWithTagsAndDate = temporalCloud.map(doc => ({
@@ -118,6 +126,17 @@ const Tags = ({ setAmount }) => {
                                             )}
 
                                             <div>Ordenar urgentes</div>
+                                        </div>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem className='px-2 py-1.5 text-sm hover:bg-slate-100 rounded-sm' onClick={() => setTimeout(() => {
+                                        handleDoneSort()
+                                    }, 10)}>
+                                        <div className='flex gap-2 items-center'>
+                                            {userIn?.orderByDone && (
+                                                <img className='w-4 h-4' src={check} alt="un check" />
+                                            )}
+
+                                            <div>Ordenar por tachados</div>
                                         </div>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
