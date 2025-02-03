@@ -65,102 +65,54 @@ const ItemsList = ({ setAmount }) => {
     }
 
     useEffect(() => {
-        let totalAmount = 0;
-
-        // Filtrar la lista según la etiqueta seleccionada
-        const filteredList = [...temporalCloud].filter(item => {
-            if (item.tags.toLowerCase() === button.toLowerCase()) {
-                totalAmount += item.amount;
-                return true;
+        let totalAmount = 0
+        const listFromFirebase = [...temporalCloud].filter(item => {//aqui saco de la temporal un array filtrado por etiquetas
+            if (item.tags.toLowerCase() == button.toLowerCase()) {
+                totalAmount = totalAmount + item.amount
+                return item
             }
-            return false;
         });
 
-        let sortedList = [...filteredList];
+        if (userIn?.sortAscending && userIn?.orderByUrgent) { // si los 2 son true
+            // Filtrar elementos por el tag seleccionado
+            const filteredList = [...temporalCloud]?.filter(item => item.tags.toLowerCase() === button.toLowerCase());
 
-        // Ordenar por urgencia y luego alfabéticamente si es necesario
-        if (userIn?.orderByUrgent && userIn?.sortAscending) {
-            sortedList.sort((a, b) => {
-                // Primero, urgentes antes que no urgentes
+            // Ordenar primero por urgencia (prioridad) y luego por nombre en orden ascendente
+            const sortedList = filteredList.sort((a, b) => {
+                // Ordenar por prioridad primero (urgentes primero)
                 if (a.priority !== b.priority) {
-                    return b.priority - a.priority; // Los urgentes (true) van primero
+                    return b.priority - a.priority; // Los urgentes (true) van antes (1 > 0)
                 }
-                // Luego, ordenar alfabéticamente
+                // Si tienen la misma prioridad, ordenar por nombre (A-Z)
                 return a.name.localeCompare(b.name);
             });
-        } else if (userIn?.orderByUrgent) {
-            // Solo ordenar por urgentes
-            sortedList.sort((a, b) => b.priority - a.priority);
+
+            setList(sortedList);
+            return;
         } else if (userIn?.sortAscending) {
-            // Solo ordenar alfabéticamente
-            sortedList.sort((a, b) => a.name.localeCompare(b.name));
-        }
+            const filteredList = [...temporalCloud]?.filter(item => item.tags.toLowerCase() === button.toLowerCase());
+            const sortedList = [...filteredList]?.sort((a, b) => {
+                const nameA = isNaN(a.name) ? a.name : parseFloat(a.name);
+                const nameB = isNaN(b.name) ? b.name : parseFloat(b.name);
+                if (typeof nameA === "string" && typeof nameB === "string") {
+                    return nameA.localeCompare(nameB); // Ordenar alfabéticamente
+                }
+                return nameA - nameB; // Ordenar numéricamente
+            });
+            setList(sortedList);
 
-        // Ordenar por tachados si está activado
-        if (userIn?.orderByDone) {
-            sortedList.sort((a, b) => a.isDone - b.isDone);
-        }
-
-        // Si no hay ninguna opción activada, ordenar por fecha de creación
-        if (!userIn?.sortAscending && !userIn?.orderByUrgent && !userIn?.orderByDone) {
-            sortedList.sort((a, b) => {
+        } else if (userIn?.orderByUrgent) {
+            const urgentList = [...temporalCloud]?.filter(item => item.tags.toLowerCase() === button.toLowerCase()).sort((a, b) => (a.priority ? -1 : 1) - (b.priority ? -1 : 1));
+            setList(urgentList)
+        } else {
+            const sortedList = listFromFirebase.sort((a, b) => {
                 const dateA = a.create_at.toDate ? a.create_at.toDate() : new Date(a.create_at);
                 const dateB = b.create_at.toDate ? b.create_at.toDate() : new Date(b.create_at);
                 return dateA - dateB;
             });
+            setList(sortedList);
         }
-
-        setList(sortedList);
         setAmount(totalAmount);
-
-        // let totalAmount = 0
-        // const listFromFirebase = [...temporalCloud].filter(item => {//aqui saco de la temporal un array filtrado por etiquetas
-        //     if (item.tags.toLowerCase() == button.toLowerCase()) {
-        //         totalAmount = totalAmount + item.amount
-        //         return item
-        //     }
-        // });
-
-        // if (userIn?.sortAscending && userIn?.orderByUrgent) { // si los 2 son true
-        //     // Filtrar elementos por el tag seleccionado
-        //     const filteredList = [...temporalCloud]?.filter(item => item.tags.toLowerCase() === button.toLowerCase());
-
-        //     // Ordenar primero por urgencia (prioridad) y luego por nombre en orden ascendente
-        //     const sortedList = filteredList.sort((a, b) => {
-        //         // Ordenar por prioridad primero (urgentes primero)
-        //         if (a.priority !== b.priority) {
-        //             return b.priority - a.priority; // Los urgentes (true) van antes (1 > 0)
-        //         }
-        //         // Si tienen la misma prioridad, ordenar por nombre (A-Z)
-        //         return a.name.localeCompare(b.name);
-        //     });
-
-        //     setList(sortedList);
-        //     return;
-        // } else if (userIn?.sortAscending) {
-        //     const filteredList = [...temporalCloud]?.filter(item => item.tags.toLowerCase() === button.toLowerCase());
-        //     const sortedList = [...filteredList]?.sort((a, b) => {
-        //         const nameA = isNaN(a.name) ? a.name : parseFloat(a.name);
-        //         const nameB = isNaN(b.name) ? b.name : parseFloat(b.name);
-        //         if (typeof nameA === "string" && typeof nameB === "string") {
-        //             return nameA.localeCompare(nameB); // Ordenar alfabéticamente
-        //         }
-        //         return nameA - nameB; // Ordenar numéricamente
-        //     });
-        //     setList(sortedList);
-
-        // } else if (userIn?.orderByUrgent) {
-        //     const urgentList = [...temporalCloud]?.filter(item => item.tags.toLowerCase() === button.toLowerCase()).sort((a, b) => (a.priority ? -1 : 1) - (b.priority ? -1 : 1));
-        //     setList(urgentList)
-        // } else {
-        //     const sortedList = listFromFirebase.sort((a, b) => {
-        //         const dateA = a.create_at.toDate ? a.create_at.toDate() : new Date(a.create_at);
-        //         const dateB = b.create_at.toDate ? b.create_at.toDate() : new Date(b.create_at);
-        //         return dateA - dateB;
-        //     });
-        //     setList(sortedList);
-        // }
-        // setAmount(totalAmount);
     }, [temporalCloud, userIn]);
 
     return (
