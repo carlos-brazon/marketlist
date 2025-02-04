@@ -13,7 +13,7 @@ import eyeClosed from "../assets/eye-closed.svg";
 import { collection, doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 
 const SingIn = () => {
-    const { userIn, setUserIn } = useContext(AllItemsContext);
+    const { userIn } = useContext(AllItemsContext);
     const [eyeControl, setEyeControl] = useState(true);
     const { toast } = useToast()
     const [user, setUser] = useState({});
@@ -68,7 +68,8 @@ const SingIn = () => {
                 isEditControl: false,
                 last_name: user.displayName.split(" ")[1].toLowerCase(),
                 last_tags: 'compras',
-                last_url: user.providerData[0].photoURL,
+                url_img_super_list: "https://res.cloudinary.com/dcilysqzl/image/upload/v1738698398/eaf0b15c155449c9bb8fe13ccdb821cc-free_2_fiswiy.png",
+                url_img_google: user.providerData[0].photoURL,
                 name_: user.displayName.split(" ")[0].toLowerCase(),
                 orderByDone: false,
                 orderByUrgent: false,
@@ -80,7 +81,7 @@ const SingIn = () => {
                 console.log("Usuario nuevo registrado con Google.");
                 console.log("Contraseña generada:", newPasswordToSingIn);
 
-                // Puedes enviar la contraseña al email del usuario o mostrarla en la UI 
+                // Puedes enviar la contraseña al email del usuario o mostrarla en la UI
 
                 const credential = EmailAuthProvider.credential(user.email, newPasswordToSingIn);
 
@@ -91,8 +92,10 @@ const SingIn = () => {
 
             // Redirigir al usuario después del inicio de sesión
             await setDoc(doc(db, "userMarketList", user.uid), userToFirebase);
-            setUserIn(userToFirebase)
-            // window.location.href = "/";
+            console.log(userToFirebase);
+
+            // setUserIn(userToFirebase)
+            window.location.href = "/";
         } catch (error) {
             console.error("Error en el inicio de sesión con Google:", error);
         }

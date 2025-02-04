@@ -93,7 +93,7 @@ const MainView = () => {
 
           const dataFromFirebase = await getDocs(collection(db, "userMarketList"));
           dataFromFirebase.forEach(async (usuario) => {
-            await updateDoc(doc(db, 'userMarketList', usuario.id), { email: usuario.data().email })
+            await updateDoc(doc(db, 'userMarketList', usuario.id), { super_list_img_selected: false })
           })
         }} className='bg-slate-400 p-2 rounded-md'>
           agregar nueva key a todos los usuarios

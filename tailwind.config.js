@@ -18,6 +18,7 @@ module.exports = {
     },
     extend: {
       colors: {
+        imgBorder: "#002162", // Agregamos el color como "primary"
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -52,6 +53,7 @@ module.exports = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

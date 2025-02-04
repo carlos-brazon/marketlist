@@ -32,6 +32,7 @@ const Header = () => {
   const [by, setBy] = useState(true);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isDropMenuOpen, setIsDropMenuOpen] = useState(false);
+  const defaultSuperListImg = 'https://res.cloudinary.com/dcilysqzl/image/upload/v1738698398/eaf0b15c155449c9bb8fe13ccdb821cc-free_2_fiswiy.png'
 
   const showMessage = () => {
     setTimeout(() => {
@@ -47,6 +48,7 @@ const Header = () => {
     await setUserIn(null)
     await signOut(auth);
   }
+
   return (
     <div className='flex w-full flex-col gap-2 items-center'>
       <header className="flex items-center justify-between relative text-white bg-neutral-800 py-1 px-3 w-full">
@@ -61,25 +63,45 @@ const Header = () => {
             <div className='relative flex justify-center'>
               <Sheet open={isSheetOpen} onOpenChange={isDropMenuOpen ? setIsDropMenuOpen : setIsSheetOpen}>
                 <SheetTrigger>
-                  {userIn ? <div className=' flex items-center justify-center rounded-full border-[2px] border-gray-500 bg-white w-10 h-10'>
-                    {<img className={`relative rounded-full z-10 w-8 h-8`} src={`${userIn.last_url}?t=${new Date().getTime()}`} alt='imagen redonda header' />}
-                  </div> : <img className='relative z-10 w-9 h-9' src={UserDisconectedIcon} alt='Aquí va un icono de usuario' />}
+                  {userIn //esta es la imagen redonda del header
+                    ?
+                    <div className=' flex items-center justify-center rounded-full border-[2px] border-gray-500 bg-white w-10 h-10'>
+                      {<img
+                        className={`relative rounded-full z-10 w-8 h-8 ${userIn.url_img_super_list === defaultSuperListImg ? 'p-2 bg-imgBorder' : ''}`}
+                        alt="imagen redonda header"
+                        src={userIn.super_list_img_selected ? userIn?.url_img_super_list : userIn?.url_img_google}
+                      />}
+                    </div>
+                    :
+                    <img className='relative z-10 w-9 h-9' src={UserDisconectedIcon} alt='Aquí va un icono de usuario' />
+                  }
                 </SheetTrigger>
                 <SheetContent className="p-0 w-72 flex flex-col justify-between">
                   <SheetHeader className="space-y-0">
 
                     <SheetTitle>
-                      <img className={`h-28 w-full relative bg-repeat ${userIn || 'pt-2'}`} src={userIn ? `${userIn.last_url}?t=${new Date().getTime()}` : UserDisconectedIcon} alt="Imagen cuadrada de fondo" />
+                      {/* este es el cuadro gris detras de la imagen circulo en el shett content */}
+                      <div className='h-28 w-full relative bg-gradient-to-br from-slate-200 to-slate-500'>
+                      </div>
                     </SheetTitle>
 
+                    <Link to={userIn ? '/setting' : '/'} className="pl-2">
+                      <div className=' flex items-center justify-center rounded-full border-[2px] border-gray-500 bg-white w-[106px] h-[106px] absolute top-[40px]'>
+                        {userIn //esta es la imagen redonda del sheet content
+                          ?
+                          <img
+                            className={`absolute z-10 rounded-full w-24 h-24 ${userIn.url_img_super_list === defaultSuperListImg ? 'p-2 bg-imgBorder' : ''}`}
+                            src={userIn.super_list_img_selected ? userIn?.url_img_super_list : userIn?.url_img_google}
+                            alt="imagen redonda"
+                          />
 
-                    <Link to={'/setting'} className="pl-2">
-                      {userIn ?
-                        <div className=' flex items-center justify-center rounded-full border-[2px] border-gray-500 bg-white w-[106px] h-[106px] absolute top-[40px]'>
-                          <img onClick={async () => {
-                          }} className={`absolute z-10 rounded-full w-24 h-24`} src={`${userIn.last_url}?t=${new Date().getTime()}`} alt='imagen redonda' />
-                        </div>
-                        : <img className='relative z-10 w-9 h-9' src={UserDisconectedIcon} alt='Aquí va un icono de usuario' />}
+                          :
+                          <img
+                            className='relative z-10 w-9 h-9'
+                            src={UserDisconectedIcon}
+                            alt='Aquí va un icono de usuario' />
+                        }
+                      </div>
                     </Link>
                     <SheetDescription asChild>
                       <div className='px-2 pt-2'>

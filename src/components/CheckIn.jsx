@@ -52,17 +52,20 @@ const CheckIn = () => {
             isEditControl: false,
             isDoneControl: false,
             addControl: false,
-            last_tags: 'Compras',
+            last_tags: 'compras',
             sortAscending: false,
             orderByUrgent: false,
-            last_url: "https://images.dog.ceo/breeds/hound-ibizan/n02091244_3240.jpg"
+            url_img_super_list: "https://res.cloudinary.com/dcilysqzl/image/upload/v1738698398/eaf0b15c155449c9bb8fe13ccdb821cc-free_2_fiswiy.png",
+            url_img_google: '',
+            super_list_img_selected: true
+
         };
         setMessageLogIn('Usuario registrado correctamente');
         createUserWithEmailAndPassword(auth, user.email, user.password)
             .then(async (userCredential) => {
                 const newUser = userCredential.user;
                 delete userToFirebase.password;
-                await setDoc(doc(db, "userMarketList", newUser.uid), userToFirebase)
+                await setDoc(doc(db, "userMarketList", newUser.uid), { ...userToFirebase, url_img_google: newUser.providerData[0]?.photoURL })
                 history('/', { replace: true });
             })
             .catch((error) => {

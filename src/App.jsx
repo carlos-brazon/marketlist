@@ -35,8 +35,10 @@ function App() {
         dataFromFirebase.forEach(item => {
           dataUser.push(item.data());
         });
+        console.log(user);
 
-        setUserIn({ ...userConected, uid: user.uid });
+
+        setUserIn({ ...userConected, uid: user.uid, url_img_super_list: userConected.super_list_img_selected ? userConected.url_img_super_list : user.providerData[0].photoURL });
 
         const dataSorted = dataUser.sort((a, b) => {
           const dateA = a.create_at ? (a.create_at.toDate ? a.create_at.toDate() : new Date(a.create_at)) : new Date(0);
