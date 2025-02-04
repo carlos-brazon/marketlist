@@ -13,6 +13,7 @@ const MainView = () => {
   const { userIn, setUserIn } = useContext(AllItemsContext);
   const [amount, setAmount] = useState(0);
   const [changeIcons, setChangeIcons] = useState(userIn?.control_items);
+  console.log(userIn);
 
   return (
     <div className='flex flex-col items-center gap-2 h-full w-full px-3'>
@@ -85,6 +86,20 @@ const MainView = () => {
 
         }} className='bg-slate-400 p-2 rounded-md'> subir usuario a nueva coleccion</button>
       </div> */}
+      {/********************* /* esto es para agregar una nueva key a todos los usuarios de userMarketList  boton de abajo **********************************/}
+      {/* {
+        <button onClick={async () => {
+          console.log('hola');
+
+          const dataFromFirebase = await getDocs(collection(db, "userMarketList"));
+          dataFromFirebase.forEach(async (usuario) => {
+            await updateDoc(doc(db, 'userMarketList', usuario.id), { email: usuario.data().email })
+          })
+        }} className='bg-slate-400 p-2 rounded-md'>
+          agregar nueva key a todos los usuarios
+        </button>
+      } */}
+
       <ListControls amount={amount} />
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 270)}px` }}

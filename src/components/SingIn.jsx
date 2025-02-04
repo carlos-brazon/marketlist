@@ -10,7 +10,7 @@ import googleIcon from "../assets/google-icon.svg";
 import { AllItemsContext } from './Contex';
 import eyeOpen from "../assets/eye-open.svg";
 import eyeClosed from "../assets/eye-closed.svg";
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 
 const SingIn = () => {
     const { userIn, setUserIn } = useContext(AllItemsContext);
@@ -43,7 +43,7 @@ const SingIn = () => {
             });
     }
 
-    const generarContraseña = () => Math.random().toString(36).slice(-8);
+    const RamdomPassword = () => Math.random().toString(36).slice(-8);
     const singInGoogle = async () => {
         const auth = getAuth();
         const provider = new GoogleAuthProvider();
@@ -53,31 +53,45 @@ const SingIn = () => {
             const user = result.user;
             console.log(user);
 
-
             // Verificar si el usuario ya existe en Firestore
-            const userRef = doc(db, "users", user.uid);
-            const userSnap = await getDoc(userRef);
+            const userSnap = await getDoc(doc(db, "userMarketList", user.uid));
+            // Usuario nuevo,
+            const userId = doc(collection(db, 'newId')).id;
+            const userToFirebase = {
+                addControl: false,
+                control_items: false,
+                create_at: serverTimestamp(),
+                email: user.email.toLowerCase(),
+                id: userId,
+                isDateControl: false,
+                isDoneControl: false,
+                isEditControl: false,
+                last_name: user.displayName.split(" ")[1].toLowerCase(),
+                last_tags: 'compras',
+                last_url: user.providerData[0].photoURL,
+                name_: user.displayName.split(" ")[0].toLowerCase(),
+                orderByDone: false,
+                orderByUrgent: false,
+                sortAscending: false,
+            }
 
             if (!userSnap.exists()) {
-                // Usuario nuevo, generar contraseña y guardarla
-                const nuevaContraseña = generarContraseña();
-                await setDoc(userRef, { email: user.email, password: nuevaContraseña });
-
+                const newPasswordToSingIn = RamdomPassword();
                 console.log("Usuario nuevo registrado con Google.");
-                console.log("Contraseña generada:", nuevaContraseña);
+                console.log("Contraseña generada:", newPasswordToSingIn);
 
-                // Puedes enviar la contraseña al email del usuario o mostrarla en la UI
+                // Puedes enviar la contraseña al email del usuario o mostrarla en la UI 
 
-                const credential = EmailAuthProvider.credential(user.email, nuevaContraseña);
+                const credential = EmailAuthProvider.credential(user.email, newPasswordToSingIn);
 
                 await linkWithCredential(user, credential);
                 console.log("Cuenta vinculada con email y contraseña correctamente.");
-                console.log("Contraseña generada:", nuevaContraseña);
-            } else {
-                console.log("Usuario ya registrado. No se genera una nueva contraseña.");
+                console.log("Contraseña generada:", newPasswordToSingIn);
             }
 
             // Redirigir al usuario después del inicio de sesión
+            await setDoc(doc(db, "userMarketList", user.uid), userToFirebase);
+            setUserIn(userToFirebase)
             // window.location.href = "/";
         } catch (error) {
             console.error("Error en el inicio de sesión con Google:", error);

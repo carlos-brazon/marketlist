@@ -62,14 +62,14 @@ const Header = () => {
               <Sheet open={isSheetOpen} onOpenChange={isDropMenuOpen ? setIsDropMenuOpen : setIsSheetOpen}>
                 <SheetTrigger>
                   {userIn ? <div className=' flex items-center justify-center rounded-full border-[2px] border-gray-500 bg-white w-10 h-10'>
-                    {<img className={`relative rounded-full z-10 w-8 h-8`} src={userIn.last_url} alt='imagen redonda' />}
+                    {<img className={`relative rounded-full z-10 w-8 h-8`} src={`${userIn.last_url}?t=${new Date().getTime()}`} alt='imagen redonda header' />}
                   </div> : <img className='relative z-10 w-9 h-9' src={UserDisconectedIcon} alt='Aquí va un icono de usuario' />}
                 </SheetTrigger>
                 <SheetContent className="p-0 w-72 flex flex-col justify-between">
                   <SheetHeader className="space-y-0">
 
                     <SheetTitle>
-                      <img className={`h-28 w-full relative bg-repeat ${userIn || 'pt-2'}`} src={userIn ? userIn.last_url : UserDisconectedIcon} alt="Imagen cuadrada de fondo" />
+                      <img className={`h-28 w-full relative bg-repeat ${userIn || 'pt-2'}`} src={userIn ? `${userIn.last_url}?t=${new Date().getTime()}` : UserDisconectedIcon} alt="Imagen cuadrada de fondo" />
                     </SheetTitle>
 
 
@@ -77,7 +77,7 @@ const Header = () => {
                       {userIn ?
                         <div className=' flex items-center justify-center rounded-full border-[2px] border-gray-500 bg-white w-[106px] h-[106px] absolute top-[40px]'>
                           <img onClick={async () => {
-                          }} className={`absolute z-10 rounded-full w-24 h-24`} src={userIn.last_url} alt='imagen redonda' />
+                          }} className={`absolute z-10 rounded-full w-24 h-24`} src={`${userIn.last_url}?t=${new Date().getTime()}`} alt='imagen redonda' />
                         </div>
                         : <img className='relative z-10 w-9 h-9' src={UserDisconectedIcon} alt='Aquí va un icono de usuario' />}
                     </Link>
