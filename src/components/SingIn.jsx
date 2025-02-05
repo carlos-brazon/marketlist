@@ -11,6 +11,7 @@ import { AllItemsContext } from './Contex';
 import eyeOpen from "../assets/eye-open.svg";
 import eyeClosed from "../assets/eye-closed.svg";
 import { collection, doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { defaultSuperListImg } from '../utils/util';
 
 const SingIn = () => {
     const { userIn } = useContext(AllItemsContext);
@@ -57,26 +58,32 @@ const SingIn = () => {
             const userSnap = await getDoc(doc(db, "userMarketList", user.uid));
             // Usuario nuevo,
             const userId = doc(collection(db, 'newId')).id;
-            const userToFirebase = {
-                addControl: false,
-                control_items: false,
-                create_at: serverTimestamp(),
-                email: user.email.toLowerCase(),
-                id: userId,
-                isDateControl: false,
-                isDoneControl: false,
-                isEditControl: false,
+            const updateSingInUserToFirebase = {
                 last_name: user.displayName.split(" ")[1].toLowerCase(),
-                last_tags: 'compras',
-                url_img_super_list: "https://res.cloudinary.com/dcilysqzl/image/upload/v1738698398/eaf0b15c155449c9bb8fe13ccdb821cc-free_2_fiswiy.png",
                 url_img_google: user.providerData[0].photoURL,
                 name_: user.displayName.split(" ")[0].toLowerCase(),
-                orderByDone: false,
-                orderByUrgent: false,
-                sortAscending: false,
             }
 
             if (!userSnap.exists()) {
+                const newUserToFirebase = {
+                    addControl: false,
+                    control_items: false,
+                    create_at: serverTimestamp(),
+                    email: user.email.toLowerCase(),
+                    id: userId,
+                    isDateControl: false,
+                    isDoneControl: false,
+                    isEditControl: false,
+                    last_name: user.displayName.split(" ")[1].toLowerCase(),
+                    last_tags: 'compras',
+                    url_img_super_list: defaultSuperListImg,
+                    url_img_google: user.providerData[0].photoURL,
+                    name_: user.displayName.split(" ")[0].toLowerCase(),
+                    orderByDone: false,
+                    orderByUrgent: false,
+                    sortAscending: false,
+                    super_list_img_selected: false
+                }
                 const newPasswordToSingIn = RamdomPassword();
                 console.log("Usuario nuevo registrado con Google.");
                 console.log("Contraseña generada:", newPasswordToSingIn);
@@ -85,56 +92,20 @@ const SingIn = () => {
 
                 const credential = EmailAuthProvider.credential(user.email, newPasswordToSingIn);
 
+                await setDoc(doc(db, "userMarketList", user.uid), newUserToFirebase);
                 await linkWithCredential(user, credential);
                 console.log("Cuenta vinculada con email y contraseña correctamente.");
                 console.log("Contraseña generada:", newPasswordToSingIn);
             }
 
             // Redirigir al usuario después del inicio de sesión
-            await setDoc(doc(db, "userMarketList", user.uid), userToFirebase);
-            console.log(userToFirebase);
+            await setDoc(doc(db, "userMarketList", user.uid), updateSingInUserToFirebase);
+            console.log(updateSingInUserToFirebase);
 
-            // setUserIn(userToFirebase)
             window.location.href = "/";
         } catch (error) {
             console.error("Error en el inicio de sesión con Google:", error);
         }
-        // const auth = getAuth();
-        // const provider = new GoogleAuthProvider();
-
-        // signInWithPopup(auth, provider)
-        //     .then(async (result) => {
-        //         const data = {
-        //             firstName: result._tokenResponse.firstName,
-        //             lastName: result._tokenResponse.lastName,
-        //             email: result._tokenResponse.email,
-        //             photo: result._tokenResponse.photoUrl,
-        //         };
-        //         // await setDoc(doc(db, "users-numbers", result.user.uid), data);
-        //         // setUserIn(data);
-        //         window.location.href = '/';
-        //         // This gives you a Google Access Token. You can use it to access the Google API.
-        //         const credential = GoogleAuthProvider.credentialFromResult(result);
-        //         const token = credential.accessToken;
-        //         // The signed-in user info.
-        //         const user = result.user;
-        //         console.log(user);
-
-        //         // IdP data available using getAdditionalUserInfo(result)
-        //         // ...
-        //     })
-        //     .catch((error) => {
-        //         console.log('aquie esta el erro:', error);
-
-        //         // Handle Errors here.
-        //         const errorCode = error.code;
-        //         const errorMessage = error.message;
-        //         // The email of the user's account used.
-        //         const email = error.customData?.email;
-        //         // The AuthCredential type that was used.
-        //         const credential = GoogleAuthProvider.credentialFromError(error);
-        //         // ...
-        //     });
     };
 
     console.log(userIn);

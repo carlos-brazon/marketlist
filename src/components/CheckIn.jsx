@@ -5,6 +5,7 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router';
 import Input from './Input.jsx';
 import { Button } from './ui/button.jsx';
+import { defaultSuperListImg } from '../utils/util.js';
 const CheckIn = () => {
     const history = useNavigate();
     const [user, setUser] = useState({});
@@ -44,27 +45,31 @@ const CheckIn = () => {
 
         const userId = doc(collection(db, 'newId')).id;
         const userToFirebase = {
-            ...user,
-            id: userId,
-            email: user.email.toLowerCase(),
-            create_at: serverTimestamp(),
-            isDateControl: false,
-            isEditControl: false,
-            isDoneControl: false,
             addControl: false,
+            control_items: false,
+            create_at: serverTimestamp(),
+            email: user.email.toLowerCase(),
+            id: userId,
+            isDateControl: false,
+            isDoneControl: false,
+            isEditControl: false,
+            last_name: user.last_name.toLowerCase(),
             last_tags: 'compras',
-            sortAscending: false,
-            orderByUrgent: false,
-            url_img_super_list: "https://res.cloudinary.com/dcilysqzl/image/upload/v1738698398/eaf0b15c155449c9bb8fe13ccdb821cc-free_2_fiswiy.png",
+            url_img_super_list: defaultSuperListImg,
             url_img_google: '',
+            name_: user.name_.toLowerCase(),
+            orderByDone: false,
+            orderByUrgent: false,
+            sortAscending: false,
             super_list_img_selected: true
 
         };
+        console.log(user);
+
         setMessageLogIn('Usuario registrado correctamente');
         createUserWithEmailAndPassword(auth, user.email, user.password)
             .then(async (userCredential) => {
                 const newUser = userCredential.user;
-                delete userToFirebase.password;
                 await setDoc(doc(db, "userMarketList", newUser.uid), { ...userToFirebase, url_img_google: newUser.providerData[0]?.photoURL })
                 history('/', { replace: true });
             })

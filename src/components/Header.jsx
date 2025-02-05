@@ -4,7 +4,7 @@ import UserDisconectedIcon from "../assets/user-svgrepo-com-red.svg";
 import { signOut } from 'firebase/auth';
 import { auth } from '../utils/firebase';
 import { AllItemsContext } from './Contex';
-import { firstLetterUpperCase } from "../utils/util.js";
+import { defaultSuperListImg, firstLetterUpperCase } from "../utils/util.js";
 import { Button } from './ui/button.jsx';
 import {
   Sheet,
@@ -26,13 +26,13 @@ import { useToast } from "@/components/ui/use-toast"
 import loginIcon from "../assets/login.svg";
 import logOutIcon from "../assets/logout.svg";
 
+
 const Header = () => {
   const { toast } = useToast()
   const { userIn, setUserIn } = useContext(AllItemsContext);
   const [by, setBy] = useState(true);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isDropMenuOpen, setIsDropMenuOpen] = useState(false);
-  const defaultSuperListImg = 'https://res.cloudinary.com/dcilysqzl/image/upload/v1738698398/eaf0b15c155449c9bb8fe13ccdb821cc-free_2_fiswiy.png'
 
   const showMessage = () => {
     setTimeout(() => {

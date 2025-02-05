@@ -18,3 +18,6 @@ export const cleanInputValueWithNumberOrLetters = (inputValue) => {
   // Retornamos el valor sanitizado
   return inputValue;
 };
+
+export const defaultSuperListImg =
+  "https://res.cloudinary.com/dcilysqzl/image/upload/v1738698398/eaf0b15c155449c9bb8fe13ccdb821cc-free_2_fiswiy.png";
