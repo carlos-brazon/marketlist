@@ -378,40 +378,6 @@ const Settings = () => {
                 }
             </Dialog>
 
-
-            {/* <DropdownMenu className=" absolute z-40" open={isDropMenuOpen} onOpenChange={(open) => {
-                setIsDropMenuOpen(open);
-                if (open) urlsFromFirebase();
-            }}>
-                <DropdownMenuTrigger className="pl-2">
-                    {userIn ? <div className=' flex items-center justify-center rounded-full border-[2px] border-gray-500 bg-white w-[106px] h-[106px] absolute top-[70px]'>
-                        <img className={`absolute z-10 rounded-full w-24 h-24`} src={userIn.url_img_super_list || `${userIn.url_img_super_list}?t=${new Date().getTime()}`} alt='imagen redonda' />
-                    </div> : <img className='relative z-10 w-9 h-9' src={'UserDisconectedIcon'} alt='Aquí va un icono de usuario' />}
-
-                </DropdownMenuTrigger>
-
-                <DropdownMenuContent>
-                    <DropdownMenuLabel className="text-center">Selecciona una nueva imagen</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                        <div className='grid grid-cols-3 gap-2'>
-                            {imgFromFirebase.length ? imgFromFirebase?.map(url => <img key={url} onClick={async () => { await updateDoc(doc(db, "userMarketList", userIn.uid), { url_img_super_list: url, super_list_img_selected: true }), setUserIn(prev => ({ ...prev, url_img_super_list: url })) }} className='w-24 h-24 relative rounded-full' src={url} alt="" />) : ''}
-                        </div>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                        <div className={userIn || 'hidden'} onClick={async () => {
-                            const newArrayUrls = await ramdomDog();
-                            await setDoc(doc(db, "urlDogs", "one"), { urls: newArrayUrls })
-                        }}>
-                            Cambiar imagenes de muestra
-                        </div>
-
-                    </DropdownMenuItem>
-
-                </DropdownMenuContent>
-            </DropdownMenu> */}
-
             <Tabs defaultValue="profile" className="flex flex-col justify-center items-center pt-5">
                 <TabsList className>
                     <TabsTrigger value="profile">Perfil</TabsTrigger>
