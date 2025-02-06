@@ -25,7 +25,6 @@ const ItemsList = ({ setAmount }) => {
                 if (list.length == 1) {
                     const onlyOneTags = deleteItemInTemporalCloud[0]?.tags?.toLowerCase() || 'compras'
                     setButton(onlyOneTags)//aqui cambio el nombre de la etiqueta con el set
-                    console.log(onlyOneTags);
                     setValueInputNewTags(onlyOneTags) // aqui hago el set para cambiar el valor del input de las tags
                     setAddTags(false) // aqui hago el set para que se cierre el input de las tags
                     await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: onlyOneTags });

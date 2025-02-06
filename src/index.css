@@ -175,7 +175,7 @@
   width: 270px;
   height: 270px;
   border-radius: 50%;
-  border: 6.4px solid currentColor;
+  border: 1.4px dashed currentColor;
   border-color: currentColor transparent currentColor transparent;
   animation: lds-dual-ring 1.2s linear infinite;
 }

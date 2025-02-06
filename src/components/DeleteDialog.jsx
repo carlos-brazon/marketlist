@@ -39,7 +39,6 @@ const DeleteDialog = ({ setIsDropOpen }) => {
             setTemporalCloud(updateTemporalCloud)
             setButton(newValueLastTags)
             setIsDropOpen(false)
-            console.log('aqui');
         }
     }
 

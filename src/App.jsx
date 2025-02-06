@@ -13,6 +13,7 @@ import HowUse from './components/HowUse'
 import { Toaster } from "@/components/ui/toaster";
 import RootLayout from './components/Toaster'
 import Settings from './components/Settings'
+import getCroppedImg from './utils/cropImage'
 
 
 function App() {
@@ -35,10 +36,13 @@ function App() {
         dataFromFirebase.forEach(item => {
           dataUser.push(item.data());
         });
-        console.log(user);
+        const realUrl = userConected?.cropp_pixel?.width ? await getCroppedImg(userConected.url_img_super_list, userConected.cropp_pixel) : null
 
-
-        setUserIn({ ...userConected, uid: user.uid, url_img_super_list: userConected.super_list_img_selected ? userConected.url_img_super_list : user.providerData[0].photoURL });
+        if (realUrl) {
+          setUserIn({ ...userConected, uid: user.uid, url_img_super_list: realUrl });
+        } else {
+          setUserIn({ ...userConected, uid: user.uid, url_img_super_list: userConected.super_list_img_selected ? userConected.url_img_super_list : user.providerData[0].photoURL });
+        }
 
         const dataSorted = dataUser.sort((a, b) => {
           const dateA = a.create_at ? (a.create_at.toDate ? a.create_at.toDate() : new Date(a.create_at)) : new Date(0);

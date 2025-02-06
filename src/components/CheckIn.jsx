@@ -48,6 +48,7 @@ const CheckIn = () => {
             addControl: false,
             control_items: false,
             create_at: serverTimestamp(),
+            cropp_pixel: {},
             email: user.email.toLowerCase(),
             id: userId,
             isDateControl: false,
@@ -64,7 +65,6 @@ const CheckIn = () => {
             super_list_img_selected: true
 
         };
-        console.log(user);
 
         setMessageLogIn('Usuario registrado correctamente');
         createUserWithEmailAndPassword(auth, user.email, user.password)

@@ -13,7 +13,6 @@ const MainView = () => {
   const { userIn, setUserIn } = useContext(AllItemsContext);
   const [amount, setAmount] = useState(0);
   const [changeIcons, setChangeIcons] = useState(userIn?.control_items);
-  console.log(userIn);
 
   return (
     <div className='flex flex-col items-center gap-2 h-full w-full px-3'>
@@ -93,7 +92,11 @@ const MainView = () => {
 
           const dataFromFirebase = await getDocs(collection(db, "userMarketList"));
           dataFromFirebase.forEach(async (usuario) => {
-            await updateDoc(doc(db, 'userMarketList', usuario.id), { super_list_img_selected: false })
+            await updateDoc(doc(db, 'userMarketList', usuario.id), {
+              cropp_pixel: {},
+              url_img_super_list: defaultSuperListImg,
+              url_img_google: '',
+            })
           })
         }} className='bg-slate-400 p-2 rounded-md'>
           agregar nueva key a todos los usuarios

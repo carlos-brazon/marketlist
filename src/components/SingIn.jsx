@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { EmailAuthProvider, getAuth, GoogleAuthProvider, linkWithCredential, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import Input from './Input';
@@ -7,14 +7,12 @@ import { Button } from './ui/button';
 import { useToast } from "@/components/ui/use-toast"
 import { auth, db } from '../utils/firebase';
 import googleIcon from "../assets/google-icon.svg";
-import { AllItemsContext } from './Contex';
 import eyeOpen from "../assets/eye-open.svg";
 import eyeClosed from "../assets/eye-closed.svg";
 import { collection, doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { defaultSuperListImg } from '../utils/util';
 
 const SingIn = () => {
-    const { userIn } = useContext(AllItemsContext);
     const [eyeControl, setEyeControl] = useState(true);
     const { toast } = useToast()
     const [user, setUser] = useState({});
@@ -52,16 +50,13 @@ const SingIn = () => {
         try {
             const result = await signInWithPopup(auth, provider);
             const user = result.user;
-            console.log(user);
-
             // Verificar si el usuario ya existe en Firestore
             const userSnap = await getDoc(doc(db, "userMarketList", user.uid));
             // Usuario nuevo,
             const userId = doc(collection(db, 'newId')).id;
             const updateSingInUserToFirebase = {
-                last_name: user.displayName.split(" ")[1].toLowerCase(),
+                ...userSnap.data(),
                 url_img_google: user.providerData[0].photoURL,
-                name_: user.displayName.split(" ")[0].toLowerCase(),
             }
 
             if (!userSnap.exists()) {
@@ -69,6 +64,7 @@ const SingIn = () => {
                     addControl: false,
                     control_items: false,
                     create_at: serverTimestamp(),
+                    cropp_pixel: {},
                     email: user.email.toLowerCase(),
                     id: userId,
                     isDateControl: false,
@@ -96,20 +92,17 @@ const SingIn = () => {
                 await linkWithCredential(user, credential);
                 console.log("Cuenta vinculada con email y contraseña correctamente.");
                 console.log("Contraseña generada:", newPasswordToSingIn);
+
             }
 
             // Redirigir al usuario después del inicio de sesión
             await setDoc(doc(db, "userMarketList", user.uid), updateSingInUserToFirebase);
-            console.log(updateSingInUserToFirebase);
 
             window.location.href = "/";
         } catch (error) {
             console.error("Error en el inicio de sesión con Google:", error);
         }
     };
-
-    console.log(userIn);
-
     return (
         <>
 
