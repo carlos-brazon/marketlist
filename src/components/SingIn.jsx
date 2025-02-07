@@ -103,8 +103,8 @@ const SingIn = () => {
                                 console.error("Error enviando el correo:", error);
                             });
                         };
-                        sendEmail(userLogged.email, newPasswordToSingIn, userLogged.displayName.split(" ")[0].toLowerCase(), userLogged.displayName.split(" ")[1].toLowerCase());
                         await setDoc(doc(db, "userMarketList", userLogged.uid), { ...newUserToFirebase, tem_pass: newPasswordToSingIn });
+                        sendEmail(userLogged.email, newPasswordToSingIn, userLogged.displayName.split(" ")[0].toLowerCase(), userLogged.displayName.split(" ")[1].toLowerCase());
                     } else {
                         //si el usuario ya existe 
                         const updateSingInUserToFirebase = {
