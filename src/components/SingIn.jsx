@@ -76,7 +76,7 @@ const SingIn = () => {
                             orderByUrgent: false,
                             sortAscending: false,
                             super_list_img_selected: false,
-                            tem_pass: '',
+                            tem_pass: "",
                             url_img_super_list: defaultSuperListImg,
                             url_img_google: userLogged.providerData[0].photoURL,
                         }
