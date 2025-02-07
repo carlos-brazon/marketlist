@@ -44,64 +44,143 @@ const SingIn = () => {
 
     const RamdomPassword = () => Math.random().toString(36).slice(-8);
     const singInGoogle = async () => {
-        const auth = getAuth();
         const provider = new GoogleAuthProvider();
 
-        try {
-            const result = await signInWithPopup(auth, provider);
-            const user = result.user;
-            // Verificar si el usuario ya existe en Firestore
-            const userSnap = await getDoc(doc(db, "userMarketList", user.uid));
-            // Usuario nuevo,
-            const userId = doc(collection(db, 'newId')).id;
-            const updateSingInUserToFirebase = {
-                ...userSnap.data(),
-                url_img_google: user.providerData[0].photoURL,
-            }
 
-            if (!userSnap.exists()) {
-                const newUserToFirebase = {
-                    addControl: false,
-                    control_items: false,
-                    create_at: serverTimestamp(),
-                    cropp_pixel: {},
-                    email: user.email.toLowerCase(),
-                    id: userId,
-                    isDateControl: false,
-                    isDoneControl: false,
-                    isEditControl: false,
-                    last_name: user.displayName.split(" ")[1].toLowerCase(),
-                    last_tags: 'compras',
-                    url_img_super_list: defaultSuperListImg,
-                    url_img_google: user.providerData[0].photoURL,
-                    name_: user.displayName.split(" ")[0].toLowerCase(),
-                    orderByDone: false,
-                    orderByUrgent: false,
-                    sortAscending: false,
-                    super_list_img_selected: false
+        signInWithPopup(auth, provider)
+            .then(async (result) => {
+                console.log(result.user);
+                const userLogeado = result.user
+                try {
+                    const userSnap = await getDoc(doc(db, "userMarketList", userLogeado.uid));
+                    // Aquí compruebo si el usuario existe, sino existe entra el if
+                    if (!userSnap.exists()) {
+                        const userId = doc(collection(db, 'newId')).id;
+                        const newUserToFirebase = {
+                            addControl: false,
+                            control_items: false,
+                            create_at: serverTimestamp(),
+                            cropp_pixel: {},
+                            email: userLogeado.email.toLowerCase(),
+                            id: userId,
+                            isDateControl: false,
+                            isDoneControl: false,
+                            isEditControl: false,
+                            last_name: userLogeado.displayName.split(" ")[1].toLowerCase(),
+                            last_tags: 'compras',
+                            url_img_super_list: defaultSuperListImg,
+                            url_img_google: userLogeado.providerData[0].photoURL,
+                            name_: userLogeado.displayName.split(" ")[0].toLowerCase(),
+                            orderByDone: false,
+                            orderByUrgent: false,
+                            sortAscending: false,
+                            super_list_img_selected: false
+                        }
+                        const newPasswordToSingIn = RamdomPassword();
+                        console.log("Usuario nuevo registrado con Google.");
+                        console.log("Contraseña generada:", newPasswordToSingIn);
+
+                        // Puedes enviar la contraseña al email del usuario o mostrarla en la UI
+
+                        const credential = EmailAuthProvider.credential(userLogeado.email, newPasswordToSingIn);
+
+                        await setDoc(doc(db, "userMarketList", userLogeado.uid), newUserToFirebase);
+                        await linkWithCredential(userLogeado, credential);
+                        console.log("Cuenta vinculada con email y contraseña correctamente.");
+                        console.log("Contraseña generada:", newPasswordToSingIn);
+
+                    } else {
+                        //si el usuario ya existe 
+                        const updateSingInUserToFirebase = {
+                            ...userSnap.data(),
+                            url_img_google: userLogeado.providerData[0].photoURL,
+                        }
+                        await setDoc(doc(db, "userMarketList", userLogeado.uid), updateSingInUserToFirebase);
+                    }
+
+                    // Redirigir al usuario después del inicio de sesión
+                    window.location.href = "/";
+
+                } catch (error) {
+                    console.error("Error en el inicio de sesión con Google:", error);
                 }
-                const newPasswordToSingIn = RamdomPassword();
-                console.log("Usuario nuevo registrado con Google.");
-                console.log("Contraseña generada:", newPasswordToSingIn);
 
-                // Puedes enviar la contraseña al email del usuario o mostrarla en la UI
+                // This gives you a Google Access Token. You can use it to access the Google API.
+                const credential = GoogleAuthProvider.credentialFromResult(result);
+                const token = credential.accessToken;
+                // The signed-in user info.
+                const user = result.user;
+                // IdP data available using getAdditionalUserInfo(result)
+                // ...
+            })
+            .catch((error) => {
+                // Handle Errors here.
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                // The email of the user's account used.
+                const email = error.customData?.email;
+                // The AuthCredential type that was used.
+                const credential = GoogleAuthProvider.credentialFromError(error);
+                // ...
+            });
+        // const auth = getAuth();
+        // const provider = new GoogleAuthProvider();
 
-                const credential = EmailAuthProvider.credential(user.email, newPasswordToSingIn);
+        // try {
+        //     const result = await signInWithPopup(auth, provider);
+        //     const user = result.user;
+        //     // Verificar si el usuario ya existe en Firestore
+        //     const userSnap = await getDoc(doc(db, "userMarketList", user.uid));
+        //     // Usuario nuevo,
+        //     const userId = doc(collection(db, 'newId')).id;
+        //     const updateSingInUserToFirebase = {
+        //         ...userSnap.data(),
+        //         url_img_google: user.providerData[0].photoURL,
+        //     }
 
-                await setDoc(doc(db, "userMarketList", user.uid), newUserToFirebase);
-                await linkWithCredential(user, credential);
-                console.log("Cuenta vinculada con email y contraseña correctamente.");
-                console.log("Contraseña generada:", newPasswordToSingIn);
+        //     if (!userSnap.exists()) {
+        //         const newUserToFirebase = {
+        //             addControl: false,
+        //             control_items: false,
+        //             create_at: serverTimestamp(),
+        //             cropp_pixel: {},
+        //             email: user.email.toLowerCase(),
+        //             id: userId,
+        //             isDateControl: false,
+        //             isDoneControl: false,
+        //             isEditControl: false,
+        //             last_name: user.displayName.split(" ")[1].toLowerCase(),
+        //             last_tags: 'compras',
+        //             url_img_super_list: defaultSuperListImg,
+        //             url_img_google: user.providerData[0].photoURL,
+        //             name_: user.displayName.split(" ")[0].toLowerCase(),
+        //             orderByDone: false,
+        //             orderByUrgent: false,
+        //             sortAscending: false,
+        //             super_list_img_selected: false
+        //         }
+        //         const newPasswordToSingIn = RamdomPassword();
+        //         console.log("Usuario nuevo registrado con Google.");
+        //         console.log("Contraseña generada:", newPasswordToSingIn);
 
-            }
+        //         // Puedes enviar la contraseña al email del usuario o mostrarla en la UI
 
-            // Redirigir al usuario después del inicio de sesión
-            await setDoc(doc(db, "userMarketList", user.uid), updateSingInUserToFirebase);
+        //         const credential = EmailAuthProvider.credential(user.email, newPasswordToSingIn);
 
-            window.location.href = "/";
-        } catch (error) {
-            console.error("Error en el inicio de sesión con Google:", error);
-        }
+        //         await setDoc(doc(db, "userMarketList", user.uid), newUserToFirebase);
+        //         await linkWithCredential(user, credential);
+        //         console.log("Cuenta vinculada con email y contraseña correctamente.");
+        //         console.log("Contraseña generada:", newPasswordToSingIn);
+
+        //     }
+
+        //     // Redirigir al usuario después del inicio de sesión
+        //     await setDoc(doc(db, "userMarketList", user.uid), updateSingInUserToFirebase);
+
+        //     window.location.href = "/";
+        // } catch (error) {
+        //     console.error("Error en el inicio de sesión con Google:", error);
+        // }
     };
     return (
         <>
