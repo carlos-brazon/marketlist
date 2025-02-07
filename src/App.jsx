@@ -41,7 +41,7 @@ function App() {
         if (realUrl) {
           setUserIn({ ...userConected, uid: user.uid, url_img_super_list: realUrl });
         } else {
-          setUserIn({ ...userConected, uid: user.uid, url_img_super_list: userConected.super_list_img_selected ? userConected.url_img_super_list : user.providerData[0].photoURL });
+          setUserIn({ ...userConected, uid: user.uid, url_img_super_list: userConected?.super_list_img_selected ? userConected.url_img_super_list : user.providerData[0].photoURL });
         }
 
         const dataSorted = dataUser.sort((a, b) => {

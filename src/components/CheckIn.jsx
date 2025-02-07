@@ -56,13 +56,14 @@ const CheckIn = () => {
             isEditControl: false,
             last_name: user.last_name.toLowerCase(),
             last_tags: 'compras',
-            url_img_super_list: defaultSuperListImg,
-            url_img_google: '',
             name_: user.name_.toLowerCase(),
             orderByDone: false,
             orderByUrgent: false,
             sortAscending: false,
-            super_list_img_selected: true
+            super_list_img_selected: true,
+            tem_pass: '',
+            url_img_super_list: defaultSuperListImg,
+            url_img_google: '',
 
         };
 

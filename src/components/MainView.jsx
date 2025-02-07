@@ -93,9 +93,7 @@ const MainView = () => {
           const dataFromFirebase = await getDocs(collection(db, "userMarketList"));
           dataFromFirebase.forEach(async (usuario) => {
             await updateDoc(doc(db, 'userMarketList', usuario.id), {
-              cropp_pixel: {},
-              url_img_super_list: defaultSuperListImg,
-              url_img_google: '',
+              tem_pass: '',
             })
           })
         }} className='bg-slate-400 p-2 rounded-md'>

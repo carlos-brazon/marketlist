@@ -25,6 +25,8 @@ import {
 import { useToast } from "@/components/ui/use-toast"
 import loginIcon from "../assets/login.svg";
 import logOutIcon from "../assets/logout.svg";
+import alert from "../assets/alert.svg";
+import alert2 from "../assets/alert2.svg";
 
 
 const Header = () => {
@@ -48,7 +50,6 @@ const Header = () => {
     await setUserIn(null)
     await signOut(auth);
   }
-
   return (
     <div className='flex w-full flex-col gap-2 items-center'>
       <header className="flex items-center justify-between relative text-white bg-neutral-800 py-1 px-3 w-full">
@@ -74,7 +75,9 @@ const Header = () => {
                     </div>
                     :
                     <img className='relative z-10 w-9 h-9' src={UserDisconectedIcon} alt='Aquí va un icono de usuario' />
+
                   }
+                  <img className={`absolute -top-1 -right-2 z-10 w-4 h-4 ${userIn?.tem_pass?.length ? '' : 'hidden'}`} src={alert} alt='Aquí va un icono de usuario' />
                 </SheetTrigger>
                 <SheetContent className="p-0 w-72 flex flex-col justify-between">
                   <SheetHeader className="space-y-0">
@@ -128,8 +131,9 @@ const Header = () => {
                             <CommandGroup className={`text-center ${userIn || "hidden"}`} heading="Ajustes">
                               <Link to={'setting'}>
                                 <CommandItem >
-                                  <SheetClose className="w-screen flex items-start">
+                                  <SheetClose className="w-full flex items-center gap-1">
                                     Perfil
+                                    <img className={`w-5 h-5 ${userIn?.tem_pass?.length ? '' : 'hidden'}`} src={alert2} alt="" />
                                   </SheetClose>
                                 </CommandItem>
                               </Link >

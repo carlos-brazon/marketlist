@@ -4,6 +4,7 @@ import arrowRightChangeImage from "../assets/right-md.svg";
 import editIcon from "../assets/edit-icon-img.svg";
 import trashIcon from "../assets/trash-icon.svg";
 import cameraAdd from "../assets/camera-add.svg";
+import alert2 from "../assets/alert2.svg";
 import update from "../assets/update.svg";
 import { useContext, useEffect, useState } from "react";
 import { AllItemsContext } from "./Contex";
@@ -27,6 +28,7 @@ import {
 import Cropper from "react-easy-crop";
 import getCroppedImg from "../utils/cropImage"; // Función para obtener la imagen recortada
 import { Button } from "./ui/button";
+import { useSearchParams } from "react-router-dom";
 
 const Settings = () => {
     const { userIn, setUserIn } = useContext(AllItemsContext);
@@ -36,6 +38,8 @@ const Settings = () => {
     const [removeImg, setRemoveImg] = useState(false);
     const [changeImg, setChangeImg] = useState(false);
     const [imgProfile, setImgProfile] = useState(false);
+    const [searchParams] = useSearchParams();
+    const defaultTab = searchParams.get("tab") || "profile"; // Si no hay tab, abre "profile"
 
     const urlsFromFirebase = async () => {
         const urlArray = await getDoc(doc(db, "urlDogs", "one"));
@@ -157,8 +161,8 @@ const Settings = () => {
                 <DialogTrigger className="pl-2">
                     <div className=' flex items-center justify-center rounded-full border-[2px] border-gray-500 bg-white w-[106px] h-[106px] absolute top-[70px]'>
                         <img
-                            className={`absolute z-10 rounded-full w-24 h-24 ${userIn.url_img_super_list === defaultSuperListImg ? 'p-2 bg-imgBorder' : ''}`}
-                            src={userIn.super_list_img_selected ? userIn?.url_img_super_list : userIn?.url_img_google}
+                            className={`absolute z-10 rounded-full w-24 h-24 ${userIn?.url_img_super_list === defaultSuperListImg ? 'p-2 bg-imgBorder' : ''}`}
+                            src={userIn?.super_list_img_selected ? userIn?.url_img_super_list : userIn?.url_img_google}
                             alt='imagen redonda settings' />
                         <div className="bg-gray-600 w-8 h-8 rounded-full absolute z-10 flex items-center justify-center right-0 bottom-0 border">
                             <img className="w-5 h-5 stroke-[6px]" src={editIcon} alt="" />
@@ -336,11 +340,11 @@ const Settings = () => {
                                         Foto de perfil
                                     </div>
                                     <img
-                                        className={`rounded-full w-40 h-40 ${userIn.url_img_super_list === defaultSuperListImg ? 'p-2 bg-imgBorder' : ''}`}
-                                        src={userIn.super_list_img_selected ? userIn?.url_img_super_list : userIn?.url_img_google}
+                                        className={`rounded-full w-40 h-40 ${userIn?.url_img_super_list === defaultSuperListImg ? 'p-2 bg-imgBorder' : ''}`}
+                                        src={userIn?.super_list_img_selected ? userIn?.url_img_super_list : userIn?.url_img_google}
                                         alt="" />
                                     <div className='flex items-center justify-center w-full gap-2'>
-                                        {userIn.url_img_super_list === defaultSuperListImg
+                                        {userIn?.url_img_super_list === defaultSuperListImg
                                             ?
 
                                             <button onClick={() => setChangeImg(prev => !prev)}
@@ -378,10 +382,13 @@ const Settings = () => {
                 }
             </Dialog>
 
-            <Tabs defaultValue="profile" className="flex flex-col justify-center items-center pt-5">
+            <Tabs defaultValue={defaultTab} className="flex flex-col justify-center items-center pt-5">
                 <TabsList className>
                     <TabsTrigger value="profile">Perfil</TabsTrigger>
-                    <TabsTrigger value="password">Contraseña</TabsTrigger>
+                    <TabsTrigger className='flex gap-1' value="password">Contraseña
+
+                        <img className={`w-5 h-5 ${userIn?.tem_pass?.length ? '' : 'hidden'}`} src={alert2} alt="" />
+                    </TabsTrigger>
                 </TabsList>
                 <TabsContent value="profile">
 
@@ -391,11 +398,6 @@ const Settings = () => {
                     <EditPassword />
                 </TabsContent>
             </Tabs>
-
-
-
-
-
         </div>
     );
 };

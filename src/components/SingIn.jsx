@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { EmailAuthProvider, getAuth, GoogleAuthProvider, linkWithCredential, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { EmailAuthProvider, GoogleAuthProvider, linkWithCredential, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import Input from './Input';
 
 import { Button } from './ui/button';
@@ -11,6 +11,8 @@ import eyeOpen from "../assets/eye-open.svg";
 import eyeClosed from "../assets/eye-closed.svg";
 import { collection, doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { defaultSuperListImg } from '../utils/util';
+import emailjs from "emailjs-com";
+import { emailjsConfig } from '../utils/emailjsConfig';
 
 const SingIn = () => {
     const [eyeControl, setEyeControl] = useState(true);
@@ -49,10 +51,9 @@ const SingIn = () => {
 
         signInWithPopup(auth, provider)
             .then(async (result) => {
-                console.log(result.user);
-                const userLogeado = result.user
+                const userLogged = result.user
                 try {
-                    const userSnap = await getDoc(doc(db, "userMarketList", userLogeado.uid));
+                    const userSnap = await getDoc(doc(db, "userMarketList", userLogged.uid));
                     // Aquí compruebo si el usuario existe, sino existe entra el if
                     if (!userSnap.exists()) {
                         const userId = doc(collection(db, 'newId')).id;
@@ -61,126 +62,69 @@ const SingIn = () => {
                             control_items: false,
                             create_at: serverTimestamp(),
                             cropp_pixel: {},
-                            email: userLogeado.email.toLowerCase(),
+                            email: userLogged.email.toLowerCase(),
                             id: userId,
                             isDateControl: false,
                             isDoneControl: false,
                             isEditControl: false,
-                            last_name: userLogeado.displayName.split(" ")[1].toLowerCase(),
+                            last_name: userLogged.displayName.split(" ")[1].toLowerCase(),
                             last_tags: 'compras',
-                            url_img_super_list: defaultSuperListImg,
-                            url_img_google: userLogeado.providerData[0].photoURL,
-                            name_: userLogeado.displayName.split(" ")[0].toLowerCase(),
+                            name_: userLogged.displayName.split(" ")[0].toLowerCase(),
                             orderByDone: false,
                             orderByUrgent: false,
                             sortAscending: false,
-                            super_list_img_selected: false
+                            super_list_img_selected: false,
+                            tem_pass: '',
+                            url_img_super_list: defaultSuperListImg,
+                            url_img_google: userLogged.providerData[0].photoURL,
                         }
                         const newPasswordToSingIn = RamdomPassword();
-                        console.log("Usuario nuevo registrado con Google.");
-                        console.log("Contraseña generada:", newPasswordToSingIn);
 
-                        // Puedes enviar la contraseña al email del usuario o mostrarla en la UI
 
-                        const credential = EmailAuthProvider.credential(userLogeado.email, newPasswordToSingIn);
+                        const credential = EmailAuthProvider.credential(userLogged.email, newPasswordToSingIn);
 
-                        await setDoc(doc(db, "userMarketList", userLogeado.uid), newUserToFirebase);
-                        await linkWithCredential(userLogeado, credential);
-                        console.log("Cuenta vinculada con email y contraseña correctamente.");
-                        console.log("Contraseña generada:", newPasswordToSingIn);
-
+                        await setDoc(doc(db, "userMarketList", userLogged.uid), { ...newUserToFirebase, tem_pass: newPasswordToSingIn });
+                        await linkWithCredential(userLogged, credential);
+                        // envio de contraseña
+                        const sendEmail = (userEmail, password, user_name, user_last_name) => {
+                            emailjs.send(
+                                emailjsConfig.serviceId,
+                                emailjsConfig.templateId,
+                                {
+                                    user_email: userEmail,
+                                    user_password: password,
+                                    name: user_name,
+                                    last_name: user_last_name,
+                                },
+                                emailjsConfig.userIdPublic
+                            ).then(response => {
+                                console.log("Correo enviado con éxito:", response);
+                            }).catch(error => {
+                                console.error("Error enviando el correo:", error);
+                            });
+                        };
+                        sendEmail(userLogged.email, newPasswordToSingIn, userLogged.displayName.split(" ")[0].toLowerCase(), userLogged.displayName.split(" ")[1].toLowerCase());
                     } else {
                         //si el usuario ya existe 
                         const updateSingInUserToFirebase = {
                             ...userSnap.data(),
-                            url_img_google: userLogeado.providerData[0].photoURL,
+                            url_img_google: userLogged.providerData[0].photoURL,
                         }
-                        await setDoc(doc(db, "userMarketList", userLogeado.uid), updateSingInUserToFirebase);
+                        await setDoc(doc(db, "userMarketList", userLogged.uid), updateSingInUserToFirebase);
                     }
-
-                    // Redirigir al usuario después del inicio de sesión
                     window.location.href = "/";
 
                 } catch (error) {
                     console.error("Error en el inicio de sesión con Google:", error);
                 }
 
-                // This gives you a Google Access Token. You can use it to access the Google API.
-                const credential = GoogleAuthProvider.credentialFromResult(result);
-                const token = credential.accessToken;
-                // The signed-in user info.
-                const user = result.user;
-                // IdP data available using getAdditionalUserInfo(result)
-                // ...
+
             })
             .catch((error) => {
-                // Handle Errors here.
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                // The email of the user's account used.
-                const email = error.customData?.email;
-                // The AuthCredential type that was used.
-                const credential = GoogleAuthProvider.credentialFromError(error);
-                // ...
+                console.error("Error:", error.code);
+                console.error("Error:", error.message);
             });
-        // const auth = getAuth();
-        // const provider = new GoogleAuthProvider();
 
-        // try {
-        //     const result = await signInWithPopup(auth, provider);
-        //     const user = result.user;
-        //     // Verificar si el usuario ya existe en Firestore
-        //     const userSnap = await getDoc(doc(db, "userMarketList", user.uid));
-        //     // Usuario nuevo,
-        //     const userId = doc(collection(db, 'newId')).id;
-        //     const updateSingInUserToFirebase = {
-        //         ...userSnap.data(),
-        //         url_img_google: user.providerData[0].photoURL,
-        //     }
-
-        //     if (!userSnap.exists()) {
-        //         const newUserToFirebase = {
-        //             addControl: false,
-        //             control_items: false,
-        //             create_at: serverTimestamp(),
-        //             cropp_pixel: {},
-        //             email: user.email.toLowerCase(),
-        //             id: userId,
-        //             isDateControl: false,
-        //             isDoneControl: false,
-        //             isEditControl: false,
-        //             last_name: user.displayName.split(" ")[1].toLowerCase(),
-        //             last_tags: 'compras',
-        //             url_img_super_list: defaultSuperListImg,
-        //             url_img_google: user.providerData[0].photoURL,
-        //             name_: user.displayName.split(" ")[0].toLowerCase(),
-        //             orderByDone: false,
-        //             orderByUrgent: false,
-        //             sortAscending: false,
-        //             super_list_img_selected: false
-        //         }
-        //         const newPasswordToSingIn = RamdomPassword();
-        //         console.log("Usuario nuevo registrado con Google.");
-        //         console.log("Contraseña generada:", newPasswordToSingIn);
-
-        //         // Puedes enviar la contraseña al email del usuario o mostrarla en la UI
-
-        //         const credential = EmailAuthProvider.credential(user.email, newPasswordToSingIn);
-
-        //         await setDoc(doc(db, "userMarketList", user.uid), newUserToFirebase);
-        //         await linkWithCredential(user, credential);
-        //         console.log("Cuenta vinculada con email y contraseña correctamente.");
-        //         console.log("Contraseña generada:", newPasswordToSingIn);
-
-        //     }
-
-        //     // Redirigir al usuario después del inicio de sesión
-        //     await setDoc(doc(db, "userMarketList", user.uid), updateSingInUserToFirebase);
-
-        //     window.location.href = "/";
-        // } catch (error) {
-        //     console.error("Error en el inicio de sesión con Google:", error);
-        // }
     };
     return (
         <>
@@ -218,7 +162,7 @@ const SingIn = () => {
                                 className={'w-64'}
                                 required
                             />
-                            <img onClick={() => setEyeControl(prev => !prev)} className="w-6 h-6 absolute right-2 top-3" src={eyeControl ? eyeClosed : eyeOpen} alt="" />
+                            <img onClick={() => setEyeControl(prev => !prev)} className="w-6 h-6 absolute right-2 top-3" src={eyeControl ? eyeOpen : eyeClosed} alt="" />
                         </div>
                         <Button type="submit" onClick={() => handleSubmit()}>Iniciar sesión</Button>
                     </form>

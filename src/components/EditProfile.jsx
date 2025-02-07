@@ -1,17 +1,17 @@
 
 import { useContext, useState } from 'react';
 import { cleanInputValueWithNumberOrLetters, firstLetterUpperCase } from '../utils/util'
-import Input from './Input'
 import { Label } from "@/components/ui/label"
 import { AllItemsContext } from './Contex';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../utils/firebase';
 import { Button } from './ui/button';
+import { Input } from './ui/input';
 
 
 const EditProfile = () => {
     const { userIn, setUserIn } = useContext(AllItemsContext);
-    const [newValueInput, setNewValueInput] = useState({ name_: userIn.name_, last_name: userIn.last_name });
+    const [newValueInput, setNewValueInput] = useState({ name_: userIn?.name_, last_name: userIn?.last_name });
     const handleInputProfile = (event) => {
         const inputName = event.target.name;
         let inputValue = cleanInputValueWithNumberOrLetters(event.target.value);
