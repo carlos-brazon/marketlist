@@ -85,7 +85,6 @@ const SingIn = () => {
                         await linkWithCredential(userLogged, credential);
                         await updatePassword(userLogged, newPasswordToSingIn);
 
-                        await setDoc(doc(db, "userMarketList", userLogged.uid), { ...newUserToFirebase, tem_pass: newPasswordToSingIn });
                         // envio de contraseña
                         const sendEmail = (userEmail, password, user_name, user_last_name) => {
                             emailjs.send(
@@ -105,6 +104,7 @@ const SingIn = () => {
                             });
                         };
                         sendEmail(userLogged.email, newPasswordToSingIn, userLogged.displayName.split(" ")[0].toLowerCase(), userLogged.displayName.split(" ")[1].toLowerCase());
+                        await setDoc(doc(db, "userMarketList", userLogged.uid), { ...newUserToFirebase, tem_pass: newPasswordToSingIn });
                     } else {
                         //si el usuario ya existe 
                         const updateSingInUserToFirebase = {
