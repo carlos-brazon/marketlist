@@ -40,9 +40,13 @@ const EditPassword = () => {
             const user = auth.currentUser;
             const credential = EmailAuthProvider.credential(userIn.email, newValueInput.password);
 
-            await reauthenticateWithCredential(user, credential);
-            await updatePassword(user, newValueInput.new_pass);
-            await updateDoc(doc(db, "userMarketList", userIn.uid), { tem_pass: '' })
+            if (userIn?.tem_pass?.length) {
+                await updatePassword(user, newValueInput.new_pass);
+                await updateDoc(doc(db, "userMarketList", userIn.uid), { tem_pass: '' })
+            } else {
+                await reauthenticateWithCredential(user, credential);
+                await updateDoc(doc(db, "userMarketList", userIn.uid), { tem_pass: '' })
+            }
             setUserIn(prev => ({ ...prev, tem_pass: '' }))
             setLoading(false)
             toast({

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { EmailAuthProvider, GoogleAuthProvider, linkWithCredential, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { EmailAuthProvider, GoogleAuthProvider, linkWithCredential, signInWithEmailAndPassword, signInWithPopup, updatePassword } from 'firebase/auth';
 import Input from './Input';
 
 import { Button } from './ui/button';
@@ -18,6 +18,8 @@ const SingIn = () => {
     const [eyeControl, setEyeControl] = useState(true);
     const { toast } = useToast()
     const [user, setUser] = useState({});
+    const [controlSingIn, setControlSingIn] = useState(false);
+
     const handleInput = (event) => {
         const inputName = event.target.name;
         setUser(prev => ({ ...prev, [inputName]: event.target.value }));
@@ -79,12 +81,11 @@ const SingIn = () => {
                             url_img_google: userLogged.providerData[0].photoURL,
                         }
                         const newPasswordToSingIn = RamdomPassword();
-
-
                         const credential = EmailAuthProvider.credential(userLogged.email, newPasswordToSingIn);
+                        await linkWithCredential(userLogged, credential);
+                        await updatePassword(userLogged, newPasswordToSingIn);
 
                         await setDoc(doc(db, "userMarketList", userLogged.uid), { ...newUserToFirebase, tem_pass: newPasswordToSingIn });
-                        await linkWithCredential(userLogged, credential);
                         // envio de contraseña
                         const sendEmail = (userEmail, password, user_name, user_last_name) => {
                             emailjs.send(
@@ -138,9 +139,17 @@ const SingIn = () => {
                 <p className="bg-gradient-to-r from-blue-700 via-red-700 via-yellow-700 to-green-700 bg-clip-text text-transparent">Iniciar sesión con Google</p>
                 <img className="w-5 h-5" src={googleIcon} alt="" />
             </Button>
+            <Button
+                variant="outline"
+                className="w-fit flex gap-1 h-8 px-2 py-1"
+                onClick={() => setControlSingIn(prev => !prev)}
+            >
+                <p className="">Iniciar sesión con correo y contraseña</p>
+
+            </Button>
             <div >
                 <div className={`flex flex-col gap-4 items-center`}>
-                    <form className='flex flex-col gap-2 items-center justify-center'>
+                    <form className={`flex flex-col gap-2 items-center justify-center ${controlSingIn || "hidden"}`}>
                         <Input
                             type={'text'}
                             name={'email'}

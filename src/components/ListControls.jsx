@@ -36,7 +36,7 @@ const ListControls = ({ amount }) => {
     }
   };
   return (
-    <div className={`w-full flex gap-1 items-start justify-end ${userIn?.control_items ? 'h-10 md:h-8  translate-x-0' : 'h-0'} overflow-hidden transition-all duration-[1200ms] ease-in`}>
+    <div className={`w-full flex gap-1 items-start justify-end ${userIn?.control_items ? 'h-10 md:h-8  translate-x-0' : 'h-0'} overflow-hidden transition-all duration-[400ms] ease-in`}>
       <div className='flex gap-1'>
         <div className="w-full items-center flex gap-2 justify-end">
           <div className="text-md">Total</div>
