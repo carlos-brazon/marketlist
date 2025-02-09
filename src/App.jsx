@@ -20,42 +20,46 @@ function App() {
   const [userIn, setUserIn] = useState(null);
   const [temporalCloud, setTemporalCloud] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadingSingIn, setLoadingSingIn] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const userFirebase = await getDocs(query(collection(db, 'userMarketList'), where('email', '==', user.email)));
-        const dataFromFirebase = await getDocs(query(collection(db, "dataItemsMarketList"), where("userUid", "==", user.uid)));
-        let userConected;
-        let dataUser = [];
+      if (loadingSingIn) {
+        if (user) {
+          const userFirebase = await getDocs(query(collection(db, 'userMarketList'), where('email', '==', user.email)));
+          const dataFromFirebase = await getDocs(query(collection(db, "dataItemsMarketList"), where("userUid", "==", user.uid)));
+          let userConected;
+          let dataUser = [];
 
-        userFirebase.forEach(user => {
-          userConected = user.data();
-        });
+          userFirebase.forEach(user => {
+            userConected = user.data();
+          });
 
-        dataFromFirebase.forEach(item => {
-          dataUser.push(item.data());
-        });
-        const realUrl = userConected?.cropp_pixel?.width ? await getCroppedImg(userConected.url_img_super_list, userConected.cropp_pixel) : null
+          dataFromFirebase.forEach(item => {
+            dataUser.push(item.data());
+          });
+          const realUrl = userConected?.cropp_pixel?.width ? await getCroppedImg(userConected.url_img_super_list, userConected.cropp_pixel) : null
 
-        if (realUrl) {
-          setUserIn({ ...userConected, uid: user.uid, url_img_super_list: realUrl });
+          if (realUrl) {
+            setUserIn({ ...userConected, uid: user.uid, url_img_super_list: realUrl });
+          } else {
+            setUserIn({ ...userConected, uid: user.uid, url_img_super_list: userConected?.super_list_img_selected ? userConected.url_img_super_list : user.providerData[0].photoURL });
+          }
+
+          const dataSorted = dataUser.sort((a, b) => {
+            const dateA = a.create_at ? (a.create_at.toDate ? a.create_at.toDate() : new Date(a.create_at)) : new Date(0);
+            const dateB = b.create_at ? (b.create_at.toDate ? b.create_at.toDate() : new Date(b.create_at)) : new Date(0);
+            return dateA - dateB;
+          });
+
+          setTemporalCloud(dataSorted);
         } else {
-          setUserIn({ ...userConected, uid: user.uid, url_img_super_list: userConected?.super_list_img_selected ? userConected.url_img_super_list : user.providerData[0].photoURL });
+          setUserIn(null);
+          setTemporalCloud([]);
         }
-
-        const dataSorted = dataUser.sort((a, b) => {
-          const dateA = a.create_at ? (a.create_at.toDate ? a.create_at.toDate() : new Date(a.create_at)) : new Date(0);
-          const dateB = b.create_at ? (b.create_at.toDate ? b.create_at.toDate() : new Date(b.create_at)) : new Date(0);
-          return dateA - dateB;
-        });
-
-        setTemporalCloud(dataSorted);
-      } else {
-        setUserIn(null);
-        setTemporalCloud([]);
+        setLoading(false);
+        setLoadingSingIn(false);
       }
-      setLoading(false);
     });
 
     return () => {
@@ -77,9 +81,9 @@ function App() {
 
   return (
     <RootLayout>
-      <div className="animate-fade flex items-start relative justify-center w-full pb-3">
-        <Contex userIn={userIn} setUserIn={setUserIn} temporalCloud={temporalCloud} setTemporalCloud={setTemporalCloud}>
-          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <div className="animate-fade flex items-start relative justify-center w-full pb-3">
+          <Contex userIn={userIn} setUserIn={setUserIn} temporalCloud={temporalCloud} setTemporalCloud={setTemporalCloud} setLoadingSingIn={setLoadingSingIn} setLoading={setLoading}>
             <Routes>
               <Route path='/' element={<Header />}>
                 <Route index element={<Form />} />
@@ -89,9 +93,9 @@ function App() {
               </Route>
               <Route path='setting' element={<Settings />} />
             </Routes>
-          </BrowserRouter>
-        </Contex>
-      </div>
+          </Contex>
+        </div>
+      </BrowserRouter>
       <Toaster />
     </RootLayout>
   );

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 export const AllItemsContext = createContext();
 
-const Context = ({ children, userIn, setUserIn, temporalCloud, setTemporalCloud }) => {
+const Context = ({ children, userIn, setUserIn, temporalCloud, setTemporalCloud, setLoadingSingIn, setLoading }) => {
   const [list, setList] = useState([]);
   const [addTags, setAddTags] = useState(false);
   const [button, setButton] = useState(userIn?.last_tags?.length ? userIn?.last_tags.toLowerCase() : 'compras');
@@ -11,7 +11,7 @@ const Context = ({ children, userIn, setUserIn, temporalCloud, setTemporalCloud 
   const [tags, setTags] = useState([]);
 
   return (
-    <AllItemsContext.Provider value={{ setUserIn, valueInputNewTags, setValueInputNewTags, list, setList, userIn, addTags, setAddTags, button, setButton, tags, setTags, temporalCloud, setTemporalCloud }}>
+    <AllItemsContext.Provider value={{ setUserIn, valueInputNewTags, setValueInputNewTags, list, setList, userIn, addTags, setAddTags, button, setButton, tags, setTags, temporalCloud, setTemporalCloud, setLoadingSingIn, setLoading }}>
       {children}
     </AllItemsContext.Provider>
   );
@@ -30,6 +30,8 @@ Context.propTypes = {
   temporalCloud: PropTypes.array,
   setUserIn: PropTypes.func,
   setTemporalCloud: PropTypes.func,
+  setLoadingSingIn: PropTypes.func,
+  setLoading: PropTypes.func,
 };
 
 export default Context;

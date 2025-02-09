@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { EmailAuthProvider, GoogleAuthProvider, linkWithCredential, signInWithEmailAndPassword, signInWithPopup, updatePassword } from 'firebase/auth';
 import Input from './Input';
@@ -10,15 +10,18 @@ import googleIcon from "../assets/google-icon.svg";
 import eyeOpen from "../assets/eye-open.svg";
 import eyeClosed from "../assets/eye-closed.svg";
 import { collection, doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
-import { defaultSuperListImg } from '../utils/util';
 import emailjs from "emailjs-com";
 import { emailjsConfig } from '../utils/emailjsConfig';
+import { AllItemsContext } from './Contex';
+import { useNavigate } from "react-router-dom";
 
 const SingIn = () => {
+    const { setLoadingSingIn, setLoading, setUserIn } = useContext(AllItemsContext)
     const [eyeControl, setEyeControl] = useState(true);
     const { toast } = useToast()
     const [user, setUser] = useState({});
     const [controlSingIn, setControlSingIn] = useState(false);
+    const navigate = useNavigate();
 
     const handleInput = (event) => {
         const inputName = event.target.name;
@@ -50,13 +53,15 @@ const SingIn = () => {
     const singInGoogle = async () => {
         const provider = new GoogleAuthProvider();
 
-
         signInWithPopup(auth, provider)
             .then(async (result) => {
+                setLoading(true);
+                setControlSingIn(false);
                 const userLogged = result.user
                 try {
                     const userSnap = await getDoc(doc(db, "userMarketList", userLogged.uid));
                     // Aquí compruebo si el usuario existe, sino existe entra el if
+                    await navigate("/", { replace: true });
                     if (!userSnap.exists()) {
                         const userId = doc(collection(db, 'newId')).id;
                         const newUserToFirebase = {
@@ -77,14 +82,13 @@ const SingIn = () => {
                             sortAscending: false,
                             super_list_img_selected: false,
                             tem_pass: "",
-                            url_img_super_list: defaultSuperListImg,
+                            url_img_super_list: '',
                             url_img_google: userLogged.providerData[0].photoURL,
                         }
                         const newPasswordToSingIn = RamdomPassword();
                         const credential = EmailAuthProvider.credential(userLogged.email, newPasswordToSingIn);
                         await linkWithCredential(userLogged, credential);
                         await updatePassword(userLogged, newPasswordToSingIn);
-
                         // envio de contraseña
                         const sendEmail = (userEmail, password, user_name, user_last_name) => {
                             emailjs.send(
@@ -105,27 +109,24 @@ const SingIn = () => {
                         };
                         await setDoc(doc(db, "userMarketList", userLogged.uid), { ...newUserToFirebase, tem_pass: newPasswordToSingIn });
                         sendEmail(userLogged.email, newPasswordToSingIn, userLogged.displayName.split(" ")[0].toLowerCase(), userLogged.displayName.split(" ")[1].toLowerCase());
+                        setUserIn({ ...newUserToFirebase, uid: userLogged.uid, tem_pass: newPasswordToSingIn })
                     } else {
-                        //si el usuario ya existe 
+                        //si el usuario ya existe
                         const updateSingInUserToFirebase = {
                             ...userSnap.data(),
                             url_img_google: userLogged.providerData[0].photoURL,
                         }
                         await setDoc(doc(db, "userMarketList", userLogged.uid), updateSingInUserToFirebase);
                     }
-                    window.location.href = "/";
-
                 } catch (error) {
                     console.error("Error en el inicio de sesión con Google:", error);
                 }
-
-
             })
             .catch((error) => {
                 console.error("Error:", error.code);
                 console.error("Error:", error.message);
             });
-
+        setLoadingSingIn(true);
     };
     return (
         <>
