@@ -137,7 +137,11 @@ const SingIn = () => {
                 className="w-fit flex gap-1 h-8 px-2 py-1"
                 onClick={() => singInGoogle()}
             >
-                <p className="bg-gradient-to-r from-blue-700 via-red-700 via-yellow-700 to-green-700 bg-clip-text text-transparent">Iniciar sesión con Google</p>
+                <p className="bg-[linear-gradient(to_right,#4285F4,#EA4335,#FBBC05,#34A853)] bg-clip-text text-transparent">
+                    Iniciar sesión con Google
+                </p>
+
+
                 <img className="w-5 h-5" src={googleIcon} alt="" />
             </Button>
             <Button
@@ -145,7 +149,7 @@ const SingIn = () => {
                 className="w-fit flex gap-1 h-8 px-2 py-1"
                 onClick={() => setControlSingIn(prev => !prev)}
             >
-                <p className="">Iniciar sesión con correo y contraseña</p>
+                <p>Iniciar sesión con correo y contraseña</p>
 
             </Button>
             <div >
