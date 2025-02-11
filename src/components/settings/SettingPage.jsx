@@ -21,6 +21,8 @@ import LoadingSavePictureDialog from "./LoadingSavePictureDialog";
 import CropPictureDialog from "./CropPictureDialog";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../utils/firebase";
+import { X } from "lucide-react";
+import { DialogHeader } from '@/components/ui/dialog'
 
 const SettingPage = () => {
     const { userIn } = useContext(AllItemsContext);
@@ -29,13 +31,14 @@ const SettingPage = () => {
     const [imgFromFirebase, setImgFromFirebase] = useState('');
     const [temporalImg, setTemporalImg] = useState('');
     const [profilePictureState, setProfilePictureState] = useState({
-        isProfilePicture: true,
+        isProfilePicture: false,
         isRemove: false,
         isChange: false,
         isLoading: false,
         isCrop: false,
+        picture: false,
         imageSrc: null,
-        url: ''
+        url: '',
     });
 
     const renderDialogContent = () => {
@@ -55,6 +58,14 @@ const SettingPage = () => {
             case profilePictureState.isRemove:
                 return <RemovePictureDialog
                     setProfilePictureState={setProfilePictureState} />;
+            case profilePictureState.picture:
+                return <DialogHeader className=" p-2">
+                    <X onClick={() => setProfilePictureState(prev => ({ ...prev, picture: false }))} className="cursor-pointer w-6 h-6 absolute top-2 right-2 bg-white z-50" />
+                    <img
+                        className={` `}
+                        src={userIn?.super_list_img_selected ? userIn?.url_img_super_list : userIn?.url_img_google}
+                        alt='imagen redonda settings' />
+                </DialogHeader>
             default:
                 return <ProfilePictureDialog
                     setProfilePictureState={setProfilePictureState} />;
@@ -89,10 +100,22 @@ const SettingPage = () => {
             </div>
             <div className='h-28 w-full relative bg-gradient-to-br from-slate-200 to-slate-500'>
             </div>
-            <Dialog>
+            <Dialog onOpenChange={(isOpen) => {
+                if (!isOpen) {
+                    setProfilePictureState((prev) => ({
+                        ...prev, isProfilePicture: false,
+                        isRemove: false,
+                        isChange: false,
+                        isLoading: false,
+                        isCrop: false,
+                        picture: false,
+                    }));
+                }
+            }}>
                 <DialogTrigger className="pl-2">
                     <div className=' flex items-center justify-center rounded-full border-[2px] border-gray-500 bg-white w-[106px] h-[106px] absolute top-[70px]'>
                         <img
+                            onClick={() => setProfilePictureState(prev => ({ ...prev, isProfilePicture: true }))}
                             className={`absolute z-10 rounded-full w-24 h-24 ${userIn?.url_img_super_list === defaultSuperListImg ? 'p-2 bg-imgBorder' : ''}`}
                             src={userIn?.super_list_img_selected ? userIn?.url_img_super_list : userIn?.url_img_google}
                             alt='imagen redonda settings' />

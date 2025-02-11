@@ -14,7 +14,6 @@ import { Toaster } from "@/components/ui/toaster";
 import RootLayout from './components/Toaster'
 import getCroppedImg from './utils/cropImage'
 import SettingPage from './components/settings/SettingPage'
-
 function App() {
   const [userIn, setUserIn] = useState(null);
   const [temporalCloud, setTemporalCloud] = useState(null);
@@ -90,7 +89,8 @@ function App() {
                 <Route path='singin' element={<SingIn />} />
                 <Route path='checkIn' element={<CheckIn />} />
               </Route>
-              <Route path='setting' element={<SettingPage />} />
+              <Route path="setting" element={userIn && <SettingPage />} />
+
             </Routes>
           </Contex>
         </div>
