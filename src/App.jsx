@@ -12,9 +12,8 @@ import Contex from './components/Contex'
 import HowUse from './components/HowUse'
 import { Toaster } from "@/components/ui/toaster";
 import RootLayout from './components/Toaster'
-import Settings from './components/Settings'
 import getCroppedImg from './utils/cropImage'
-
+import SettingPage from './components/settings/SettingPage'
 
 function App() {
   const [userIn, setUserIn] = useState(null);
@@ -91,7 +90,7 @@ function App() {
                 <Route path='singin' element={<SingIn />} />
                 <Route path='checkIn' element={<CheckIn />} />
               </Route>
-              <Route path='setting' element={<Settings />} />
+              <Route path='setting' element={<SettingPage />} />
             </Routes>
           </Contex>
         </div>

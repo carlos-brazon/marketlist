@@ -21,3 +21,15 @@ export const cleanInputValueWithNumberOrLetters = (inputValue) => {
 
 export const defaultSuperListImg =
   "https://res.cloudinary.com/dcilysqzl/image/upload/v1738698398/eaf0b15c155449c9bb8fe13ccdb821cc-free_2_fiswiy.png";
+
+export const ramdomDog = async () => {
+  try {
+    const response = await fetch(
+      "https://dog.ceo/api/breed/hound/images/random/6"
+    );
+    const data = await response.json();
+    return data.message;
+  } catch (error) {
+    console.error("Error fetching the image:", error);
+  }
+};
