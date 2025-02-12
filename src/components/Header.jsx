@@ -183,7 +183,10 @@ const Header = () => {
         </div>
       </header >
       <Outlet />
-      <p className={`w-full text-right mb-2 mr-8 ${by && !userIn || 'hidden'}`}><span className='font-bold'>by:</span> Carlos Brazon...</p>
+      {by && !userIn &&
+        <p className="w-full text-right mb-2 mr-8">
+          <span className='font-bold'>by:</span> Carlos Brazon...
+        </p>}
     </div >
   );
 }

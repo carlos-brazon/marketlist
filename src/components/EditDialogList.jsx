@@ -84,12 +84,11 @@ const EditDialogList = ({ isDialogOpen, setIsDialogOpen }) => {
                 />
                 <div className="h-6">
                   {isTagsRepeat && (
-                    <div className="text-red-700 text-[12px]">
-                      {isTagsRepeat ?
-                        <div>
-                          <div className='flex gap-1 '>La lista esta repetida, si desea combinar ambas pulsa <div className='text-black underline font-semibold cursor-pointer' onClick={() => { setIsTagsRepeat(false), handleSubmit(event, 'continue') }}>aqui</div></div>
-
-                        </div> : ''}
+                    <div>
+                      <div className='flex gap-1 text-red-700 text-[12px]'>La lista esta repetida, si desea combinar ambas pulsa
+                        <div className='text-black underline font-semibold cursor-pointer' onClick={() => { setIsTagsRepeat(false), handleSubmit(event, 'continue') }}>aqui
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>

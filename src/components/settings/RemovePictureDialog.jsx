@@ -37,7 +37,7 @@ const RemovePictureDialog = ({ setProfilePictureState }) => {
 
                 <div className='flex items-center justify-center gap-3'>
                     <img
-                        className={`rounded-full w-24 h-24 ${userIn.url_img_super_list === defaultSuperListImg ? 'p-2 bg-imgBorder' : ''}`}
+                        className={`rounded-full w-24 h-24 ${userIn.url_img_super_list === defaultSuperListImg && 'p-2 bg-imgBorder'}`}
                         src={userIn.super_list_img_selected ? userIn?.url_img_super_list : userIn?.url_img_google}
                         alt="" />
                     <img

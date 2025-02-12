@@ -22,7 +22,7 @@ const ProfilePictureDialog = ({ setProfilePictureState }) => {
                 </div>
                 <img
                     onClick={() => setProfilePictureState(prev => ({ ...prev, picture: true }))}
-                    className={`rounded-full w-40 h-40 ${userIn?.url_img_super_list === defaultSuperListImg ? 'p-2 bg-imgBorder' : ''}`}
+                    className={`rounded-full w-40 h-40 ${userIn?.url_img_super_list === defaultSuperListImg && 'p-2 bg-imgBorder'}`}
                     src={userIn?.super_list_img_selected ? userIn?.url_img_super_list : userIn?.url_img_google}
                     alt="" />
                 <div className='flex items-center justify-center w-full gap-2'>

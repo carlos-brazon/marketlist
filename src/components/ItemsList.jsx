@@ -122,22 +122,23 @@ const ItemsList = ({ setAmount }) => {
                         key={index}
                         className={`break-normal items-center justify-end min-h-[30px] flex gap-2 m-0.5 rounded px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-200'}`}
                     >
-                        <div className={`flex w-full text-xs items-center ${item.isDone ? 'line-through' : ''}`} onClick={() => handleClick(item)} >
+                        <div className={`flex w-full text-xs items-center ${item.isDone && 'line-through'}`} onClick={() => handleClick(item)} >
                             <div>{firstLetterUpperCase(item.name)}</div>
                         </div>
                         <div className='flex gap-1 items-center'>
                             <div className=' whitespace-nowrap justify-center text-[9px] w-auto'>
-                                <div className={`flex flex-col h-6 ${userIn?.isDateControl || 'hidden'}`}>
+                                {userIn?.isDateControl && <div className="flex flex-col h-6">
                                     <div>
                                         {new Date(item.create_at && item.create_at.toDate ? item.create_at.toDate() : item.create_at).toLocaleString()}
                                     </div>
 
-                                    <div className={`${item.isDone ? 'line-through' : 'hidden'}`}>{new Date(item.isDone_at && item.isDone_at.toDate ? item.isDone_at.toDate() : item.isDone_at).toLocaleString()}</div>
-                                </div>
+                                    {item.isDone && <div className="line-through">{new Date(item.isDone_at && item.isDone_at.toDate ? item.isDone_at.toDate() : item.isDone_at).toLocaleString()}</div>}
+                                </div>}
                             </div>
                             <AmountDialog item={item} setAmount={setAmount} />
 
-                            <div onClick={() => handlePriority(item)} className={`flex items-center w-auto h-5 z-50 rounded-md text-[10px] text-center px-0.5 py-0.5 bg-slate-100 border border-gray-900 ${userIn?.isDoneControl || 'hidden'}`}>Urgente</div>
+                            {userIn?.isDoneControl &&
+                                <div onClick={() => handlePriority(item)} className="flex items-center w-auto h-5 z-50 rounded-md text-[10px] text-center px-0.5 py-0.5 bg-slate-100 border border-gray-900">Urgente</div>}
                             <EditDialog item={item} />
                         </div>
                     </div>

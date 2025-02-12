@@ -101,7 +101,7 @@ const EditPassword = () => {
                         />
                         <img onClick={() => setEyeControl(prev => ({ ...prev, password: !eyeControl.password }))} className="w-6 h-6 absolute right-4 top-7" src={eyeControl.password ? eyeOpen : eyeClosed} alt="" />
                     </div>
-                    <p className={`text-red-600 font-medium ${userIn?.tem_pass?.length ? '' : 'hidden'}`}>Cambia tu contraseña temporal por una personal</p>
+                    {userIn?.tem_pass?.length && <p className="text-red-600 font-medium">Cambia tu contraseña temporal por una personal</p>}
                     <div className=" relative flex flex-col gap-1 px-2">
                         <Label htmlFor="new_pass">Nueva Contraseña</Label>
                         <Input

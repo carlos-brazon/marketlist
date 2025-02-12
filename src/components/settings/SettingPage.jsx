@@ -116,7 +116,7 @@ const SettingPage = () => {
                     <div className=' flex items-center justify-center rounded-full border-[2px] border-gray-500 bg-white w-[106px] h-[106px] absolute top-[70px]'>
                         <img
                             onClick={() => setProfilePictureState(prev => ({ ...prev, isProfilePicture: true }))}
-                            className={`absolute z-10 rounded-full w-24 h-24 ${userIn?.url_img_super_list === defaultSuperListImg ? 'p-2 bg-imgBorder' : ''}`}
+                            className={`absolute z-10 rounded-full w-24 h-24 ${userIn?.url_img_super_list === defaultSuperListImg && 'p-2 bg-imgBorder'}`}
                             src={userIn?.super_list_img_selected ? userIn?.url_img_super_list : userIn?.url_img_google}
                             alt='imagen redonda settings' />
                         <div className="bg-gray-600 w-8 h-8 rounded-full absolute z-10 flex items-center justify-center right-0 bottom-0 border">
@@ -133,8 +133,7 @@ const SettingPage = () => {
                 <TabsList className>
                     <TabsTrigger value="profile">Perfil</TabsTrigger>
                     <TabsTrigger className='flex gap-1' value="password">Contraseña
-
-                        <img className={`w-5 h-5 ${userIn?.tem_pass?.length ? '' : 'hidden'}`} src={alert2} alt="" />
+                        {userIn?.tem_pass?.length && <img className="w-5 h-5" src={alert2} alt="Alert Icon" />}
                     </TabsTrigger>
                 </TabsList>
                 <TabsContent value="profile">
