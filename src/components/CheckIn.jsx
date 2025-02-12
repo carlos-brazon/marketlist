@@ -6,12 +6,16 @@ import { useNavigate } from 'react-router';
 import Input from './Input.jsx';
 import { Button } from './ui/button.jsx';
 import { defaultSuperListImg } from '../utils/util.js';
+import eyeOpen from "../assets/eye-open.svg";
+import eyeClosed from "../assets/eye-closed.svg";
+
 const CheckIn = () => {
     const history = useNavigate();
     const [user, setUser] = useState({});
     const [passwordError, setPasswordError] = useState('');
     const [emailError, setEmailError] = useState('');
     const [messageLogIn, setMessageLogIn] = useState('');
+    const [eyeControl, setEyeControl] = useState(true);
 
     const handleInput = (event) => {
 
@@ -116,16 +120,20 @@ const CheckIn = () => {
                         placeholder={'Email'}
                         required
                     />
-                    <Input
-                        className={'w-[232px]'}
-                        type={'password'}
-                        name={'password'}
-                        onChange={handleInput}
-                        value={user.password || ''}
-                        placeholder={'Establecer contraseña'}
-                        minLength={'6'}
-                        required
-                    />
+
+                    <div className=" relative flex flex-col gap-1">
+                        <Input
+                            className={'w-[232px]'}
+                            type={eyeControl ? 'password' : 'text'}
+                            name={'password'}
+                            onChange={handleInput}
+                            value={user.password || ''}
+                            placeholder={'Establecer contraseña'}
+                            minLength={'6'}
+                            required
+                        />
+                        <img onClick={() => setEyeControl(prev => !prev)} className="w-6 h-6 absolute right-2 top-3" src={eyeControl ? eyeOpen : eyeClosed} alt="" />
+                    </div>
                     <div className='min-h-6'>
                         <p>{messageLogIn}</p>
                         {passwordError && <p className='text-red-600'>{passwordError}</p>}
