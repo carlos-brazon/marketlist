@@ -9,27 +9,49 @@ import { useContext } from "react"
 import { AllItemsContext } from "../Contex"
 import { Button } from "../ui/button"
 import update from "../../assets/update.svg";
+import UploadIcon from "../../assets/upload.svg";
 import { doc, setDoc } from "firebase/firestore"
 import { db } from "../../utils/firebase"
 import PropTypes from 'prop-types';
 import { ramdomDog } from "../../utils/util"
+import { Input } from "../ui/input"
+import { useDropzone } from "react-dropzone";
 
 const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFromFirebase }) => {
+    const MAX_FILE_SIZE = 10000000;
+    const ACCEPTED_IMAGE_TYPES = { "image/*": [".jpeg", ".jpg", ".png"] };
+
     ChangePictureDialog.propTypes = {
         setProfilePictureState: PropTypes.func,
         setImgFromFirebase: PropTypes.func,
         imgFromFirebase: PropTypes.array,
     };
     const { userIn } = useContext(AllItemsContext);
+    const { getRootProps, getInputProps } = useDropzone({
+        accept: ACCEPTED_IMAGE_TYPES,
+        maxSize: MAX_FILE_SIZE,
+        onDrop: (files, rejected) => {
+            if (files.length >= 1) {
+                const reader = new FileReader();
+                reader.onload = () => setProfilePictureState(prev => ({ ...prev, imageSrc: reader.result, isCrop: true, isChange: false }))
+                reader.readAsDataURL(files[0]);
+            }
+            if (rejected.length >= 1) {
+                console.log(
+                    "El archivo es demasiado grande o no tiene el formato adecuado"
+                );
+            }
+        },
+    });
 
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = () => setProfilePictureState(prev => ({ ...prev, imageSrc: reader.result, isCrop: true, isChange: false }))
-            reader.readAsDataURL(file);
-        }
-    };
+    // const handleFileChange = (event) => {
+    //     const file = event.target.files[0];
+    //     if (file) {
+    //         const reader = new FileReader();
+    //         reader.onload = () => setProfilePictureState(prev => ({ ...prev, imageSrc: reader.result, isCrop: true, isChange: false }))
+    //         reader.readAsDataURL(file);
+    //     }
+    // };
 
     return (
         <DialogHeader>
@@ -82,8 +104,21 @@ const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFr
                         </div>
                     </TabsContent>
                     <TabsContent value="galery">
-
-                        {/* <input type="file" accept="image/*" onChange={handleFileChange} className="border border-red-600 w-96 h-96" /> */}
+                        <div
+                            className="inline-flex h-64 w-64 cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border border-gray-200"
+                            {...getRootProps()}>
+                            <img className="w-20 h-20" src={UploadIcon} alt="" />
+                            <div className="flex flex-col items-center">
+                                <span className="text-sm font-medium text-[#6B7280]">
+                                    Sube tu imagen
+                                </span>
+                                <span className="text-sm font-normal text-[#9CA3AF]">
+                                    PNG, JPG, GIF hasta 10 M
+                                </span>
+                            </div>
+                            <Input {...getInputProps()} />
+                        </div>
+                        {/* <Input type="file" accept="image/*" onChange={handleFileChange} className="border border-red-600 w-96 h-96" /> */}
                     </TabsContent>
                 </Tabs>
             </div>
