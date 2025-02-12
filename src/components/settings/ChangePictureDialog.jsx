@@ -22,6 +22,15 @@ const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFr
     };
     const { userIn } = useContext(AllItemsContext);
 
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => setProfilePictureState(prev => ({ ...prev, imageSrc: reader.result, isCrop: true, isChange: false }))
+            reader.readAsDataURL(file);
+        }
+    };
+
     return (
         <DialogHeader>
             <X onClick={() => setProfilePictureState(prev => ({ ...prev, isChange: false }))} className="cursor-pointer w-6 h-6 absolute top-2 right-2 bg-white z-50" />
@@ -73,7 +82,8 @@ const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFr
                         </div>
                     </TabsContent>
                     <TabsContent value="galery">
-                        <div className="h-[178px]">falta agregar</div>
+
+                        {/* <input type="file" accept="image/*" onChange={handleFileChange} className="border border-red-600 w-96 h-96" /> */}
                     </TabsContent>
                 </Tabs>
             </div>

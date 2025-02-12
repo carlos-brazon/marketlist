@@ -24,17 +24,7 @@ const CropPictureDialog = ({ setProfilePictureState, profilePictureState }) => {
     const onCropComplete = (_, croppedAreaPixels) => {
         setCroppedAreaPixels(croppedAreaPixels);
     };
-    // const [showCropModal, setShowCropModal] = useState(false);
 
-    // const handleFileChange = (event) => {
-    //     const file = event.target.files[0];
-    //     if (file) {
-    //         const reader = new FileReader();
-    //         reader.onload = () => setImageSrc(reader.result);
-    //         reader.readAsDataURL(file);
-    //         setShowCropModal(true);
-    //     }
-    // };
     const handleSaveImage = async () => {
         if (userIn.url_img_google === profilePictureState.imageSrc) {
             setProfilePictureState(prev => ({ ...prev, isLoading: true, url: userIn.url_img_google }))
