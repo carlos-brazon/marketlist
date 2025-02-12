@@ -88,7 +88,7 @@ const Header = () => {
                     ?
                     <div className=' flex items-center justify-center rounded-full border-[2px] border-gray-500 bg-white w-10 h-10'>
                       {<img
-                        className={`relative rounded-full z-10 w-8 h-8 ${userIn.url_img_super_list === defaultSuperListImg ? 'p-2 bg-imgBorder' : ''}`}
+                        className={`relative rounded-full z-10 w-8 h-8 ${userIn.url_img_super_list === defaultSuperListImg && 'p-2 bg-imgBorder'}`}
                         alt="imagen redonda header"
                         src={userIn.super_list_img_selected ? userIn?.url_img_super_list : userIn?.url_img_google}
                       />}
@@ -113,7 +113,7 @@ const Header = () => {
                         {userIn //esta es la imagen redonda del sheet content
                           ?
                           <img
-                            className={`absolute z-10 rounded-full w-24 h-24 ${userIn.url_img_super_list === defaultSuperListImg ? 'p-2 bg-imgBorder' : ''}`}
+                            className={`absolute z-10 rounded-full w-24 h-24 ${userIn.url_img_super_list === defaultSuperListImg && 'p-2 bg-imgBorder'}`}
                             src={userIn.super_list_img_selected ? userIn?.url_img_super_list : userIn?.url_img_google}
                             alt="imagen redonda"
                           />

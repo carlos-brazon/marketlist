@@ -101,11 +101,11 @@ const EditPassword = () => {
                         />
                         <img onClick={() => setEyeControl(prev => ({ ...prev, password: !eyeControl.password }))} className="w-6 h-6 absolute right-4 top-7" src={eyeControl.password ? eyeOpen : eyeClosed} alt="" />
                     </div>
-                    {userIn?.tem_pass?.length && <p className="text-red-600 font-medium">Cambia tu contraseña temporal por una personal</p>}
+                    {userIn?.tem_pass?.length > 0 && <p className="text-red-600 font-medium">Cambia tu contraseña temporal por una personal</p>}
                     <div className=" relative flex flex-col gap-1 px-2">
                         <Label htmlFor="new_pass">Nueva Contraseña</Label>
                         <Input
-                            className={`w-full ${newValueInput?.new_pass === newValueInput?.new_pass_verify && newValueInput?.new_pass?.length ? 'border-green-700 focus:outline-green-700 border-[2px]' : ''}`}
+                            className={`w-full ${(newValueInput?.new_pass === newValueInput?.new_pass_verify && newValueInput?.new_pass?.length > 0) && 'border-green-700 focus:outline-green-700 border-[2px]'}`}
                             type={eyeControl.new_pass ? 'password' : 'text'}
                             name={'new_pass'}
                             onChange={handlePassworInput}
@@ -118,7 +118,7 @@ const EditPassword = () => {
                     <div className="relative flex flex-col gap-1 px-2">
                         <Label htmlFor="nnew_pass_verify">Repetir Contraseña</Label>
                         <Input
-                            className={`w-full ${newValueInput?.new_pass === newValueInput?.new_pass_verify && newValueInput?.new_pass_verify?.length ? 'border-green-700 focus:outline-green-700 border-[2px]' : ''}`}
+                            className={`w-full ${(newValueInput?.new_pass === newValueInput?.new_pass_verify && newValueInput?.new_pass_verify?.length > 0) && 'border-green-700 focus:outline-green-700 border-[2px]'}`}
                             type={eyeControl.new_pass_verify ? 'password' : 'text'}
                             name={'new_pass_verify'}
                             onChange={handlePassworInput}

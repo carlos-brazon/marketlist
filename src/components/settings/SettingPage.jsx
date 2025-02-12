@@ -133,11 +133,10 @@ const SettingPage = () => {
                 <TabsList className>
                     <TabsTrigger value="profile">Perfil</TabsTrigger>
                     <TabsTrigger className='flex gap-1' value="password">Contraseña
-                        {userIn?.tem_pass?.length && <img className="w-5 h-5" src={alert2} alt="Alert Icon" />}
+                        {userIn?.tem_pass?.length > 0 && <img className="w-5 h-5" src={alert2} alt="Alert Icon" />}
                     </TabsTrigger>
                 </TabsList>
                 <TabsContent value="profile">
-
                     <EditProfile />
                 </TabsContent>
                 <TabsContent value="password">

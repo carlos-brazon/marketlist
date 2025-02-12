@@ -60,18 +60,16 @@ const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFr
                                         }} />
                                 </Button>
                             </div>
-                            <div className='grid grid-cols-3 gap-2'>
-                                {imgFromFirebase.length
-                                    ?
-                                    imgFromFirebase?.map(url =>
+                            {imgFromFirebase.length > 0 &&
+                                <div className='grid grid-cols-3 gap-2'>
+                                    {imgFromFirebase?.map(url =>
                                         <img
                                             key={url}
                                             className='w-16 h-16 relative rounded-full' src={url} alt=""
                                             onClick={async () => {
                                                 setProfilePictureState(prev => ({ ...prev, isChange: false, isCrop: true, imageSrc: url }))
-                                            }} />)
-                                    : ''}
-                            </div>
+                                            }} />)}
+                                </div>}
                         </div>
                     </TabsContent>
                     <TabsContent value="galery">
