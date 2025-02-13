@@ -35,12 +35,14 @@ function App() {
 
           dataFromFirebase.forEach(item => {
             dataUser.push(item.data());
-          });
-          const realUrl = userConected?.cropp_pixel?.width ? await getCroppedImg(userConected.url_img_super_list, userConected.cropp_pixel) : null
+          })
+
+          const realUrl = userConected?.cropp_pixel?.width ? await getCroppedImg(userConected.url_img_super_list, userConected.cropp_pixel) : userConected.userConected.url_img_super_list
 
           if (realUrl) {
             setUserIn({ ...userConected, uid: user.uid, url_img_super_list: realUrl });
           } else {
+
             setUserIn({ ...userConected, uid: user.uid, url_img_super_list: userConected?.super_list_img_selected ? userConected.url_img_super_list : user.providerData[0].photoURL });
           }
 

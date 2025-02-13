@@ -7,13 +7,14 @@ import { AllItemsContext } from '../Contex';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../utils/firebase';
 import PropTypes from 'prop-types';
+import { uploadFile } from '../../utils/util';
 
 const CropPictureDialog = ({ setProfilePictureState, profilePictureState }) => {
     CropPictureDialog.propTypes = {
         setProfilePictureState: PropTypes.func,
         profilePictureState: PropTypes.shape({
             imageSrc: PropTypes.string,
-
+            file: PropTypes.instanceOf(File),
         }),
     };
     const { userIn, setUserIn } = useContext(AllItemsContext)
@@ -26,7 +27,7 @@ const CropPictureDialog = ({ setProfilePictureState, profilePictureState }) => {
     };
 
     const handleSaveImage = async () => {
-        if (userIn.url_img_google === profilePictureState.imageSrc) {
+        if (userIn.url_img_google === profilePictureState.imageSrc) { // verifico que la imagen es igual a la de google
             setProfilePictureState(prev => ({ ...prev, isLoading: true, url: userIn.url_img_google }))
             await updateDoc(doc(db, "userMarketList", userIn.uid), {
                 cropp_pixel: {},
@@ -44,15 +45,38 @@ const CropPictureDialog = ({ setProfilePictureState, profilePictureState }) => {
             const croppedImage = await getCroppedImg(profilePictureState.imageSrc, croppedAreaPixels);
             setProfilePictureState(prev => ({ ...prev, isLoading: true, url: croppedImage }))
 
-            await updateDoc(doc(db, "userMarketList", userIn.uid), {
-                url_img_super_list: profilePictureState.imageSrc,
-                cropp_pixel: croppedAreaPixels,
-                super_list_img_selected: true
-            });
-            setTimeout(() => {
-                setUserIn(prev => ({ ...prev, url_img_super_list: croppedImage, super_list_img_selected: true }));
-                setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
-            }, 2500);
+            if (profilePictureState.file) { //aqui subo imagen a supabase si viene de galeria
+                try {
+                    const imageUrl = await uploadFile(profilePictureState.file);
+                    if (imageUrl.length > 0) {
+
+                        await updateDoc(doc(db, "userMarketList", userIn.uid), {
+                            url_img_super_list: imageUrl,
+                            cropp_pixel: croppedAreaPixels,
+                            super_list_img_selected: true
+                        });
+                        setUserIn(prev => ({ ...prev, url_img_super_list: croppedImage, super_list_img_selected: true }));
+                        setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false, imageSrc: imageUrl, file: null }));
+
+                    } else {
+                        setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }))
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+
+            } else {// aqui gestiono las imagenes de perros 
+                await updateDoc(doc(db, "userMarketList", userIn.uid), {
+                    url_img_super_list: profilePictureState.imageSrc,
+                    cropp_pixel: croppedAreaPixels,
+                    super_list_img_selected: true
+                });
+                setTimeout(() => {
+                    setUserIn(prev => ({ ...prev, url_img_super_list: croppedImage, super_list_img_selected: true }));
+                    setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
+                }, 2500);
+            }
+
         }
 
     };

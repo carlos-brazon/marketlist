@@ -1,7 +1,19 @@
 import { createImage } from "./createImage";
 
 const getCroppedImg = async (imageSrc, pixelCrop) => {
-  const image = await createImage(imageSrc);
+  let image;
+
+  try {
+    image = await createImage(imageSrc);
+  } catch (error) {
+    console.error("Error al crear la imagen:", error);
+    return null;
+  }
+
+  if (!image) {
+    return null;
+  }
+
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
 
@@ -20,11 +32,16 @@ const getCroppedImg = async (imageSrc, pixelCrop) => {
     pixelCrop.height
   );
 
-  return new Promise((resolve) => {
-    canvas.toBlob((blob) => {
-      resolve(URL.createObjectURL(blob));
-    }, "image/jpeg");
-  });
+  try {
+    return await new Promise((resolve) => {
+      canvas.toBlob((blob) => {
+        resolve(URL.createObjectURL(blob));
+      }, "image/jpeg");
+    });
+  } catch (error) {
+    console.error("Error al convertir el canvas a blob:", error);
+    return null;
+  }
 };
 
 export default getCroppedImg;

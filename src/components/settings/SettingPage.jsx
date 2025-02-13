@@ -39,6 +39,7 @@ const SettingPage = () => {
         picture: false,
         imageSrc: null,
         url: '',
+        file: null
     });
 
     const renderDialogContent = () => {

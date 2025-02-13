@@ -1,3 +1,5 @@
+import { supabase } from "./supabase";
+
 export const firstLetterUpperCase = (string) => {
   return string?.charAt(0).toUpperCase() + string?.slice(1);
 };
@@ -33,3 +35,20 @@ export const ramdomDog = async () => {
     console.error("Error fetching the image:", error);
   }
 };
+
+export async function uploadFile(file) {
+  const filePath = `profile_pictures/${Date.now()}_${file.name}`;
+  const { error } = await supabase.storage
+    .from("profile")
+    .upload(filePath, file);
+  if (error) {
+    // Handle error
+  } else {
+    // Handle success
+    // Obtener la URL pública de la imagen
+    const { data: publicUrlData } = supabase.storage
+      .from("profile")
+      .getPublicUrl(filePath);
+    return publicUrlData.publicUrl; // Devuelve la URL para mostrar la imagen
+  }
+}
