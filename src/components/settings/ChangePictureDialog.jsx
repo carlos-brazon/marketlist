@@ -18,7 +18,7 @@ import { Input } from "../ui/input"
 import { useDropzone } from "react-dropzone";
 
 const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFromFirebase }) => {
-    const MAX_FILE_SIZE = 1000000;
+    const MAX_FILE_SIZE = 2000000;
     const ACCEPTED_IMAGE_TYPES = { "image/*": [".jpeg", ".jpg", ".png"] };
 
     ChangePictureDialog.propTypes = {
@@ -103,7 +103,7 @@ const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFr
                                     Sube tu imagen
                                 </span>
                                 <span className="text-sm font-normal text-[#9CA3AF]">
-                                    PNG, JPG, GIF hasta 1 M
+                                    PNG, JPG, GIF hasta 2 Megas
                                 </span>
                             </div>
                             <Input {...getInputProps()} />
