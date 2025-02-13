@@ -114,9 +114,11 @@ const SettingPage = () => {
                 }
             }}>
                 <DialogTrigger className="pl-2">
-                    <div className=' flex items-center justify-center rounded-full border-[2px] border-gray-500 bg-white w-[106px] h-[106px] absolute top-[70px]'>
+                    <div
+                        onClick={() => setProfilePictureState(prev => ({ ...prev, isProfilePicture: true }))}
+                        className=' flex items-center justify-center rounded-full border-[2px] border-gray-500 bg-white w-[106px] h-[106px] absolute top-[70px]'>
                         <img
-                            onClick={() => setProfilePictureState(prev => ({ ...prev, isProfilePicture: true }))}
+
                             className={`absolute z-10 rounded-full w-24 h-24 ${userIn?.url_img_super_list === defaultSuperListImg && 'p-2 bg-imgBorder'}`}
                             src={userIn?.super_list_img_selected ? userIn?.url_img_super_list : userIn?.url_img_google}
                             alt='imagen redonda settings' />
