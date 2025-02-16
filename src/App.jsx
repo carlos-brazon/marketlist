@@ -37,7 +37,7 @@ function App() {
             dataUser.push(item.data());
           })
 
-          const realUrl = userConected?.cropp_pixel?.width ? await getCroppedImg(userConected.url_img_super_list, userConected.cropp_pixel) : null
+          const realUrl = userConected?.cropp_pixel && Object.keys(userConected?.cropp_pixel).length > 0 ? await getCroppedImg(userConected.url_img_super_list, userConected.cropp_pixel) : null;
 
           if (realUrl) {
             setUserIn({ ...userConected, uid: user.uid, url_img_super_list: realUrl });

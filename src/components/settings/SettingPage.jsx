@@ -12,30 +12,32 @@ import {
     DialogContent,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { defaultSuperListImg, ramdomDog } from "../../utils/util";
+import { defaultSuperListImg } from "../../utils/util";
 import { useSearchParams } from "react-router-dom";
 import ProfilePictureDialog from "./ProfilePictureDialog";
 import ChangePictureDialog from "./ChangePictureDialog";
 import RemovePictureDialog from "./RemovePictureDialog";
 import LoadingSavePictureDialog from "./LoadingSavePictureDialog";
 import CropPictureDialog from "./CropPictureDialog";
-import { doc, getDoc } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../utils/firebase";
 import { X } from "lucide-react";
 import { DialogHeader } from '@/components/ui/dialog'
+import getCroppedImg from "../../utils/cropImage";
+import RecentPictureDialog from "./RecentPictureDialog";
 
 const SettingPage = () => {
     const { userIn } = useContext(AllItemsContext);
     const [searchParams] = useSearchParams();
     const defaultTab = searchParams.get("tab") || "profile";
     const [imgFromFirebase, setImgFromFirebase] = useState('');
-    const [temporalImg, setTemporalImg] = useState('');
     const [profilePictureState, setProfilePictureState] = useState({
         isProfilePicture: false,
         isRemove: false,
         isChange: false,
         isLoading: false,
         isCrop: false,
+        isRecentPicture: false,
         picture: false,
         imageSrc: null,
         url: '',
@@ -46,19 +48,33 @@ const SettingPage = () => {
         switch (profilePictureState.isProfilePicture) {
             case profilePictureState.isLoading:
                 return <LoadingSavePictureDialog
-                    profilePictureState={profilePictureState} />;
+                    profilePictureState={profilePictureState}
+                    imgFromFirebase={imgFromFirebase} />;
+
             case profilePictureState.isChange:
                 return <ChangePictureDialog
                     setProfilePictureState={setProfilePictureState}
                     imgFromFirebase={imgFromFirebase}
                     setImgFromFirebase={setImgFromFirebase} />;
+
             case profilePictureState.isCrop:
                 return <CropPictureDialog
                     setProfilePictureState={setProfilePictureState}
-                    profilePictureState={profilePictureState} />;
+                    profilePictureState={profilePictureState}
+                    imgFromFirebase={imgFromFirebase}
+                    setImgFromFirebase={setImgFromFirebase} />;
+
+            case profilePictureState.isRecentPicture:
+                return <RecentPictureDialog
+                    profilePictureState={profilePictureState}
+                    setProfilePictureState={setProfilePictureState}
+                    imgFromFirebase={imgFromFirebase}
+                    setImgFromFirebase={setImgFromFirebase} />
+
             case profilePictureState.isRemove:
                 return <RemovePictureDialog
                     setProfilePictureState={setProfilePictureState} />;
+
             case profilePictureState.picture:
                 return <DialogHeader className=" p-2">
                     <X onClick={() => setProfilePictureState(prev => ({ ...prev, picture: false }))} className="cursor-pointer w-6 h-6 absolute top-2 right-2 bg-white z-50" />
@@ -74,15 +90,20 @@ const SettingPage = () => {
     };
 
     const urlsFromFirebase = async () => {
-        const urlArray = await getDoc(doc(db, "urlDogs", "one"));
-        setImgFromFirebase(urlArray.data().urls);
-        setTemporalImg([userIn.url_img_super_list || temporalImg[0]]);
+        const urlArray = await getDocs(collection(db, "image_profile"));
+        const arrayUrlsWithBlobUrl = await Promise.all(
+            urlArray.docs[1].data().recents.map(async (item) => {
+                return { ...item, crop_img_recent: item.crop_area_ && Object.keys(item.crop_area_).length > 0 ? await getCroppedImg(item.url, item.crop_area_) : item.url }
+            })
+        );
+        setImgFromFirebase({
+            ...urlArray.docs[0].data(),
+            recents: arrayUrlsWithBlobUrl,
+        });
     }
 
     useEffect(() => {
         if (userIn) {
-            const sixRamdomDogs = ramdomDog();
-            setImgFromFirebase(sixRamdomDogs)
             urlsFromFirebase();
         }
     }, []);
@@ -110,6 +131,7 @@ const SettingPage = () => {
                         isLoading: false,
                         isCrop: false,
                         picture: false,
+                        isRecentPicture: false,
                     }));
                 }
             }}>

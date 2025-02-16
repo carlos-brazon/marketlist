@@ -1,4 +1,5 @@
 import { supabase } from "./supabase";
+import imageCompression from "browser-image-compression";
 
 export const firstLetterUpperCase = (string) => {
   return string?.charAt(0).toUpperCase() + string?.slice(1);
@@ -50,5 +51,19 @@ export async function uploadFile(file) {
       .from("profile")
       .getPublicUrl(filePath);
     return publicUrlData.publicUrl; // Devuelve la URL para mostrar la imagen
+  }
+}
+export async function compressAndUpload(file) {
+  const options = {
+    maxSizeMB: 1, // Reduce la imagen a menos de 1MB
+    maxWidthOrHeight: 1024, // Ajusta la resolución
+    useWebWorker: true,
+  };
+
+  try {
+    const compressedFile = await imageCompression(file, options);
+    return compressedFile;
+  } catch (error) {
+    console.error("Error al comprimir la imagen:", error);
   }
 }

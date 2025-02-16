@@ -9,24 +9,36 @@ import { db } from '../../utils/firebase';
 import PropTypes from 'prop-types';
 import { uploadFile } from '../../utils/util';
 
-const CropPictureDialog = ({ setProfilePictureState, profilePictureState }) => {
+const CropPictureDialog = ({ setProfilePictureState, profilePictureState, imgFromFirebase, setImgFromFirebase }) => {
     CropPictureDialog.propTypes = {
         setProfilePictureState: PropTypes.func,
+        setImgFromFirebase: PropTypes.func,
+        imgFromFirebase: PropTypes.object,
         profilePictureState: PropTypes.shape({
             imageSrc: PropTypes.string,
-            file: PropTypes.instanceOf(File),
+            file: PropTypes.instanceOf(Blob),
         }),
     };
     const { userIn, setUserIn } = useContext(AllItemsContext)
-    const [crop, setCrop] = useState({ x: 0, y: 0 });
+    const [crop, setCrop] = useState({ x: profilePictureState?.imageSrc.crop_area_?.x || 0, y: profilePictureState?.imageSrc.crop_area_?.y || 0 });
     const [zoom, setZoom] = useState(1);
-    const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+    const [croppedAreaPixels, setCroppedAreaPixels] = useState(profilePictureState.imageSrc.crop_area_ || null);
 
     const onCropComplete = (_, croppedAreaPixels) => {
         setCroppedAreaPixels(croppedAreaPixels);
     };
 
     const handleSaveImage = async () => {
+        if (imgFromFirebase.recents.includes(profilePictureState.imageSrc)) {
+            setProfilePictureState(prev => ({ ...prev, isLoading: true }));
+            setTimeout(() => {
+                setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
+            }, 2000);
+            return;
+        }
+        if (imgFromFirebase.recents.length == 6) {
+            imgFromFirebase.recents.pop();
+        }
         if (userIn.url_img_google === profilePictureState.imageSrc) { // verifico que la imagen es igual a la de google
             setProfilePictureState(prev => ({ ...prev, isLoading: true, url: userIn.url_img_google }))
             await updateDoc(doc(db, "userMarketList", userIn.uid), {
@@ -35,26 +47,33 @@ const CropPictureDialog = ({ setProfilePictureState, profilePictureState }) => {
                 url_img_google: profilePictureState.imageSrc,
                 url_img_super_list: ''
             });
+            await updateDoc(doc(db, "image_profile", "urls_dogs"), {
+                recents: [{ url: profilePictureState.imageSrc, crop_area_: {} }, ...imgFromFirebase.recents]
+            });
             setTimeout(() => {
-
+                setImgFromFirebase(prev => ({ ...prev, recents: [{ url: profilePictureState.imageSrc, crop_area_: {}, crop_img_recent: profilePictureState.imageSrc }, ...imgFromFirebase.recents] }));
                 setUserIn(prev => ({ ...prev, super_list_img_selected: false, url_img_google: profilePictureState.imageSrc, url_img_super_list: '' }));
                 setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }))
-            }, 2500);
+            }, 2000);
 
         } else {
             const croppedImage = await getCroppedImg(profilePictureState.imageSrc, croppedAreaPixels);
             setProfilePictureState(prev => ({ ...prev, isLoading: true, url: croppedImage }))
 
             if (profilePictureState.file) { //aqui subo imagen a supabase si viene de galeria
+
                 try {
                     const imageUrl = await uploadFile(profilePictureState.file);
                     if (imageUrl.length > 0) {
-
                         await updateDoc(doc(db, "userMarketList", userIn.uid), {
                             url_img_super_list: imageUrl,
                             cropp_pixel: croppedAreaPixels,
                             super_list_img_selected: true
                         });
+                        await updateDoc(doc(db, "image_profile", "urls_dogs"), {
+                            recents: [{ url: imageUrl, crop_area_: croppedAreaPixels }, ...imgFromFirebase.recents]
+                        });
+                        setImgFromFirebase(prev => ({ ...prev, recents: [{ url: imageUrl, crop_area_: croppedAreaPixels, crop_img_recent: croppedImage }, ...imgFromFirebase.recents] }));
                         setUserIn(prev => ({ ...prev, url_img_super_list: croppedImage, super_list_img_selected: true }));
                         setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false, imageSrc: imageUrl, file: null }));
 
@@ -63,23 +82,34 @@ const CropPictureDialog = ({ setProfilePictureState, profilePictureState }) => {
                     }
                 } catch (error) {
                     console.log(error);
+                    setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }))
                 }
 
             } else {// aqui gestiono las imagenes de perros 
-                await updateDoc(doc(db, "userMarketList", userIn.uid), {
-                    url_img_super_list: profilePictureState.imageSrc,
-                    cropp_pixel: croppedAreaPixels,
-                    super_list_img_selected: true
-                });
-                setTimeout(() => {
-                    setUserIn(prev => ({ ...prev, url_img_super_list: croppedImage, super_list_img_selected: true }));
+                try {
+                    await updateDoc(doc(db, "userMarketList", userIn.uid), {
+                        url_img_super_list: profilePictureState.imageSrc,
+                        cropp_pixel: croppedAreaPixels,
+                        super_list_img_selected: true
+                    });
+                    await updateDoc(doc(db, "image_profile", "urls_dogs"), {
+                        recents: [{ url: profilePictureState.imageSrc, crop_area_: croppedAreaPixels }, ...imgFromFirebase.recents]
+                    });
+                    setTimeout(() => {
+                        setUserIn(prev => ({ ...prev, url_img_super_list: croppedImage, super_list_img_selected: true }));
+                        setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
+                        setImgFromFirebase(prev => ({ ...prev, recents: [{ url: profilePictureState.imageSrc, crop_area_: croppedAreaPixels, crop_img_recent: croppedImage }, ...imgFromFirebase.recents] }))
+                    }, 2000);
+                } catch (error) {
+                    console.log(error);
                     setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
-                }, 2500);
+                }
             }
 
         }
 
     };
+
     return (
         <DialogHeader>
             <DialogTitle>Super List Account</DialogTitle>
@@ -92,7 +122,7 @@ const CropPictureDialog = ({ setProfilePictureState, profilePictureState }) => {
 
                 <div className="relative w-full h-72 bg-gray-200">
                     <Cropper
-                        image={profilePictureState.imageSrc}
+                        image={profilePictureState.imageSrc.url || profilePictureState.imageSrc}
                         crop={crop}
                         zoom={zoom}
                         aspect={1} // Mantiene la imagen cuadrada
