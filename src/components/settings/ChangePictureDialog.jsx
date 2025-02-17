@@ -67,11 +67,11 @@ const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFr
                                     }} />
                             </div>
                             <DropdownMenuSeparator className='bg-black' /></>}
-                        <div className="flex flex-col gap-3">
+                        {imgFromFirebase?.recents?.length > 0 && <div className="flex flex-col gap-3">
                             <div className="flex items-center">
                                 <div className="text-start flex w-full">Imagenes recientes</div>
                             </div>
-                            {imgFromFirebase.recents.length > 0 &&
+                            {imgFromFirebase?.recents?.length > 0 &&
                                 <div className='grid grid-cols-3 gap-2'>
                                     {imgFromFirebase?.recents?.map((itemUrl, i) => < img
                                         key={i}
@@ -82,7 +82,8 @@ const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFr
                                     )}
                                 </div>}
                         </div>
-                        <DropdownMenuSeparator className='bg-black' />
+                        }
+                        {imgFromFirebase?.recents?.length > 0 && <DropdownMenuSeparator className='bg-black' />}
                         <div className="flex flex-col gap-3">
                             <div className="flex items-center">
                                 <div className="text-start flex w-full">Imagenes muestra</div>
@@ -93,11 +94,15 @@ const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFr
                                         onClick={async () => {
                                             const newArrayUrls = await ramdomDog();
                                             setImgFromFirebase(prev => ({ ...prev, url: newArrayUrls }));
-                                            await setDoc(doc(db, "image_profile", "urls_dogs"), { url: newArrayUrls })
+                                            await setDoc(
+                                                doc(db, "image_profile", userIn.uid),
+                                                { url_ramdom_dog: newArrayUrls },
+                                                { merge: true }
+                                            );
                                         }} />
                                 </Button>
                             </div>
-                            {imgFromFirebase.url.length > 0 &&
+                            {imgFromFirebase?.url?.length > 0 &&
                                 <div className='grid grid-cols-3 gap-2'>
                                     {imgFromFirebase?.url?.map(url =>
                                         <img

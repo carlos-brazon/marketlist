@@ -12,14 +12,14 @@ import {
     DialogContent,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { defaultSuperListImg } from "../../utils/util";
+import { defaultSuperListImg, ramdomDog } from "../../utils/util";
 import { useSearchParams } from "react-router-dom";
 import ProfilePictureDialog from "./ProfilePictureDialog";
 import ChangePictureDialog from "./ChangePictureDialog";
 import RemovePictureDialog from "./RemovePictureDialog";
 import LoadingSavePictureDialog from "./LoadingSavePictureDialog";
 import CropPictureDialog from "./CropPictureDialog";
-import { collection, getDocs } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../utils/firebase";
 import { X } from "lucide-react";
 import { DialogHeader } from '@/components/ui/dialog'
@@ -79,7 +79,6 @@ const SettingPage = () => {
                 return <DialogHeader className=" p-2">
                     <X onClick={() => setProfilePictureState(prev => ({ ...prev, picture: false }))} className="cursor-pointer w-6 h-6 absolute top-2 right-2 bg-white z-50" />
                     <img
-                        className={` `}
                         src={userIn?.super_list_img_selected ? userIn?.url_img_super_list : userIn?.url_img_google}
                         alt='imagen redonda settings' />
                 </DialogHeader>
@@ -90,14 +89,19 @@ const SettingPage = () => {
     };
 
     const urlsFromFirebase = async () => {
-        const urlArray = await getDocs(collection(db, "image_profile"));
+        const urlArrayDogsAndRecents = await getDoc(doc(db, "image_profile", userIn.uid));
+        const arrrayX6Dogs = await ramdomDog();
+        if (!urlArrayDogsAndRecents.data()) {
+            setImgFromFirebase({ url: arrrayX6Dogs });
+            return
+        }
         const arrayUrlsWithBlobUrl = await Promise.all(
-            urlArray.docs[1].data().recents.map(async (item) => {
+            urlArrayDogsAndRecents.data()?.recents?.map(async (item) => {
                 return { ...item, crop_img_recent: item.crop_area_ && Object.keys(item.crop_area_).length > 0 ? await getCroppedImg(item.url, item.crop_area_) : item.url }
             })
         );
         setImgFromFirebase({
-            ...urlArray.docs[0].data(),
+            url: urlArrayDogsAndRecents.data().url_ramdom_dog || arrrayX6Dogs,
             recents: arrayUrlsWithBlobUrl,
         });
     }
