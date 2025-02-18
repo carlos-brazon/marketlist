@@ -12,7 +12,7 @@ import {
     DialogContent,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { defaultSuperListImg, ramdomDog } from "../../utils/util";
+import { baseUrl, defaultSuperListImg, ramdomDog } from "../../utils/util";
 import { useSearchParams } from "react-router-dom";
 import ProfilePictureDialog from "./ProfilePictureDialog";
 import ChangePictureDialog from "./ChangePictureDialog";
@@ -97,7 +97,9 @@ const SettingPage = () => {
         }
         const arrayUrlsWithBlobUrl = await Promise.all(
             urlArrayDogsAndRecents.data()?.recents?.map(async (item) => {
-                return { ...item, crop_img_recent: item.crop_area_ && Object.keys(item.crop_area_).length > 0 ? await getCroppedImg(item.url, item.crop_area_) : item.url }
+                const recent = item.crop_area_ && Object.keys(item.crop_area_).length > 0 ? await getCroppedImg(`${baseUrl}${item.url}`, item.crop_area_) : item.url;
+
+                return { ...item, crop_img_recent: recent || item.url }
             })
         );
         setImgFromFirebase({

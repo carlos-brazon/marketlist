@@ -14,6 +14,7 @@ import { Toaster } from "@/components/ui/toaster";
 import RootLayout from './components/Toaster'
 import getCroppedImg from './utils/cropImage'
 import SettingPage from './components/settings/SettingPage'
+import { baseUrl } from './utils/util'
 function App() {
   const [userIn, setUserIn] = useState(null);
   const [temporalCloud, setTemporalCloud] = useState(null);
@@ -37,7 +38,7 @@ function App() {
             dataUser.push(item.data());
           })
 
-          const realUrl = userConected?.cropp_pixel && Object.keys(userConected?.cropp_pixel).length > 0 ? await getCroppedImg(userConected.url_img_super_list, userConected.cropp_pixel) : null;
+          const realUrl = userConected?.cropp_pixel && Object.keys(userConected?.cropp_pixel).length > 0 ? await getCroppedImg(`${baseUrl}${userConected?.url_img_super_list}`, userConected.cropp_pixel) : null;
 
           if (realUrl) {
             setUserIn({ ...userConected, uid: user.uid, url_img_super_list: realUrl });

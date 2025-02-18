@@ -24,6 +24,7 @@ export const cleanInputValueWithNumberOrLetters = (inputValue) => {
 
 export const defaultSuperListImg =
   "https://res.cloudinary.com/dcilysqzl/image/upload/v1738698398/eaf0b15c155449c9bb8fe13ccdb821cc-free_2_fiswiy.png";
+export const baseUrl = `${supabase.storageUrl}/object/public/profile/`;
 
 export const ramdomDog = async () => {
   try {
@@ -37,8 +38,8 @@ export const ramdomDog = async () => {
   }
 };
 
-export async function uploadFile(file) {
-  const filePath = `profile_pictures/${Date.now()}_${file.name}`;
+export async function uploadFile(file, id) {
+  const filePath = `profile_pictures/${id}/_${file.name}`;
   const { error } = await supabase.storage
     .from("profile")
     .upload(filePath, file);
@@ -46,11 +47,7 @@ export async function uploadFile(file) {
     // Handle error
   } else {
     // Handle success
-    // Obtener la URL pública de la imagen
-    const { data: publicUrlData } = supabase.storage
-      .from("profile")
-      .getPublicUrl(filePath);
-    return publicUrlData.publicUrl; // Devuelve la URL para mostrar la imagen
+    return filePath; // Devuelve la URL para mostrar la imagen
   }
 }
 export async function compressAndUpload(file) {

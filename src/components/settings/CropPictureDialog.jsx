@@ -67,8 +67,8 @@ const CropPictureDialog = ({ setProfilePictureState, profilePictureState, imgFro
             if (profilePictureState.file) { //aqui subo imagen a supabase si viene de galeria
 
                 try {
-                    const imageUrl = await uploadFile(profilePictureState.file);
-                    if (imageUrl.length > 0) {
+                    const imageUrl = await uploadFile(profilePictureState.file, userIn.id);
+                    if (imageUrl?.length > 0) {
                         await updateDoc(doc(db, "userMarketList", userIn.uid), {
                             url_img_super_list: imageUrl,
                             cropp_pixel: croppedAreaPixels,
