@@ -59,7 +59,7 @@ const RemovePictureDialog = ({ setProfilePictureState }) => {
                 </div>
                 <div className='flex gap-2 place-content-between w-full'>
                     <button onClick={() => setProfilePictureState(prev => ({ ...prev, isRemove: false }))} className='flex rounded-full bg-blue-400 px-3 py-1'>Cancelar</button>
-                    <button onClick={() => handleRemoveImg()} className='flex rounded-full bg-blue-400 px-3 py-1'>Cambiar</button>
+                    <button onClick={() => handleRemoveImg()} className='flex rounded-full bg-blue-400 px-3 py-1'>Quitar</button>
                 </div>
             </div>
         </DialogHeader>

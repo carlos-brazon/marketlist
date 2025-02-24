@@ -40,16 +40,58 @@ export const ramdomDog = async () => {
 
 export async function uploadFile(file, id) {
   const filePath = `profile_pictures/${id}/_${file.name}`;
-  const { error } = await supabase.storage
-    .from("profile")
-    .upload(filePath, file);
-  if (error) {
-    // Handle error
-  } else {
-    // Handle success
-    return filePath; // Devuelve la URL para mostrar la imagen
+  try {
+    // Listar los archivos existentes en la carpeta
+    const { data, error: listError } = await supabase.storage
+      .from("profile")
+      .list(`profile_pictures/${id}`);
+
+    // Si hubo un error al listar los archivos, lanzamos una excepción
+    if (listError) {
+      throw new Error(`Error al listar archivos: ${listError.message}`);
+    }
+
+    const picturesFromSupabase = data.filter(
+      (picture) => picture.name !== ".emptyFolderPlaceholder"
+    );
+
+    if (picturesFromSupabase.length === 0) {
+      // Subir archivo si no hay imágenes
+      const { error: uploadError } = await supabase.storage
+        .from("profile")
+        .upload(filePath, file);
+      if (uploadError) {
+        throw new Error(`Error al subir archivo: ${uploadError.message}`);
+      }
+    }
+
+    if (picturesFromSupabase.length === 1) {
+      // Eliminar la imagen existente y cargar la nueva
+      const { error: removeError } = await supabase.storage
+        .from("profile") // Asegúrate de usar el nombre correcto de tu bucket
+        .remove([`profile_pictures/${id}/${picturesFromSupabase[0].name}`]); // Ruta completa al archivo
+
+      if (removeError) {
+        throw new Error(`Error al eliminar archivo: ${removeError.message}`);
+      }
+
+      // Subir archivo
+      const { error: uploadAfterRemoveError } = await supabase.storage
+        .from("profile")
+        .upload(filePath, file);
+      if (uploadAfterRemoveError) {
+        throw new Error(
+          `Error al subir archivo después de eliminar: ${uploadAfterRemoveError.message}`
+        );
+      }
+    }
+  } catch (error) {
+    console.error("Error en el proceso de carga:", error.message);
+    // Aquí puedes manejar el error, mostrar un mensaje o realizar otras acciones.
   }
+  return filePath;
 }
+
 export async function compressAndUpload(file) {
   const options = {
     maxSizeMB: 1, // Reduce la imagen a menos de 1MB

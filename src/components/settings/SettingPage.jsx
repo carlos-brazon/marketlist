@@ -96,12 +96,17 @@ const SettingPage = () => {
             return
         }
         const arrayUrlsWithBlobUrl = await Promise.all(
-            urlArrayDogsAndRecents.data()?.recents?.map(async (item) => {
-                const recent = item.crop_area_ && Object.keys(item.crop_area_).length > 0 ? await getCroppedImg(`${baseUrl}${item.url}`, item.crop_area_) : item.url;
+            Array.isArray(urlArrayDogsAndRecents.data()?.recents)
+                ? urlArrayDogsAndRecents.data()?.recents.map(async (item) => {
+                    const recent = item.crop_area_ && Object.keys(item.crop_area_).length > 0
+                        ? await getCroppedImg(`${baseUrl}${item.url}`, item.crop_area_)
+                        : item.url;
 
-                return { ...item, crop_img_recent: recent || item.url }
-            })
+                    return { ...item, crop_img_recent: recent || item.url };
+                })
+                : []
         );
+
         setImgFromFirebase({
             url: urlArrayDogsAndRecents.data().url_ramdom_dog || arrrayX6Dogs,
             recents: arrayUrlsWithBlobUrl,
