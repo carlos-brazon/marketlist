@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
-import { firstLetterUpperCase } from '../utils/util'
+import { firstLetterUpperCase, formatDate } from '../utils/util'
 import { AllItemsContext } from './Contex'
 import EditDialog from './EditDialog'
 import { deleteDoc, doc, serverTimestamp, updateDoc } from 'firebase/firestore'
@@ -114,13 +114,25 @@ const ItemsList = ({ setAmount }) => {
                             <div>{firstLetterUpperCase(item.name)}</div>
                         </div>
                         <div className='flex gap-1 items-center'>
+                            {item.isDone && item.create_at && item.isDone_at && userIn?.email === 'carlosbrazon.sp3@gmail.com' && (
+                                <div className=" flex w-12 text-[10px] justify-start items-start">
+                                    {(() => {
+                                        const startTime = new Date(item.create_at && item.create_at.toDate ? item.create_at.toDate() : item.create_at);
+                                        const endTime = new Date(item.isDone_at && item.isDone_at.toDate ? item.isDone_at.toDate() : item.isDone_at);
+                                        const diffMs = endTime - startTime; // Diferencia en milisegundos
+                                        const diffHours = Math.floor(diffMs / (1000 * 60 * 60)); // Horas
+                                        const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60)); // Minutos
+                                        return `${diffHours} h ${diffMinutes} m`;
+                                    })()}
+                                </div>
+                            )}
                             <div className=' whitespace-nowrap justify-center text-[9px] w-auto'>
                                 {userIn?.isDateControl && <div className="flex flex-col h-6">
                                     <div>
-                                        {new Date(item.create_at && item.create_at.toDate ? item.create_at.toDate() : item.create_at).toLocaleString()}
+                                        {formatDate(item.create_at)}
                                     </div>
 
-                                    {item.isDone && <div className="line-through">{new Date(item.isDone_at && item.isDone_at.toDate ? item.isDone_at.toDate() : item.isDone_at).toLocaleString()}</div>}
+                                    {item.isDone && <div className="line-through">{formatDate(item.isDone_at)}</div>}
                                 </div>}
                             </div>
                             <AmountDialog item={item} setAmount={setAmount} />
