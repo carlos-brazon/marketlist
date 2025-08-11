@@ -4,7 +4,7 @@ import { useContext, useState } from 'react';
 import getCroppedImg from "../../utils/cropImage";
 import Cropper from "react-easy-crop";
 import { AllItemsContext } from '../Contex';
-import { doc, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../utils/firebase';
 import PropTypes from 'prop-types';
 import { uploadFile } from '../../utils/util';
@@ -67,23 +67,69 @@ const CropPictureDialog = ({ setProfilePictureState, profilePictureState, imgFro
             if (profilePictureState.file) { //aqui subo imagen a supabase si viene de galeria
 
                 try {
-                    const imageUrl = await uploadFile(profilePictureState.file, userIn.id);
-                    if (imageUrl?.length > 0) {
+                    const imageUrl = await uploadFile(profilePictureState.file, userIn.id, userIn.uid);
+                    console.log(imageUrl);
+
+                    if (imageUrl.toPrint?.length > 0) {
                         await updateDoc(doc(db, "userMarketList", userIn.uid), {
-                            url_img_super_list: imageUrl,
+                            url_img_super_list: imageUrl.toPrint,
                             cropp_pixel: croppedAreaPixels,
                             super_list_img_selected: true
                         });
-                        await setDoc(
-                            doc(db, "image_profile", userIn.uid),
-                            {
-                                recents: [{ url: imageUrl, crop_area_: croppedAreaPixels }, ...(imgFromFirebase?.recents || [])]
-                            },
-                            { merge: true }
-                        );
-                        setImgFromFirebase(prev => ({ ...prev, recents: [{ url: imageUrl, crop_area_: croppedAreaPixels, crop_img_recent: croppedImage }, ...(imgFromFirebase?.recents || [])] }));
+
+                        // 3. Eliminar URL correspondiente de Firebase
+                        const docRef = doc(db, "image_profile", userIn.uid);
+                        const docSnap = await getDoc(docRef);
+                        let currentRecents = docSnap.data()?.recents || [];
+                        console.log(currentRecents);
+
+                        if (currentRecents.length == 0) {
+                            console.log('entra if');
+
+                            await setDoc(
+                                doc(db, "image_profile", userIn.uid),
+                                {
+                                    recents: [{ url: imageUrl.toPrint, crop_area_: croppedAreaPixels }, ...(imgFromFirebase?.recents || [])]
+                                },
+                                { merge: true }
+                            );
+                            setImgFromFirebase(prev => ({ ...prev, recents: [{ url: imageUrl.toPrint, crop_img_recent: croppedImage }, ...(imgFromFirebase?.recents || [])] }));
+                        } else {
+                            console.log('entra else');
+                            let updatedRecents;
+                            if (imageUrl.toDelete.length > 0) {
+                                currentRecents = currentRecents.fliter(item => item.url !== imageUrl.toDelete);
+                            }
+                            console.log(updatedRecents);
+
+                            const filterArrayRecents = currentRecents.filter(elem => (elem.url == imageUrl.toPrint && elem.crop_area_.height === croppedAreaPixels.height && elem.crop_area_.width === croppedAreaPixels.width && elem.crop_area_.x === croppedAreaPixels.x && elem.crop_area_.y === croppedAreaPixels.y));
+                            console.log(filterArrayRecents);
+                            if (filterArrayRecents) {
+                                await setDoc(
+                                    doc(db, "image_profile", userIn.uid),
+                                    {
+                                        recents: [...filterArrayRecents]
+                                    },
+                                    { merge: true }
+                                );
+                                setImgFromFirebase(prev => ({ ...prev, recents: [...(imgFromFirebase?.recents || [])] }));
+                            } else {
+                                await setDoc(
+                                    doc(db, "image_profile", userIn.uid),
+                                    {
+                                        recents: [{ url: imageUrl.toPrint, crop_area_: croppedAreaPixels }, ...(imgFromFirebase?.recents || [])]
+                                    },
+                                    { merge: true }
+                                );
+                            }
+                            setImgFromFirebase(prev => ({ ...prev, recents: [{ url: imageUrl.toPrint, crop_img_recent: croppedImage }, ...(imgFromFirebase?.recents || [])] }));
+                        }
+                        console.log(imgFromFirebase);
+
+
+                        // setImgFromFirebase(prev => ({ ...prev, recents: [{ url: imageUrl.toPrint, crop_area_: croppedAreaPixels, crop_img_recent: croppedImage }, ...(imgFromFirebase?.recents || [])] }));
                         setUserIn(prev => ({ ...prev, url_img_super_list: croppedImage, super_list_img_selected: true }));
-                        setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false, imageSrc: imageUrl, file: null }));
+                        setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false, imageSrc: imageUrl.toPrint, file: null }));
 
                     } else {
                         setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }))

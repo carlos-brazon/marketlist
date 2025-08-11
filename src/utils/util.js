@@ -11,7 +11,7 @@ export const cleanInputValueWithNumberOrLetters = (inputValue) => {
   // Reemplazar más de dos espacios consecutivos por un solo espacio
   inputValue = inputValue.replace(/\s{2,}/g, " ");
   // Validar que el primer carácter sea una letra o un número
-  const isValidStart = /^[a-zA-Z0-9]/.test(inputValue);
+  const isValidStart = /^[a-zA-Z0-9-]/.test(inputValue);
 
   // Si el valor no es válido y no está vacío, retornamos null o un indicador
   if (!isValidStart && inputValue !== "") {
@@ -40,6 +40,7 @@ export const ramdomDog = async () => {
 
 export async function uploadFile(file, id) {
   const filePath = `profile_pictures/${id}/_${file.name}`;
+  let urlToDelete = "";
   try {
     // Listar los archivos existentes en la carpeta
     const { data, error: listError } = await supabase.storage
@@ -50,10 +51,13 @@ export async function uploadFile(file, id) {
     if (listError) {
       throw new Error(`Error al listar archivos: ${listError.message}`);
     }
+    console.log(data);
 
     const picturesFromSupabase = data.filter(
       (picture) => picture.name !== ".emptyFolderPlaceholder"
     );
+    console.log(picturesFromSupabase);
+    console.log(file.name);
 
     if (picturesFromSupabase.length === 0) {
       // Subir archivo si no hay imágenes
@@ -65,31 +69,44 @@ export async function uploadFile(file, id) {
       }
     }
 
-    if (picturesFromSupabase.length === 1) {
-      // Eliminar la imagen existente y cargar la nueva
+    const MAX_IMAGES = 3;
+
+    // Asegúrate de tener una lista ordenada de imágenes (ej: por nombre con timestamp o metadata externa)
+    const sortedPictures = picturesFromSupabase.sort((a, b) => {
+      return new Date(a.created_at) - new Date(b.created_at);
+    });
+
+    console.log(sortedPictures);
+    const isExistUrl = picturesFromSupabase.find(
+      (itemUrlFromSupabase) => itemUrlFromSupabase.name == `_${file.name}`
+    );
+    console.log(isExistUrl);
+
+    if (sortedPictures.length >= MAX_IMAGES && !isExistUrl) {
+      // Eliminar la más antigua (puedes ajustar el criterio)
       const { error: removeError } = await supabase.storage
-        .from("profile") // Asegúrate de usar el nombre correcto de tu bucket
-        .remove([`profile_pictures/${id}/${picturesFromSupabase[0].name}`]); // Ruta completa al archivo
+        .from("profile")
+        .remove([`profile_pictures/${id}/${sortedPictures[0].name}`]);
+      urlToDelete = `profile_pictures/${id}/${sortedPictures[0].name}`;
+      console.log(`profile_pictures/${id}/${sortedPictures[0].name}`);
 
       if (removeError) {
         throw new Error(`Error al eliminar archivo: ${removeError.message}`);
       }
+    }
+    // Subir nuevo archivo
+    const { error: uploadError } = await supabase.storage
+      .from("profile")
+      .upload(filePath, file);
 
-      // Subir archivo
-      const { error: uploadAfterRemoveError } = await supabase.storage
-        .from("profile")
-        .upload(filePath, file);
-      if (uploadAfterRemoveError) {
-        throw new Error(
-          `Error al subir archivo después de eliminar: ${uploadAfterRemoveError.message}`
-        );
-      }
+    if (uploadError) {
+      throw new Error(`Error al subir archivo: ${uploadError.message}`);
     }
   } catch (error) {
     console.error("Error en el proceso de carga:", error.message);
     // Aquí puedes manejar el error, mostrar un mensaje o realizar otras acciones.
   }
-  return filePath;
+  return { toPrint: filePath, toDelete: urlToDelete };
 }
 
 export async function compressAndUpload(file) {
