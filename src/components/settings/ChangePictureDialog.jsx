@@ -43,6 +43,7 @@ const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFr
             }
         },
     });
+    console.log(imgFromFirebase);
     return (
         <DialogHeader>
             <X onClick={() => setProfilePictureState(prev => ({ ...prev, isChange: false }))} className="cursor-pointer w-6 h-6 absolute top-2 right-2 bg-white z-50" />

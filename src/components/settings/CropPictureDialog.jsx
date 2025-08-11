@@ -102,9 +102,10 @@ const CropPictureDialog = ({ setProfilePictureState, profilePictureState, imgFro
                             }
                             console.log(updatedRecents);
 
-                            const filterArrayRecents = currentRecents.filter(elem => (elem.url == imageUrl.toPrint && elem.crop_area_.height === croppedAreaPixels.height && elem.crop_area_.width === croppedAreaPixels.width && elem.crop_area_.x === croppedAreaPixels.x && elem.crop_area_.y === croppedAreaPixels.y));
+                            const filterArrayRecents = currentRecents.filter(elem => (elem.url !== imageUrl?.toPrint && elem.crop_area_?.height !== croppedAreaPixels.height && elem.crop_area_?.width !== croppedAreaPixels.width && elem.crop_area_?.x !== croppedAreaPixels.x && elem.crop_area_?.y !== croppedAreaPixels.y));
                             console.log(filterArrayRecents);
-                            if (filterArrayRecents) {
+                            if (filterArrayRecents.length) {
+                                console.log('entra if 1 del else');
                                 await setDoc(
                                     doc(db, "image_profile", userIn.uid),
                                     {
@@ -113,7 +114,8 @@ const CropPictureDialog = ({ setProfilePictureState, profilePictureState, imgFro
                                     { merge: true }
                                 );
                                 setImgFromFirebase(prev => ({ ...prev, recents: [...(imgFromFirebase?.recents || [])] }));
-                            } else {
+                            } else { 
+                                console.log('entra el segundo else');
                                 await setDoc(
                                     doc(db, "image_profile", userIn.uid),
                                     {
