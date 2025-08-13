@@ -8,6 +8,7 @@ import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../utils/firebase';
 import PropTypes from 'prop-types';
 import { uploadFile } from '../../utils/util';
+import isEqual from 'lodash/isEqual';
 
 const CropPictureDialog = ({ setProfilePictureState, profilePictureState, imgFromFirebase, setImgFromFirebase }) => {
     CropPictureDialog.propTypes = {
@@ -20,159 +21,219 @@ const CropPictureDialog = ({ setProfilePictureState, profilePictureState, imgFro
         }),
     };
     const { userIn, setUserIn } = useContext(AllItemsContext)
-    const [crop, setCrop] = useState({ x: profilePictureState?.imageSrc.crop_area_?.x || 0, y: profilePictureState?.imageSrc.crop_area_?.y || 0 });
+    const [crop, setCrop] = useState({ x: profilePictureState?.urlBlob.crop_area_?.x || 0, y: profilePictureState?.urlBlob.crop_area_?.y || 0 });
     const [zoom, setZoom] = useState(1);
-    const [croppedAreaPixels, setCroppedAreaPixels] = useState(profilePictureState.imageSrc.crop_area_ || null);
+    const [croppedAreaPixels, setCroppedAreaPixels] = useState(profilePictureState.urlBlob.crop_area_ || null);
 
     const onCropComplete = (_, croppedAreaPixels) => {
         setCroppedAreaPixels(croppedAreaPixels);
     };
-
+    console.log(profilePictureState);
     const handleSaveImage = async () => {
-        if (imgFromFirebase?.recents?.includes(profilePictureState.imageSrc)) {
+        const croppedImage = await getCroppedImg(profilePictureState.urlBlob, croppedAreaPixels)
+        const imageUrl = await uploadFile(profilePictureState.file, userIn.id, userIn.uid);
+
+
+        let recentsCopy = [...(imgFromFirebase?.recents || [])];
+        if (recentsCopy.length === 6) {
+            recentsCopy.pop();
+        }
+
+        const imgExistInFirebase = recentsCopy.find(item =>// esto es para buscar si en imagenes recientes esta la imagen que voy a subir
+            item.url === imageUrl.toPrint &&
+            isEqual(item.crop_area_, croppedAreaPixels)
+        );
+        // const imgExistInFirebase = imgFromFirebase?.recents.find(item => 
+        //     item.url === imageUrl.toPrint &&
+        //     JSON.stringify(item.crop_area_) === JSON.stringify(croppedAreaPixels)
+        // );
+
+        if (imgExistInFirebase) {
+            console.log('entra iffff'); // si la imagen esta activo el loading y no hago mas nada
             setProfilePictureState(prev => ({ ...prev, isLoading: true }));
             setTimeout(() => {
                 setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
             }, 2000);
-            return;
-        }
-        if (imgFromFirebase?.recents?.length == 6) {
-            imgFromFirebase.recents.pop();
-        }
-        if (userIn.url_img_google === profilePictureState.imageSrc) { // verifico que la imagen es igual a la de google
-            setProfilePictureState(prev => ({ ...prev, isLoading: true, url: userIn.url_img_google }))
-            await updateDoc(doc(db, "userMarketList", userIn.uid), {
-                cropp_pixel: {},
-                super_list_img_selected: false,
-                url_img_google: profilePictureState.imageSrc,
-                url_img_super_list: ''
+        } else {//sino existe en la primera condicion aqui se sube la imagen por primera vez, puede ser la misma imagen con diferentes coordenadas de corte
+            console.log('entra elseeeee');
+            console.log(imgFromFirebase);
+
+            console.log(imageUrl);
+            console.log(croppedImage)
+
+            setProfilePictureState(prev => ({ ...prev, isLoading: true, urlParaPintar: imageUrl.toPrint, urlCortada: croppedImage }))
+            await updateDoc(doc(db, "userMarketList", userIn.uid), {//aqui actualizo los datos del usuario
+                url_img_super_list: imageUrl.toPrint,
+                cropp_pixel: croppedAreaPixels,
+                super_list_img_selected: true
             });
+            setUserIn(prev => ({ ...prev, url_img_super_list: croppedImage, super_list_img_selected: true }));//el set para que se pinte la imagen con las nuevas coordenadas
+
+            // aqui se sube la url a pintar y las coordenadas de crop mas el resto de imagenes que ya estan en firebase
+            const newImageToRecentsInFirebase = { url: imageUrl.toPrint, crop_area_: croppedAreaPixels, crop_img_recent: croppedImage }
             await setDoc(
                 doc(db, "image_profile", userIn.uid),
                 {
-                    recents: [{ url: profilePictureState.imageSrc, crop_area_: {} }, ...(imgFromFirebase?.recents || [])]
+                    recents: [newImageToRecentsInFirebase, ...recentsCopy]
                 },
                 { merge: true }
             );
-            setTimeout(() => {
-                setImgFromFirebase(prev => ({ ...prev, recents: [{ url: profilePictureState.imageSrc, crop_area_: {}, crop_img_recent: profilePictureState.imageSrc }, ...(imgFromFirebase?.recents || [])] }));
-                setUserIn(prev => ({ ...prev, super_list_img_selected: false, url_img_google: profilePictureState.imageSrc, url_img_super_list: '' }));
-                setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }))
-            }, 2000);
-
-        } else {
-            const croppedImage = await getCroppedImg(profilePictureState.imageSrc, croppedAreaPixels);
-            setProfilePictureState(prev => ({ ...prev, isLoading: true, url: croppedImage }))
-
-            if (profilePictureState.file) { //aqui subo imagen a supabase si viene de galeria
-
-                try {
-                    const imageUrl = await uploadFile(profilePictureState.file, userIn.id, userIn.uid);
-                    console.log(imageUrl);
-
-                    if (imageUrl.toPrint?.length > 0) {
-                        await updateDoc(doc(db, "userMarketList", userIn.uid), {
-                            url_img_super_list: imageUrl.toPrint,
-                            cropp_pixel: croppedAreaPixels,
-                            super_list_img_selected: true
-                        });
-
-                        // 3. Eliminar URL correspondiente de Firebase
-                        const docRef = doc(db, "image_profile", userIn.uid);
-                        const docSnap = await getDoc(docRef);
-                        let currentRecents = docSnap.data()?.recents || [];
-                        console.log(currentRecents);
-
-                        if (currentRecents.length == 0) {
-                            console.log('entra if');
-
-                            await setDoc(
-                                doc(db, "image_profile", userIn.uid),
-                                {
-                                    recents: [{ url: imageUrl.toPrint, crop_area_: croppedAreaPixels }, ...(imgFromFirebase?.recents || [])]
-                                },
-                                { merge: true }
-                            );
-                            setImgFromFirebase(prev => ({ ...prev, recents: [{ url: imageUrl.toPrint, crop_img_recent: croppedImage }, ...(imgFromFirebase?.recents || [])] }));
-                        } else {
-                            console.log('entra else');
-                            let updatedRecents;
-                            if (imageUrl.toDelete.length > 0) {
-                                currentRecents = currentRecents.fliter(item => item.url !== imageUrl.toDelete);
-                            }
-                            console.log(updatedRecents);
-
-                            const filterArrayRecents = currentRecents.filter(elem => (elem.url !== imageUrl?.toPrint && elem.crop_area_?.height !== croppedAreaPixels.height && elem.crop_area_?.width !== croppedAreaPixels.width && elem.crop_area_?.x !== croppedAreaPixels.x && elem.crop_area_?.y !== croppedAreaPixels.y));
-                            console.log(filterArrayRecents);
-                            if (filterArrayRecents.length) {
-                                console.log('entra if 1 del else');
-                                await setDoc(
-                                    doc(db, "image_profile", userIn.uid),
-                                    {
-                                        recents: [...filterArrayRecents]
-                                    },
-                                    { merge: true }
-                                );
-                                setImgFromFirebase(prev => ({ ...prev, recents: [...(imgFromFirebase?.recents || [])] }));
-                            } else { 
-                                console.log('entra el segundo else');
-                                await setDoc(
-                                    doc(db, "image_profile", userIn.uid),
-                                    {
-                                        recents: [{ url: imageUrl.toPrint, crop_area_: croppedAreaPixels }, ...(imgFromFirebase?.recents || [])]
-                                    },
-                                    { merge: true }
-                                );
-                            }
-                            setImgFromFirebase(prev => ({ ...prev, recents: [{ url: imageUrl.toPrint, crop_img_recent: croppedImage }, ...(imgFromFirebase?.recents || [])] }));
-                        }
-                        console.log(imgFromFirebase);
-
-
-                        // setImgFromFirebase(prev => ({ ...prev, recents: [{ url: imageUrl.toPrint, crop_area_: croppedAreaPixels, crop_img_recent: croppedImage }, ...(imgFromFirebase?.recents || [])] }));
-                        setUserIn(prev => ({ ...prev, url_img_super_list: croppedImage, super_list_img_selected: true }));
-                        setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false, imageSrc: imageUrl.toPrint, file: null }));
-
-                    } else {
-                        setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }))
-                    }
-                } catch (error) {
-                    console.log(error);
-                    setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }))
-                }
-
-            } else {// aqui gestiono las imagenes de perros 
-                try {
-                    await updateDoc(doc(db, "userMarketList", userIn.uid), {
-                        url_img_super_list: profilePictureState.imageSrc,
-                        cropp_pixel: croppedAreaPixels,
-                        super_list_img_selected: true
-                    });
-                    await setDoc(
-                        doc(db, "image_profile", userIn.uid),
-                        {
-                            recents: [{ url: profilePictureState.imageSrc, crop_area_: croppedAreaPixels }, ...(imgFromFirebase?.recents || [])]
-                        },
-                        { merge: true }
-                    );
-                    setTimeout(() => {
-                        setUserIn(prev => ({ ...prev, url_img_super_list: croppedImage, super_list_img_selected: true }));
-                        setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
-                        setImgFromFirebase(prev => ({ ...prev, recents: [{ url: profilePictureState.imageSrc, crop_area_: croppedAreaPixels, crop_img_recent: croppedImage }, ...(imgFromFirebase?.recents || [])] }))
-                    }, 2000);
-                } catch (error) {
-                    console.log(error);
-                    setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
-                }
-            }
-
+            setImgFromFirebase(prev => ({ ...prev, recents: [newImageToRecentsInFirebase, ...recentsCopy] }));
+            setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
         }
-
     };
+    // const handleSaveImage = async () => {
+    //     console.log(imgFromFirebase.recents)
+    //     console.log(profilePictureState)
+    //     const urlExistente = imgFromFirebase.recents.find(item => item.crop_img_recent === profilePictureState.url);
+    //     console.log(urlExistente);
+    //     if (urlExistente) {
+    //         console.log('entra la primera condicional')
+    //         setProfilePictureState(prev => ({ ...prev, isLoading: true }));
+    //         setTimeout(() => {
+    //             setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
+    //         }, 2000);
+    //         return;
+    //     }
+    //     if (imgFromFirebase?.recents?.length == 6) {
+    //         imgFromFirebase.recents.pop();
+    //     }
+    //     if (userIn.url_img_google === profilePictureState.imageSrc) {
+    //         console.log('google'); // verifico que la imagen es igual a la de google
+    //         setProfilePictureState(prev => ({ ...prev, isLoading: true, url: userIn.url_img_google }))
+    //         await updateDoc(doc(db, "userMarketList", userIn.uid), {
+    //             cropp_pixel: {},
+    //             super_list_img_selected: false,
+    //             url_img_google: profilePictureState.imageSrc,
+    //             url_img_super_list: ''
+    //         });
+    //         await setDoc(
+    //             doc(db, "image_profile", userIn.uid),
+    //             {
+    //                 recents: [{ url: profilePictureState.imageSrc, crop_area_: {} }, ...(imgFromFirebase?.recents || [])]
+    //             },
+    //             { merge: true }
+    //         );
+    //         setTimeout(() => {
+    //             setImgFromFirebase(prev => ({ ...prev, recents: [{ url: profilePictureState.imageSrc, crop_area_: {}, crop_img_recent: profilePictureState.imageSrc }, ...(imgFromFirebase?.recents || [])] }));
+    //             setUserIn(prev => ({ ...prev, super_list_img_selected: false, url_img_google: profilePictureState.imageSrc, url_img_super_list: '' }));
+    //             setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }))
+    //         }, 2000);
+
+    //     } else {
+    //         const croppedImage = await getCroppedImg(profilePictureState.imageSrc, croppedAreaPixels);
+    //         setProfilePictureState(prev => ({ ...prev, isLoading: true, url: croppedImage }))
+
+    //         if (profilePictureState.file) { //aqui subo imagen a supabase si viene de galeria
+
+    //             try {
+    //                 const imageUrl = await uploadFile(profilePictureState.file, userIn.id, userIn.uid);
+    //                 console.log(imageUrl);
+
+    //                 if (imageUrl.toPrint?.length > 0) {
+    //                     await updateDoc(doc(db, "userMarketList", userIn.uid), {//aqui actualizo los datos del usuario
+    //                         url_img_super_list: imageUrl.toPrint,
+    //                         cropp_pixel: croppedAreaPixels,
+    //                         super_list_img_selected: true
+    //                     });
+
+    //                     // 3. Eliminar URL correspondiente de Firebase
+    //                     const docRef = doc(db, "image_profile", userIn.uid);
+    //                     const docSnap = await getDoc(docRef);
+    //                     let currentRecents = docSnap.data()?.recents || [];
+    //                     console.log(currentRecents);
+
+    //                     if (currentRecents.length == 0) {
+    //                         console.log('entra if');
+    //                         // aqui se sube la url a pintar y las coordenadas de crop mas el resto de imagenes que estan
+    //                         await setDoc(
+    //                             doc(db, "image_profile", userIn.uid),
+    //                             {
+    //                                 recents: [{ url: imageUrl.toPrint, crop_area_: croppedAreaPixels }, ...(imgFromFirebase?.recents || [])]
+    //                             },
+    //                             { merge: true }
+    //                         );
+    //                         setImgFromFirebase(prev => ({ ...prev, recents: [{ url: imageUrl.toPrint, crop_img_recent: croppedImage }, ...(imgFromFirebase?.recents || [])] }));
+    //                     } else {
+    //                         console.log('entra else');
+    //                         let updatedRecents;
+    //                         if (imageUrl.toDelete.length > 0) {
+    //                             currentRecents = currentRecents.fliter(item => item.url !== imageUrl.toDelete);
+    //                         }
+    //                         console.log(updatedRecents);
+
+    //                         const filterArrayRecents = currentRecents.filter(elem => (elem.url !== imageUrl?.toPrint && elem.crop_area_?.height !== croppedAreaPixels.height && elem.crop_area_?.width !== croppedAreaPixels.width && elem.crop_area_?.x !== croppedAreaPixels.x && elem.crop_area_?.y !== croppedAreaPixels.y));
+    //                         console.log(filterArrayRecents);
+    //                         if (filterArrayRecents.length) {
+    //                             console.log('entra if 1 del else');
+    //                             await setDoc(
+    //                                 doc(db, "image_profile", userIn.uid),
+    //                                 {
+    //                                     recents: [...filterArrayRecents]
+    //                                 },
+    //                                 { merge: true }
+    //                             );
+    //                             setImgFromFirebase(prev => ({ ...prev, recents: [...(imgFromFirebase?.recents || [])] }));
+    //                         } else { 
+    //                             console.log('entra el segundo else');
+    //                             await setDoc(
+    //                                 doc(db, "image_profile", userIn.uid),
+    //                                 {
+    //                                     recents: [{ url: imageUrl.toPrint, crop_area_: croppedAreaPixels }, ...(imgFromFirebase?.recents || [])]
+    //                                 },
+    //                                 { merge: true }
+    //                             );
+    //                         }
+    //                         setImgFromFirebase(prev => ({ ...prev, recents: [{ url: imageUrl.toPrint, crop_img_recent: croppedImage }, ...(imgFromFirebase?.recents || [])] }));
+    //                     }
+    //                     console.log(imgFromFirebase);
+
+
+    //                     // setImgFromFirebase(prev => ({ ...prev, recents: [{ url: imageUrl.toPrint, crop_area_: croppedAreaPixels, crop_img_recent: croppedImage }, ...(imgFromFirebase?.recents || [])] }));
+    //                     setUserIn(prev => ({ ...prev, url_img_super_list: croppedImage, super_list_img_selected: true }));
+    //                     setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false, imageSrc: imageUrl.toPrint, file: null }));
+
+    //                 } else {
+    //                     setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }))
+    //                 }
+    //             } catch (error) {
+    //                 console.log(error);
+    //                 setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }))
+    //             }
+
+    //         } else {// aqui gestiono las imagenes de perros 
+    //             try {
+    //                 await updateDoc(doc(db, "userMarketList", userIn.uid), {
+    //                     url_img_super_list: profilePictureState.imageSrc,
+    //                     cropp_pixel: croppedAreaPixels,
+    //                     super_list_img_selected: true
+    //                 });
+    //                 await setDoc(
+    //                     doc(db, "image_profile", userIn.uid),
+    //                     {
+    //                         recents: [{ url: profilePictureState.imageSrc, crop_area_: croppedAreaPixels }, ...(imgFromFirebase?.recents || [])]
+    //                     },
+    //                     { merge: true }
+    //                 );
+    //                 setTimeout(() => {
+    //                     setUserIn(prev => ({ ...prev, url_img_super_list: croppedImage, super_list_img_selected: true }));
+    //                     setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
+    //                     setImgFromFirebase(prev => ({ ...prev, recents: [{ url: profilePictureState.imageSrc, crop_area_: croppedAreaPixels, crop_img_recent: croppedImage }, ...(imgFromFirebase?.recents || [])] }))
+    //                 }, 2000);
+    //             } catch (error) {
+    //                 console.log(error);
+    //                 setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
+    //             }
+    //         }
+
+    //     }
+
+    // };
 
     return (
         <DialogHeader>
             <DialogTitle>Super List Account</DialogTitle>
+            <DialogTitle>crop picture dialog</DialogTitle>
             <X
                 onClick={() => setProfilePictureState(prev => ({ ...prev, isChange: true, isCrop: false }))}
                 className="cursor-pointer w-6 h-6 absolute top-1 right-2 bg-white z-50"
@@ -182,7 +243,7 @@ const CropPictureDialog = ({ setProfilePictureState, profilePictureState, imgFro
 
                 <div className="relative w-full h-72 bg-gray-200">
                     <Cropper
-                        image={profilePictureState.imageSrc.url || profilePictureState.imageSrc}
+                        image={profilePictureState.urlBlob.urlParaPintar || profilePictureState.urlBlob}
                         crop={crop}
                         zoom={zoom}
                         aspect={1} // Mantiene la imagen cuadrada

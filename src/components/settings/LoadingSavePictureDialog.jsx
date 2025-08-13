@@ -8,6 +8,8 @@ const LoadingSavePictureDialog = ({ profilePictureState }) => {
             url: PropTypes.string,
         }),
     };
+    console.log(profilePictureState)
+    
     return (
         <DialogHeader>
             <div className='flex flex-col items-center justify-center gap-4'>
@@ -16,8 +18,8 @@ const LoadingSavePictureDialog = ({ profilePictureState }) => {
                 <div className="flex flex-col relative items-center justify-center h-[270px] w-[270px] ">
                     <div className="lds-dual-ring absolute"></div>
                     <img
-                        className={`rounded-full ml-[10px] mt-[10px] w-64 h-64  ${profilePictureState.url === defaultSuperListImg && 'p-2 bg-imgBorder'}`}
-                        src={profilePictureState.url}
+                        className={`rounded-full ml-[10px] mt-[10px] w-64 h-64  ${profilePictureState.urlCortada === defaultSuperListImg && 'p-2 bg-imgBorder'}`}
+                        src={profilePictureState.urlCortada}
                         alt=""
                     />
                 </div>

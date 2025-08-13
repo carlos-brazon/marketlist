@@ -38,8 +38,9 @@ const SettingPage = () => {
         isCrop: false,
         isRecentPicture: false,
         picture: false,
-        imageSrc: null,
-        url: '',
+        urlBlob: null,
+        urlParaPintar: '',
+        urlCortada: '',
         file: null
     });
 
@@ -96,7 +97,8 @@ const SettingPage = () => {
                 })
                 : []
         );
-
+console.log(urlArrayDogsAndRecents.data().url_ramdom_dog || arrrayX6Dogs);
+console.log(arrayUrlsWithBlobUrl);
         setImgFromFirebase({
             url: urlArrayDogsAndRecents.data().url_ramdom_dog || arrrayX6Dogs,
             recents: arrayUrlsWithBlobUrl,

@@ -34,7 +34,7 @@ const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFr
         onDrop: async (files, rejected) => {
             if (files.length >= 1) {
                 const compressFile = await compressAndUpload(files[0]);
-                setProfilePictureState(prev => ({ ...prev, imageSrc: URL.createObjectURL(compressFile), isCrop: true, isChange: false, file: compressFile }));
+                setProfilePictureState(prev => ({ ...prev, urlBlob: URL.createObjectURL(compressFile), isCrop: true, isChange: false, file: compressFile }));
             }
             if (rejected.length >= 1) {
                 setErrorFile(
