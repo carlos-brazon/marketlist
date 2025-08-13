@@ -30,19 +30,46 @@ const CropPictureDialog = ({ setProfilePictureState, profilePictureState, imgFro
     };
     console.log(profilePictureState);
     const handleSaveImage = async () => {
-        const croppedImage = await getCroppedImg(profilePictureState.urlBlob, croppedAreaPixels)
-        const imageUrl = await uploadFile(profilePictureState.file, userIn.id, userIn.uid);
-
-
+        const croppedImage = await getCroppedImg(profilePictureState.urlBlob, croppedAreaPixels);
         let recentsCopy = [...(imgFromFirebase?.recents || [])];
         if (recentsCopy.length === 6) {
             recentsCopy.pop();
         }
 
         const imgExistInFirebase = recentsCopy.find(item =>// esto es para buscar si en imagenes recientes esta la imagen que voy a subir
-            item.url === imageUrl.toPrint &&
+            item.url === imageUrl.toPrint || item.url === profilePictureState.urlBlob &&
             isEqual(item.crop_area_, croppedAreaPixels)
         );
+
+        if (profilePictureState.urlDog) {
+            try {
+                setProfilePictureState(prev => ({ ...prev, isLoading: true, urlCortada: croppedImage }));
+                await updateDoc(doc(db, "userMarketList", userIn.uid), {
+                    url_img_super_list: profilePictureState.urlBlob,
+                    cropp_pixel: croppedAreaPixels,
+                    super_list_img_selected: true
+                });
+                await setDoc(
+                    doc(db, "image_profile", userIn.uid),
+                    {
+                        recents: [{ url: profilePictureState.urlBlob, crop_area_: croppedAreaPixels }, ...(imgFromFirebase?.recents || [])]
+                    },
+                    { merge: true }
+                );
+                setTimeout(() => {
+                    setUserIn(prev => ({ ...prev, url_img_super_list: croppedImage, super_list_img_selected: true }));
+                    setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
+                    setImgFromFirebase(prev => ({ ...prev, recents: [{ url: profilePictureState.urlBlob, crop_area_: croppedAreaPixels, crop_img_recent: croppedImage }, ...(imgFromFirebase?.recents || [])] }))
+                }, 2000);
+                return
+            } catch (error) {
+                console.log(error);
+                setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
+            }
+        }
+        const imageUrl = await uploadFile(profilePictureState.file, userIn.id, userIn.uid);
+
+
         // const imgExistInFirebase = imgFromFirebase?.recents.find(item => 
         //     item.url === imageUrl.toPrint &&
         //     JSON.stringify(item.crop_area_) === JSON.stringify(croppedAreaPixels)

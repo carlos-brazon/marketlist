@@ -110,7 +110,9 @@ const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFr
                                             key={url}
                                             className='w-16 h-16 relative rounded-full' src={url} alt=""
                                             onClick={async () => {
-                                                setProfilePictureState(prev => ({ ...prev, isChange: false, isCrop: true, imageSrc: url }))
+                                                console.log(url);
+
+                                                setProfilePictureState(prev => ({ ...prev, isChange: false, isCrop: true, urlBlob: url, urlDog: true }))
                                             }} />)}
                                 </div>}
                         </div>
