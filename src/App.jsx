@@ -14,7 +14,7 @@ import { Toaster } from "@/components/ui/toaster";
 import RootLayout from './components/Toaster'
 import getCroppedImg from './utils/cropImage'
 import SettingPage from './components/settings/SettingPage'
-import { baseUrl } from './utils/util'
+import { getNomalImageUrl } from './utils/util'
 function App() {
   const [userIn, setUserIn] = useState(null);
   const [temporalCloud, setTemporalCloud] = useState(null);
@@ -37,13 +37,13 @@ function App() {
           dataFromFirebase.forEach(item => {
             dataUser.push(item.data());
           })
+          const urlImgToCrop = getNomalImageUrl(userConected?.url_img_super_list);
 
-          const realUrl = userConected?.cropp_pixel && Object.keys(userConected?.cropp_pixel).length > 0 ? await getCroppedImg(`${baseUrl}${userConected?.url_img_super_list}`, userConected.cropp_pixel) : null;
+          const urlBlobToprint = userConected?.cropp_pixel && Object.keys(userConected?.cropp_pixel).length > 0 ? await getCroppedImg(urlImgToCrop, userConected.cropp_pixel) : null;
 
-          if (realUrl) {
-            setUserIn({ ...userConected, uid: user.uid, url_img_super_list: realUrl });
+          if (urlBlobToprint) {
+            setUserIn({ ...userConected, uid: user.uid, url_img_super_list: urlBlobToprint });
           } else {
-
             setUserIn({ ...userConected, uid: user.uid, url_img_super_list: userConected?.super_list_img_selected ? userConected.url_img_super_list : user.providerData[0].photoURL });
           }
 
@@ -52,7 +52,6 @@ function App() {
             const dateB = b.create_at ? (b.create_at.toDate ? b.create_at.toDate() : new Date(b.create_at)) : new Date(0);
             return dateA - dateB;
           });
-
           setTemporalCloud(dataSorted);
         } else {
           setUserIn(null);

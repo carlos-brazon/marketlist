@@ -34,7 +34,7 @@ const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFr
         onDrop: async (files, rejected) => {
             if (files.length >= 1) {
                 const compressFile = await compressAndUpload(files[0]);
-                setProfilePictureState(prev => ({ ...prev, urlBlob: URL.createObjectURL(compressFile), isCrop: true, isChange: false, file: compressFile }));
+                setProfilePictureState(prev => ({ ...prev, imageSrc: URL.createObjectURL(compressFile), isCrop: true, isChange: false, file: compressFile }));
             }
             if (rejected.length >= 1) {
                 setErrorFile(
@@ -43,7 +43,7 @@ const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFr
             }
         },
     });
-    console.log(imgFromFirebase);
+    
     return (
         <DialogHeader>
             <X onClick={() => setProfilePictureState(prev => ({ ...prev, isChange: false }))} className="cursor-pointer w-6 h-6 absolute top-2 right-2 bg-white z-50" />
@@ -110,9 +110,7 @@ const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFr
                                             key={url}
                                             className='w-16 h-16 relative rounded-full' src={url} alt=""
                                             onClick={async () => {
-                                                console.log(url);
-
-                                                setProfilePictureState(prev => ({ ...prev, isChange: false, isCrop: true, urlBlob: url, urlDog: true }))
+                                                setProfilePictureState(prev => ({ ...prev, isChange: false, isCrop: true, imageSrc: url }))
                                             }} />)}
                                 </div>}
                         </div>

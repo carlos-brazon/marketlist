@@ -140,3 +140,13 @@ export const formatDate = (date) => {
 
   return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 };
+
+export const getNomalImageUrl  = (url) => {
+  if (!url) return null;
+  // Si ya es una URL completa, la devolvemos tal cual
+  if (url.startsWith("http")) {
+    return url;
+  }
+  // Si es un path relativo, la concatenamos con baseUrl
+  return `${baseUrl}${url}`;
+};

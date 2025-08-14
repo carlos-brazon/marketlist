@@ -29,86 +29,191 @@ const CropPictureDialog = ({ setProfilePictureState, profilePictureState, imgFro
         setCroppedAreaPixels(croppedAreaPixels);
     };
     console.log(profilePictureState);
+
     const handleSaveImage = async () => {
         const croppedImage = await getCroppedImg(profilePictureState.urlBlob, croppedAreaPixels);
         let recentsCopy = [...(imgFromFirebase?.recents || [])];
-        if (recentsCopy.length === 6) {
-            recentsCopy.pop();
+        if (recentsCopy.length === 6) recentsCopy.pop();
+    
+        // Función para guardar imagen en Firebase y actualizar estados
+        const saveImage = async (url, croppedImageRecived) => {
+            setProfilePictureState(prev => ({ ...prev, isLoading: true, urlCortada: croppedImageRecived }));
+            
+            await updateDoc(doc(db, "userMarketList", userIn.uid), {
+                url_img_super_list: url,
+                cropp_pixel: croppedAreaPixels,
+                super_list_img_selected: true
+            });
+    
+            await setDoc(
+                doc(db, "image_profile", userIn.uid),
+                {
+                    recents: [{ url, crop_area_: croppedAreaPixels, crop_img_recent: croppedImageRecived }, ...recentsCopy]
+                },
+                { merge: true }
+            );
+    
+            setTimeout(() => {
+                setUserIn(prev => ({ ...prev, url_img_super_list: croppedImageRecived, super_list_img_selected: true }));
+                setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
+                setImgFromFirebase(prev => ({
+                    ...prev,
+                    recents: [{ url, crop_area_: croppedAreaPixels, crop_img_recent: croppedImageRecived }, ...recentsCopy]
+                }));
+            }, 2000);
+        };
+    
+        // ---- Caso URL Dog ----
+        if (profilePictureState.urlDog) {
+            const imgDogExistInFirebase = recentsCopy.find(item =>
+                item.url === profilePictureState.urlBlob &&
+                isEqual(item.crop_area_, croppedAreaPixels)
+            );
+    
+            if (imgDogExistInFirebase) {
+                setProfilePictureState(prev => ({ ...prev, isLoading: true, urlCortada: croppedImage }));
+                setTimeout(() => {
+                    setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
+                }, 2000);
+                return;
+            }
+    
+            await saveImage(profilePictureState.urlBlob, croppedImage);
+            return;
         }
-
-        const imgExistInFirebase = recentsCopy.find(item =>// esto es para buscar si en imagenes recientes esta la imagen que voy a subir
-            item.url === imageUrl.toPrint || item.url === profilePictureState.urlBlob &&
+    
+        // ---- Caso Galería ----
+        const imageUrl = await uploadFile(profilePictureState.file, userIn.id, userIn.uid);
+    
+        const existsGallery = recentsCopy.find(item =>
+            item.url === imageUrl.toPrint &&
             isEqual(item.crop_area_, croppedAreaPixels)
         );
-
-        if (profilePictureState.urlDog) {
-            try {
-                setProfilePictureState(prev => ({ ...prev, isLoading: true, urlCortada: croppedImage }));
-                await updateDoc(doc(db, "userMarketList", userIn.uid), {
-                    url_img_super_list: profilePictureState.urlBlob,
-                    cropp_pixel: croppedAreaPixels,
-                    super_list_img_selected: true
-                });
-                await setDoc(
-                    doc(db, "image_profile", userIn.uid),
-                    {
-                        recents: [{ url: profilePictureState.urlBlob, crop_area_: croppedAreaPixels }, ...(imgFromFirebase?.recents || [])]
-                    },
-                    { merge: true }
-                );
-                setTimeout(() => {
-                    setUserIn(prev => ({ ...prev, url_img_super_list: croppedImage, super_list_img_selected: true }));
-                    setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
-                    setImgFromFirebase(prev => ({ ...prev, recents: [{ url: profilePictureState.urlBlob, crop_area_: croppedAreaPixels, crop_img_recent: croppedImage }, ...(imgFromFirebase?.recents || [])] }))
-                }, 2000);
-                return
-            } catch (error) {
-                console.log(error);
-                setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
-            }
-        }
-        const imageUrl = await uploadFile(profilePictureState.file, userIn.id, userIn.uid);
-
-
-        // const imgExistInFirebase = imgFromFirebase?.recents.find(item => 
-        //     item.url === imageUrl.toPrint &&
-        //     JSON.stringify(item.crop_area_) === JSON.stringify(croppedAreaPixels)
-        // );
-
-        if (imgExistInFirebase) {
-            console.log('entra iffff'); // si la imagen esta activo el loading y no hago mas nada
+    
+        if (existsGallery) {
             setProfilePictureState(prev => ({ ...prev, isLoading: true }));
             setTimeout(() => {
                 setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
             }, 2000);
-        } else {//sino existe en la primera condicion aqui se sube la imagen por primera vez, puede ser la misma imagen con diferentes coordenadas de corte
-            console.log('entra elseeeee');
-            console.log(imgFromFirebase);
-
-            console.log(imageUrl);
-            console.log(croppedImage)
-
-            setProfilePictureState(prev => ({ ...prev, isLoading: true, urlParaPintar: imageUrl.toPrint, urlCortada: croppedImage }))
-            await updateDoc(doc(db, "userMarketList", userIn.uid), {//aqui actualizo los datos del usuario
-                url_img_super_list: imageUrl.toPrint,
-                cropp_pixel: croppedAreaPixels,
-                super_list_img_selected: true
-            });
-            setUserIn(prev => ({ ...prev, url_img_super_list: croppedImage, super_list_img_selected: true }));//el set para que se pinte la imagen con las nuevas coordenadas
-
-            // aqui se sube la url a pintar y las coordenadas de crop mas el resto de imagenes que ya estan en firebase
-            const newImageToRecentsInFirebase = { url: imageUrl.toPrint, crop_area_: croppedAreaPixels, crop_img_recent: croppedImage }
-            await setDoc(
-                doc(db, "image_profile", userIn.uid),
-                {
-                    recents: [newImageToRecentsInFirebase, ...recentsCopy]
-                },
-                { merge: true }
-            );
-            setImgFromFirebase(prev => ({ ...prev, recents: [newImageToRecentsInFirebase, ...recentsCopy] }));
-            setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
+            return;
         }
+    
+        await saveImage(imageUrl.toPrint, croppedImage);
     };
+    
+
+
+
+    
+
+
+    // const handleSaveImage = async () => {
+    //     const croppedImage = await getCroppedImg(profilePictureState.urlBlob, croppedAreaPixels);
+    //     let recentsCopy = [...(imgFromFirebase?.recents || [])];
+    //     if (recentsCopy.length === 6) {
+    //         recentsCopy.pop();
+    //     }
+
+    //     const imgDogExistInFirebase = recentsCopy.find(item =>// esto es para buscar si en imagenes recientes esta la imagen que voy a subir desde imagenes dog
+    //         item.url === profilePictureState.urlBlob &&
+    //         isEqual(item.crop_area_, croppedAreaPixels)
+    //     );
+
+    //     if (profilePictureState.urlDog) {
+    //         try {
+    //             if (imgDogExistInFirebase) {
+    //                 setProfilePictureState(prev => ({ ...prev, isLoading: true, urlCortada:croppedImage }));
+    //                 setTimeout(() => {
+    //                     setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
+    //                 }, 2000);
+    //                 return
+    //             } else {
+    //                 setProfilePictureState(prev => ({ ...prev, isLoading: true, urlCortada: croppedImage }));
+    //                 await updateDoc(doc(db, "userMarketList", userIn.uid), {
+    //                     url_img_super_list: profilePictureState.urlBlob,
+    //                     cropp_pixel: croppedAreaPixels,
+    //                     super_list_img_selected: true
+    //                 });
+    //                 await setDoc(
+    //                     doc(db, "image_profile", userIn.uid),
+    //                     {
+    //                         recents: [{ url: profilePictureState.urlBlob, crop_area_: croppedAreaPixels }, ...(imgFromFirebase?.recents || [])]
+    //                     },
+    //                     { merge: true }
+    //                 );
+    //                 setTimeout(() => {
+    //                     setUserIn(prev => ({ ...prev, url_img_super_list: croppedImage, super_list_img_selected: true }));
+    //                     setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
+    //                     setImgFromFirebase(prev => ({ ...prev, recents: [{ url: profilePictureState.urlBlob, crop_area_: croppedAreaPixels, crop_img_recent: croppedImage }, ...(imgFromFirebase?.recents || [])] }))
+    //                 }, 2000);
+    //                 return
+    //             }
+
+    //         } catch (error) {
+    //             console.log(error);
+    //             setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
+    //         }
+    //     }
+    //     const imageUrl = await uploadFile(profilePictureState.file, userIn.id, userIn.uid);
+    //     const imgGaleryExistInFirebase = recentsCopy.find(item =>// esto es para buscar si en imagenes recientes esta la imagen que voy a subir desde galeria
+    //         item.url === imageUrl.toPrint &&
+    //         isEqual(item.crop_area_, croppedAreaPixels)
+    //     );
+    //     if (imgGaleryExistInFirebase) { // si la imagen está en firebase activo el loading y no hago mas nada
+    //         console.log('entra iffff');
+    //         setProfilePictureState(prev => ({ ...prev, isLoading: true }));
+    //         setTimeout(() => {
+    //             setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
+    //         }, 2000);
+    //         return
+    //     } else {//sino existe en la primera condicion aqui se sube la imagen por primera vez, puede ser la misma imagen con diferentes coordenadas de corte
+    //         console.log('entra elseeeee');
+    //         console.log(imgFromFirebase);
+
+    //         console.log(imageUrl);
+    //         console.log(croppedImage)
+
+    //         setProfilePictureState(prev => ({ ...prev, isLoading: true, urlParaPintar: imageUrl.toPrint, urlCortada: croppedImage }))
+    //         await updateDoc(doc(db, "userMarketList", userIn.uid), {//aqui actualizo los datos del usuario
+    //             url_img_super_list: imageUrl.toPrint,
+    //             cropp_pixel: croppedAreaPixels,
+    //             super_list_img_selected: true
+    //         });
+    //         setUserIn(prev => ({ ...prev, url_img_super_list: croppedImage, super_list_img_selected: true }));//el set para que se pinte la imagen con las nuevas coordenadas
+
+    //         // aqui se sube la url a pintar y las coordenadas de crop mas el resto de imagenes que ya estan en firebase
+    //         const newImageToRecentsInFirebase = { url: imageUrl.toPrint, crop_area_: croppedAreaPixels, crop_img_recent: croppedImage }
+    //         await setDoc(
+    //             doc(db, "image_profile", userIn.uid),
+    //             {
+    //                 recents: [newImageToRecentsInFirebase, ...recentsCopy]
+    //             },
+    //             { merge: true }
+    //         );
+    //         setImgFromFirebase(prev => ({ ...prev, recents: [newImageToRecentsInFirebase, ...recentsCopy] }));
+    //         setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
+    //     }
+    // };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // const handleSaveImage = async () => {
     //     console.log(imgFromFirebase.recents)
     //     console.log(profilePictureState)

@@ -12,7 +12,7 @@ import {
     DialogContent,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { baseUrl, defaultSuperListImg, ramdomDog } from "../../utils/util";
+import { defaultSuperListImg, getNomalImageUrl, ramdomDog } from "../../utils/util";
 import { useSearchParams } from "react-router-dom";
 import ProfilePictureDialog from "./ProfilePictureDialog";
 import ChangePictureDialog from "./ChangePictureDialog";
@@ -87,18 +87,18 @@ const SettingPage = () => {
             setImgFromFirebase({ url: arrrayX6Dogs });
             return
         }
+        
         const arrayUrlsWithBlobUrl = await Promise.all(
             Array.isArray(urlArrayDogsAndRecents.data()?.recents)
                 ? urlArrayDogsAndRecents.data()?.recents.map(async (item) => {
+                    const urlImgToCrop = getNomalImageUrl(item.url);
                     const recent = item.crop_area_ && Object.keys(item.crop_area_).length > 0
-                        ? await getCroppedImg(`${baseUrl}${item.url}`, item.crop_area_)
+                        ? await getCroppedImg(urlImgToCrop, item.crop_area_)
                         : item.url;
                     return { ...item, crop_img_recent: recent || item.url };
                 })
                 : []
         );
-console.log(urlArrayDogsAndRecents.data().url_ramdom_dog || arrrayX6Dogs);
-console.log(arrayUrlsWithBlobUrl);
         setImgFromFirebase({
             url: urlArrayDogsAndRecents.data().url_ramdom_dog || arrrayX6Dogs,
             recents: arrayUrlsWithBlobUrl,
