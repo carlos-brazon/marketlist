@@ -38,9 +38,7 @@ const SettingPage = () => {
         isCrop: false,
         isRecentPicture: false,
         picture: false,
-        urlBlob: null,
-        urlParaPintar: '',
-        urlCortada: '',
+        urlBlob: '',
         file: null
     });
 

@@ -28,16 +28,15 @@ const CropPictureDialog = ({ setProfilePictureState, profilePictureState, imgFro
     const onCropComplete = (_, croppedAreaPixels) => {
         setCroppedAreaPixels(croppedAreaPixels);
     };
-    console.log(profilePictureState);
 
     const handleSaveImage = async () => {
         const croppedImage = await getCroppedImg(profilePictureState.urlBlob, croppedAreaPixels);
+        setProfilePictureState(prev => ({ ...prev, isLoading: true, urlBlob: croppedImage }));
         let recentsCopy = [...(imgFromFirebase?.recents || [])];
         if (recentsCopy.length === 6) recentsCopy.pop();
     
         // Función para guardar imagen en Firebase y actualizar estados
         const saveImage = async (url, croppedImageRecived) => {
-            setProfilePictureState(prev => ({ ...prev, isLoading: true, urlCortada: croppedImageRecived }));
             
             await updateDoc(doc(db, "userMarketList", userIn.uid), {
                 url_img_super_list: url,
@@ -55,46 +54,58 @@ const CropPictureDialog = ({ setProfilePictureState, profilePictureState, imgFro
     
             setTimeout(() => {
                 setUserIn(prev => ({ ...prev, url_img_super_list: croppedImageRecived, super_list_img_selected: true }));
-                setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
+                setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false, isUrlDog:false }));
                 setImgFromFirebase(prev => ({
                     ...prev,
                     recents: [{ url, crop_area_: croppedAreaPixels, crop_img_recent: croppedImageRecived }, ...recentsCopy]
                 }));
             }, 2000);
         };
+        const updateImage = async (url) => {
+            
+            await updateDoc(doc(db, "userMarketList", userIn.uid), {
+                url_img_super_list: url,
+                super_list_img_selected: true
+            });
+    
+            setTimeout(() => {
+                setUserIn(prev => ({ ...prev, url_img_super_list: croppedImage, super_list_img_selected: true }));
+                setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false, isUrlDog:false }));
+            }, 2000);
+        };
     
         // ---- Caso URL Dog ----
-        if (profilePictureState.urlDog) {
+        if (profilePictureState.isUrlDog) {
             const imgDogExistInFirebase = recentsCopy.find(item =>
                 item.url === profilePictureState.urlBlob &&
                 isEqual(item.crop_area_, croppedAreaPixels)
             );
     
-            if (imgDogExistInFirebase) {
-                setProfilePictureState(prev => ({ ...prev, isLoading: true, urlCortada: croppedImage }));
-                setTimeout(() => {
-                    setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
-                }, 2000);
+            if (imgDogExistInFirebase) {// si la imagen existe solo actualizo la url en firebase y los estados para pintar
+            updateImage(profilePictureState.urlBlob)
                 return;
             }
-    
             await saveImage(profilePictureState.urlBlob, croppedImage);
             return;
         }
     
         // ---- Caso Galería ----
         const imageUrl = await uploadFile(profilePictureState.file, userIn.id, userIn.uid);
+        console.log(imageUrl.toDelete);
+        console.log(recentsCopy);
+        if (imageUrl.toDelete.length > 0) {
+            const imageToDelete = recentsCopy.filter(image => image.url !== imageUrl.toDelete )
+            recentsCopy = imageToDelete
+            console.log(imageToDelete);
+        }
     
         const existsGallery = recentsCopy.find(item =>
             item.url === imageUrl.toPrint &&
             isEqual(item.crop_area_, croppedAreaPixels)
         );
     
-        if (existsGallery) {
-            setProfilePictureState(prev => ({ ...prev, isLoading: true }));
-            setTimeout(() => {
-                setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false }));
-            }, 2000);
+        if (existsGallery) {// si la imagen existe solo actualizo la url en firebase y los estados para pintar
+            updateImage(imageUrl.toPrint)
             return;
         }
     
@@ -375,7 +386,7 @@ const CropPictureDialog = ({ setProfilePictureState, profilePictureState, imgFro
 
                 <div className="relative w-full h-72 bg-gray-200">
                     <Cropper
-                        image={profilePictureState.urlBlob.urlParaPintar || profilePictureState.urlBlob}
+                        image={profilePictureState.urlBlob}
                         crop={crop}
                         zoom={zoom}
                         aspect={1} // Mantiene la imagen cuadrada

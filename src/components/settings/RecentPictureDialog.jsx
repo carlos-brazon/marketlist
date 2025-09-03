@@ -10,7 +10,7 @@ const RecentPictureDialog = ({ profilePictureState, setProfilePictureState }) =>
     RecentPictureDialog.propTypes = {
         setProfilePictureState: PropTypes.func,
         profilePictureState: PropTypes.shape({
-            imageSrc: PropTypes.shape({
+            recentImage: PropTypes.shape({
                 url: PropTypes.string,
                 crop_area_: PropTypes.shape,
                 crop_img_recent: PropTypes.string
@@ -21,14 +21,15 @@ const RecentPictureDialog = ({ profilePictureState, setProfilePictureState }) =>
 
     const handleClick = async () => {
         console.log(profilePictureState);
-        setProfilePictureState(prev => ({ ...prev, isLoading: true, urlCortada: profilePictureState.imageSrc.crop_img_recent }))
+        setProfilePictureState(prev => ({ ...prev, isLoading: true, urlBlob: profilePictureState.recentImage.crop_img_recent }))
+        console.log(profilePictureState);
         await updateDoc(doc(db, "userMarketList", userIn.uid), {
-            url_img_super_list: profilePictureState.imageSrc.url,
-            cropp_pixel: profilePictureState.imageSrc.crop_area_,
+            url_img_super_list: profilePictureState.recentImage.url,
+            cropp_pixel: profilePictureState.recentImage.crop_area_,
             super_list_img_selected: true
         });
         setTimeout(() => {
-            setUserIn(prev => ({ ...prev, url_img_super_list: profilePictureState.imageSrc.crop_img_recent, super_list_img_selected: true }));
+            setUserIn(prev => ({ ...prev, url_img_super_list: profilePictureState.recentImage.crop_img_recent, super_list_img_selected: true }));
             setProfilePictureState(prev => ({ ...prev, isRecentPicture: false, isChange: false, isLoading: false }));
         }, 2000);
     }
@@ -41,10 +42,10 @@ const RecentPictureDialog = ({ profilePictureState, setProfilePictureState }) =>
                 className="cursor-pointer w-6 h-6 absolute top-1 right-2 bg-white z-50"
             />
             <div className="flex flex-col items-center gap-8">
-                <div className="text-start flex w-full text-lg font-normal">Foto de perfil recortada</div>
+                <div className="text-start flex w-full text-lg font-normal">Foto de perfil recortada aqui</div>
                 <img
                     className="w-60 h-60"
-                    src={profilePictureState.imageSrc.crop_img_recent} alt=""
+                    src={profilePictureState.recentImage.crop_img_recent} alt=""
                 />
 
                 <div className="flex items-center justify-center w-full gap-2">

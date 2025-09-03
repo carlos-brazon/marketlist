@@ -34,7 +34,7 @@ const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFr
         onDrop: async (files, rejected) => {
             if (files.length >= 1) {
                 const compressFile = await compressAndUpload(files[0]);
-                setProfilePictureState(prev => ({ ...prev, imageSrc: URL.createObjectURL(compressFile), isCrop: true, isChange: false, file: compressFile }));
+                setProfilePictureState(prev => ({ ...prev, urlBlob: URL.createObjectURL(compressFile), isCrop: true, isChange: false, file: compressFile }));
             }
             if (rejected.length >= 1) {
                 setErrorFile(
@@ -43,7 +43,7 @@ const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFr
             }
         },
     });
-    
+
     return (
         <DialogHeader>
             <X onClick={() => setProfilePictureState(prev => ({ ...prev, isChange: false }))} className="cursor-pointer w-6 h-6 absolute top-2 right-2 bg-white z-50" />
@@ -64,7 +64,7 @@ const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFr
                                     src={userIn.url_img_google}
                                     alt=""
                                     onClick={async () => {
-                                        setProfilePictureState(prev => ({ ...prev, isChange: false, isCrop: true, imageSrc: userIn.url_img_google }))
+                                        setProfilePictureState(prev => ({ ...prev, isChange: false, isCrop: true, urlBlob: userIn.url_img_google }))
                                     }} />
                             </div>
                             <DropdownMenuSeparator className='bg-black' /></>}
@@ -75,11 +75,11 @@ const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFr
                             {imgFromFirebase?.recents?.length > 0 &&
                                 <div className='grid grid-cols-3 gap-2'>
                                     {imgFromFirebase?.recents?.map((itemUrl, i) => < img
-                                        key={i}
-                                        className='w-16 h-16 relative rounded-full' src={itemUrl.crop_img_recent} alt=""
-                                        onClick={async () => {
-                                            setProfilePictureState(prev => ({ ...prev, isChange: false, isRecentPicture: true, imageSrc: itemUrl }))
-                                        }} />
+                                            key={i}
+                                            className='w-16 h-16 relative rounded-full' src={itemUrl.crop_img_recent} alt=""
+                                            onClick={async () => {
+                                                setProfilePictureState(prev => ({ ...prev, isChange: false, isRecentPicture: true, recentImage: itemUrl }))
+                                            }} />                                    
                                     )}
                                 </div>}
                         </div>
@@ -110,7 +110,7 @@ const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFr
                                             key={url}
                                             className='w-16 h-16 relative rounded-full' src={url} alt=""
                                             onClick={async () => {
-                                                setProfilePictureState(prev => ({ ...prev, isChange: false, isCrop: true, imageSrc: url }))
+                                                setProfilePictureState(prev => ({ ...prev, isChange: false, isCrop: true, urlBlob: url, isUrlDog:true }))
                                             }} />)}
                                 </div>}
                         </div>
