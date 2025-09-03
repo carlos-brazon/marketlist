@@ -40,7 +40,7 @@ const RecentPictureDialog = ({ profilePictureState, setProfilePictureState }) =>
                 className="cursor-pointer w-6 h-6 absolute top-1 right-2 bg-white z-50"
             />
             <div className="flex flex-col items-center gap-8">
-                <div className="text-start flex w-full text-lg font-normal">Foto de perfil recortada aqui</div>
+                <div className="text-start flex w-full text-lg font-normal">Foto de perfil recortada</div>
                 <img
                     className="w-60 h-60"
                     src={profilePictureState.recentImage.crop_img_recent} alt=""
