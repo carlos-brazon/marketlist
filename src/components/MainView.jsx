@@ -62,8 +62,6 @@ const MainView = () => {
 
               usuarioantiguo.markeList.forEach(async (untiem) => {
 
-                console.log(untiem.amount);
-
                 const itemTofirebase = {
                   amount: untiem.amount || 0,
                   create_at: untiem.create_at || serverTimestamp(),
@@ -88,7 +86,6 @@ const MainView = () => {
       {/********************* /* esto es para agregar una nueva key a todos los usuarios de userMarketList  boton de abajo **********************************/}
       {/* {
         <button onClick={async () => {
-          console.log('hola');
 
           const dataFromFirebase = await getDocs(collection(db, "userMarketList"));
           dataFromFirebase.forEach(async (usuario) => {

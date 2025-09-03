@@ -41,72 +41,41 @@ export const ramdomDog = async () => {
 export async function uploadFile(file, id) {
   const filePath = `profile_pictures/${id}/_${file.name}`;
   let urlToDelete = "";
+
   try {
-    // Listar los archivos existentes en la carpeta
-    const { data, error: listError } = await supabase.storage
-      .from("profile")
-      .list(`profile_pictures/${id}`);
+    // Listar imágenes existentes
+    const { data, error: listError } = await supabase.storage.from("profile").list(`profile_pictures/${id}`);
+    if (listError) throw new Error(listError.message);
 
-    // Si hubo un error al listar los archivos, lanzamos una excepción
-    if (listError) {
-      throw new Error(`Error al listar archivos: ${listError.message}`);
-    }
-    console.log(data);
+    const pictures = data.filter(pic => pic.name !== ".emptyFolderPlaceholder");
 
-    const picturesFromSupabase = data.filter(
-      (picture) => picture.name !== ".emptyFolderPlaceholder"
-    );
-    console.log(picturesFromSupabase);
-    console.log(file.name);
-
-    if (picturesFromSupabase.length === 0) {
-      // Subir archivo si no hay imágenes
-      const { error: uploadError } = await supabase.storage
-        .from("profile")
-        .upload(filePath, file);
-      if (uploadError) {
-        throw new Error(`Error al subir archivo: ${uploadError.message}`);
-      }
+    // Revisar si ya existe
+    const exists = pictures.find(pic => pic.name === `_${file.name}`);
+    if (exists) {
+      // Ya existe, no subimos nada
+      return { toPrint: filePath, toDelete: "" };
     }
 
+    // Si supera el límite, eliminar la más antigua
     const MAX_IMAGES = 3;
-
-    // Asegúrate de tener una lista ordenada de imágenes (ej: por nombre con timestamp o metadata externa)
-    const sortedPictures = picturesFromSupabase.sort((a, b) => {
-      return new Date(a.created_at) - new Date(b.created_at);
-    });
-
-    console.log(sortedPictures);
-    const isExistUrl = picturesFromSupabase.find(
-      (itemUrlFromSupabase) => itemUrlFromSupabase.name == `_${file.name}`
-    );
-    console.log(isExistUrl);
-
-    if (sortedPictures.length >= MAX_IMAGES && !isExistUrl) {
-      // Eliminar la más antigua (puedes ajustar el criterio)
-      const { error: removeError } = await supabase.storage
-        .from("profile")
-        .remove([`profile_pictures/${id}/${sortedPictures[0].name}`]);
-      urlToDelete = `profile_pictures/${id}/${sortedPictures[0].name}`;
-      console.log(`profile_pictures/${id}/${sortedPictures[0].name}`);
-
-      if (removeError) {
-        throw new Error(`Error al eliminar archivo: ${removeError.message}`);
-      }
+    if (pictures.length >= MAX_IMAGES) {
+      const sortedPictures = pictures.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+      const oldest = sortedPictures[0];
+      const { error: removeError } = await supabase.storage.from("profile").remove([`profile_pictures/${id}/${oldest.name}`]);
+      if (removeError) throw new Error(removeError.message);
+      urlToDelete = `profile_pictures/${id}/${oldest.name}`;
     }
+
     // Subir nuevo archivo
-    const { error: uploadError } = await supabase.storage
-      .from("profile")
-      .upload(filePath, file);
+    const { error: uploadError } = await supabase.storage.from("profile").upload(filePath, file);
+    if (uploadError) throw new Error(uploadError.message);
 
-    if (uploadError) {
-      throw new Error(`Error al subir archivo: ${uploadError.message}`);
-    }
+    return { toPrint: filePath, toDelete: urlToDelete };
+
   } catch (error) {
-    console.error("Error en el proceso de carga:", error.message);
-    // Aquí puedes manejar el error, mostrar un mensaje o realizar otras acciones.
+    console.error("Error en uploadFile:", error.message);
+    throw error;
   }
-  return { toPrint: filePath, toDelete: urlToDelete };
 }
 
 export async function compressAndUpload(file) {

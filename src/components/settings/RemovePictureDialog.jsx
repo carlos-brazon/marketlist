@@ -16,16 +16,14 @@ const RemovePictureDialog = ({ setProfilePictureState }) => {
     const { userIn, setUserIn } = useContext(AllItemsContext)
 
     const handleRemoveImg = async () => {
-        setProfilePictureState(prev => ({ ...prev, isRemove: false, isLoading: true, url: defaultSuperListImg }));
+        setProfilePictureState(prev => ({ ...prev, isRemove: false, isLoading: true, urlBlob: defaultSuperListImg }));
         await updateDoc(doc(db, "userMarketList", userIn.uid), {
             url_img_super_list: defaultSuperListImg,
             cropp_pixel: {},
             super_list_img_selected: true
         });
-        setTimeout(() => {
             setUserIn(prev => ({ ...prev, super_list_img_selected: true, url_img_super_list: defaultSuperListImg }))
             setProfilePictureState(prev => ({ ...prev, container: true, isRemove: false, isLoading: false }))
-        }, 2500);
     }
 
     return (

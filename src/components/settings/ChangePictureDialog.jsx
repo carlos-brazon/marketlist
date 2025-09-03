@@ -64,7 +64,7 @@ const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFr
                                     src={userIn.url_img_google}
                                     alt=""
                                     onClick={async () => {
-                                        setProfilePictureState(prev => ({ ...prev, isChange: false, isCrop: true, urlBlob: userIn.url_img_google }))
+                                        setProfilePictureState(prev => ({ ...prev, isChange: false, isCrop: true, isNormalUrl:true, urlBlob: userIn.url_img_google }))
                                     }} />
                             </div>
                             <DropdownMenuSeparator className='bg-black' /></>}
@@ -110,7 +110,7 @@ const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFr
                                             key={url}
                                             className='w-16 h-16 relative rounded-full' src={url} alt=""
                                             onClick={async () => {
-                                                setProfilePictureState(prev => ({ ...prev, isChange: false, isCrop: true, urlBlob: url, isUrlDog:true }))
+                                                setProfilePictureState(prev => ({ ...prev, isChange: false, isCrop: true, urlBlob: url, isNormalUrl:true }))
                                             }} />)}
                                 </div>}
                         </div>

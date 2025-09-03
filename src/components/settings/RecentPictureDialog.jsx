@@ -20,9 +20,7 @@ const RecentPictureDialog = ({ profilePictureState, setProfilePictureState }) =>
     const { userIn, setUserIn } = useContext(AllItemsContext);
 
     const handleClick = async () => {
-        console.log(profilePictureState);
-        setProfilePictureState(prev => ({ ...prev, isLoading: true, urlBlob: profilePictureState.recentImage.crop_img_recent }))
-        console.log(profilePictureState);
+        setProfilePictureState(prev => ({ ...prev, isLoading: true, urlBlob: profilePictureState.recentImage.crop_img_recent }));
         await updateDoc(doc(db, "userMarketList", userIn.uid), {
             url_img_super_list: profilePictureState.recentImage.url,
             cropp_pixel: profilePictureState.recentImage.crop_area_,
