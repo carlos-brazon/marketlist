@@ -56,7 +56,7 @@ const Header = () => {
         .then(() => {
           toast({
             className: "p-0",
-            title: <div className='p-1 flex gap-1 items-center justify-center'><span className=''>Email copiado en clipboard</span></div>,
+            title: <div className='p-1 flex gap-1 items-center justify-center font-light'><span>Email copiado en clipboard</span></div>,
             duration: '1300',
           })
         })

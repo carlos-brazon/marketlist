@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import { firstLetterUpperCase, formatDate } from '../utils/util'
 import { AllItemsContext } from './Contex'
 import EditDialog from './EditDialog'
@@ -6,51 +6,73 @@ import { deleteDoc, doc, serverTimestamp, updateDoc } from 'firebase/firestore'
 import { db } from '../utils/firebase'
 import PropTypes from 'prop-types';
 import AmountDialog from './AmountDialog'
+import { useToast } from "@/components/ui/use-toast"
 
 const ItemsList = ({ setAmount }) => {
     ItemsList.propTypes = {
         setAmount: PropTypes.func,
     };
     const { userIn, list, setList, button, setButton, temporalCloud, setTemporalCloud, setValueInputNewTags, setAddTags } = useContext(AllItemsContext);
-    const [lastTapData, setLastTapData] = useState({ id: null, time: 0 });
-    const [tapCount, setTapCount] = useState(0);
+    const { toast } = useToast();
+    const [longPress, setLongPress] = useState(false);
+    const tapCountRef = useRef(0);
+    const lastTapDataRef = useRef(null);
+    const clickTimeoutRef = useRef(null);
 
     const handleClick = async (itemSelected) => {
+        if (longPress) return; // ignorar si se deja presionado mas de 3 segundos para copiar
+      
         const newIsDoneValue = !itemSelected.isDone;
-        //entrada del doble click
-        if (tapCount === 1 && lastTapData.id == itemSelected.id) {
-            try {
-                const deleteItemInTemporalCloud = [...temporalCloud].filter(item => item.id !== itemSelected.id);
-                setTemporalCloud(deleteItemInTemporalCloud);// hago set con el array sin el item (item eliminado)
-                if (list.length == 1) {
-                    const onlyOneTags = deleteItemInTemporalCloud[0]?.tags?.toLowerCase() || 'compras'
-                    setButton(onlyOneTags)//aqui cambio el nombre de la etiqueta con el set
-                    setValueInputNewTags(onlyOneTags) // aqui hago el set para cambiar el valor del input de las tags
-                    setAddTags(false) // aqui hago el set para que se cierre el input de las tags
-                    await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: onlyOneTags });
-                } else {
-                    setButton(itemSelected.tags.toLowerCase())
-                }
-                await deleteDoc(doc(db, "dataItemsMarketList", itemSelected.id))
-            } catch (error) {
-                console.error('Error al eliminar el producto:', error);
+      
+        tapCountRef.current += 1;
+        if (tapCountRef.current === 2 && lastTapDataRef.current?.id === itemSelected.id) {// aqui entra doble click
+          clearTimeout(clickTimeoutRef.current);
+          tapCountRef.current = 0;
+      
+          try {
+            const newCloud = [...temporalCloud].filter(item => item.id !== itemSelected.id);// aqui elimino el item
+            setTemporalCloud(newCloud);
+      
+            if (list.length === 1) {
+              const onlyOneTags = newCloud[0]?.tags?.toLowerCase() || "compras";
+              setButton(onlyOneTags);//aqui cambio el nombre de la etiqueta con el set
+              setValueInputNewTags(onlyOneTags);// aqui hago el set para cambiar el valor del input de las tags
+              setAddTags(false);// aqui hago el set para que se cierre el input de las tags
+              await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: onlyOneTags });
+            } else {
+              setButton(itemSelected.tags.toLowerCase());
             }
-        } else {
-            setTapCount(1);
-            setLastTapData({ id: itemSelected.id, time: 0 });
-            setTimeout(() => {
-                setTapCount(0);
-            }, 300);
-        }
-        //entrada click normal
-        try {
-            await updateDoc(doc(db, "dataItemsMarketList", itemSelected.id), { isDone: newIsDoneValue, isDone_at: serverTimestamp() });
-            setTemporalCloud(prev => [...prev].map(itemInCloud => itemInCloud.id === itemSelected.id ? { ...itemInCloud, isDone: newIsDoneValue, isDone_at: new Date() } : itemInCloud));
-        } catch (error) {
-            console.error('Error al actualizar isDone en Firestore:', error);
-        }
-    };
 
+            await deleteDoc(doc(db, "dataItemsMarketList", itemSelected.id));
+          } catch (error) {
+            console.error("Error al eliminar el producto:", error);
+          }
+          return; // salir para que no se ejecute click normal
+        }
+      
+        // aqui guardo el tap para posible doble click
+        lastTapDataRef.current = { id: itemSelected.id, time: Date.now() };      
+     
+        clickTimeoutRef.current = setTimeout(async () => {//click normal
+          if (tapCountRef.current === 1) {
+            try {
+              await updateDoc(doc(db, "dataItemsMarketList", itemSelected.id), {
+                isDone: newIsDoneValue,
+                isDone_at: serverTimestamp()
+              });
+              setTemporalCloud(prev =>
+                [...prev].map(itemInCloud =>
+                    itemInCloud.id === itemSelected.id ? { ...itemInCloud, isDone: newIsDoneValue, isDone_at: new Date() } : itemInCloud
+                )
+              );
+            } catch (error) {
+              console.error("Error al actualizar isDone en Firestore:", error);
+            }
+          }
+          tapCountRef.current = 0; 
+        }, 300);
+      };
+      
 
     const handlePriority = async (itemSelected) => {
         const newValuePriority = !itemSelected.priority;
@@ -102,6 +124,27 @@ const ItemsList = ({ setAmount }) => {
         setAmount(totalAmount);
     }, [temporalCloud, userIn]);
 
+    const timerRef = useRef(null);
+
+    const startPress = (event) => {// aqui hago el coiar nombre del item
+        timerRef.current = setTimeout(() => {
+            setLongPress(true);
+            const text = event.target.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                toast({
+                    className: "p-0",
+                    title: <div className='p-1 flex gap-1 items-center justify-center font-light'><span>Item copiado</span></div>,
+                    duration: '1000',
+                })
+            });
+        }, 3000);
+        setLongPress(false);
+    };
+
+    const cancelPress = () => {
+        clearTimeout(timerRef.current);
+    };
+   
     return (
         <div>
             {list.length ?
@@ -110,13 +153,22 @@ const ItemsList = ({ setAmount }) => {
                         key={index}
                         className={`break-normal items-center justify-end min-h-[30px] flex gap-2 m-0.5 rounded px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-200'}`}
                     >
-                        <div className={`flex w-full text-xs items-center ${item.isDone && 'line-through'}`} onClick={() => handleClick(item)} >
+                        <div
+                            className={`flex w-full text-xs items-center ${item.isDone && 'line-through'}`}
+                            onClick={() => handleClick(item)}
+                            onMouseDown={startPress}
+                            onMouseUp={cancelPress}
+                            onMouseLeave={cancelPress}
+                            onTouchStart={(e) => startPress(e)}
+                            onTouchEnd={cancelPress}
+                            onTouchCancel={cancelPress}
+                        >
                             <div>{firstLetterUpperCase(item.name)}</div>
                         </div>
                         <div className='flex gap-1 items-center'>
                             {item.isDone && item.create_at && item.isDone_at && userIn?.email === 'carlosbrazon.sp3@gmail.com' && (
                                 <div className=" flex w-12 text-[10px] justify-start items-start">
-                                    {(() => {
+                                    {(() => {// esto es para medir el tiempo de las horas de limpieza en la oficina 4-3
                                         const startTime = new Date(item.create_at && item.create_at.toDate ? item.create_at.toDate() : item.create_at);
                                         const endTime = new Date(item.isDone_at && item.isDone_at.toDate ? item.isDone_at.toDate() : item.isDone_at);
                                         const diffMs = endTime - startTime; // Diferencia en milisegundos
