@@ -1,26 +1,3 @@
-// // api/alexa.js
-// export default async function handler(req, res) {
-//   if (req.method === "POST") {
-//     const item = req.body.request.intent.slots.item.value;
-//     console.log("Item recibido:", item); // Para probar que llegó correctamente
-
-//     // Aquí iría la lógica para guardar en Firestore
-//     // Por ahora solo respondemos a Alexa
-//     return res.status(200).json({
-//       version: "1.0",
-//       response: {
-//         outputSpeech: {
-//           type: "PlainText",
-//           text: `Agregué ${item} a tu lista.`,
-//         },
-//         shouldEndSession: true,
-//       },
-//     });
-//   }
-//   res.status(405).send("Solo POST permitido");
-// }
-
-// /api/alexa.js
 import admin from "firebase-admin";
 
 if (!admin.apps.length) {
@@ -31,6 +8,16 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 
 export default async function handler(req, res) {
+  // === CORS ===
+  res.setHeader("Access-Control-Allow-Origin", "*"); // permite cualquier origen
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  // Manejo preflight request
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
   if (req.method === "POST") {
     let item;
 
@@ -57,14 +44,12 @@ export default async function handler(req, res) {
       amount: 0,
     });
 
-    // Respuesta según origen
+    // Respuesta
     if (req.body.queryResult) {
-      // Respuesta para Dialogflow
       return res.status(200).json({
         fulfillmentText: `¡Agregué ${item} a tu lista de compras!`,
       });
     } else {
-      // Respuesta para Alexa
       return res.status(200).json({
         version: "1.0",
         response: {
@@ -80,4 +65,3 @@ export default async function handler(req, res) {
 
   res.status(405).send("Solo POST permitido");
 }
-
