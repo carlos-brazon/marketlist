@@ -86,7 +86,6 @@ const MainView = () => {
       {/********************* /* esto es para agregar una nueva key a todos los usuarios de userMarketList  boton de abajo **********************************/}
       {/* {
         <button onClick={async () => {
-
           const dataFromFirebase = await getDocs(collection(db, "userMarketList"));
           dataFromFirebase.forEach(async (usuario) => {
             await updateDoc(doc(db, 'userMarketList', usuario.id), {
