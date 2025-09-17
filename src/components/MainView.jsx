@@ -14,34 +14,6 @@ const MainView = () => {
   const [amount, setAmount] = useState(0);
   const [changeIcons, setChangeIcons] = useState(userIn?.control_items);
 
-
-
-  const [item, setItem] = useState("");
-
-
-  const handleClick = async () => {
-    if (!item) return alert("Escribe un item primero");
-
-    try {
-      const res = await fetch( "https://marketlist-git-setting-menu-carlosbrazons-projects.vercel.app/api/alexa", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          queryResult: { parameters: { item } }, // simula Dialogflow
-        }),
-      });
-
-      const data = await res.json();
-      console.log("Respuesta del webhook:", data);
-      alert(data.fulfillmentText);
-
-      setItem(""); // limpiar input
-    } catch (err) {
-      console.error("Error al llamar al webhook:", err);
-      alert("Hubo un error, revisa la consola");
-    }
-  };
-
   return (
     <div className='flex flex-col items-center gap-2 h-full w-full px-3'>
       <Tags setAmount={setAmount} />
@@ -54,19 +26,6 @@ const MainView = () => {
           }, 1200);
         }} className='w-7 h-7 cursor-pointer z-10 absolute right-[10px]' src={changeIcons ? chevUp : chevDown} alt="" />
       </div>
-
-      <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-      <input
-        type="text"
-        value={item}
-        onChange={(e) => setItem(e.target.value)}
-        placeholder="Escribe un item"
-        style={{ padding: "0.5rem", flex: 1 }}
-      />
-      <button onClick={handleClick} style={{ padding: "0.5rem 1rem" }}>
-        Agregar a la lista
-      </button>
-    </div>
 
       {/* <div>
         <button onClick={async () => {
