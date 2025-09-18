@@ -42,7 +42,7 @@ const MainView = () => {
     <div className='flex flex-col items-center gap-2 h-full w-full px-3'>
       <button className={`${userIn?.email== 'aa@gmail.com'? '': 'hidden'}`} 
       onClick={() => agregarItem("pancha")}>
-  Agregar carro3
+  Agregar carro4
 </button>
 
       <Tags setAmount={setAmount} />
