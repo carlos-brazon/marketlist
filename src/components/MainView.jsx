@@ -117,7 +117,7 @@ const MainView = () => {
         } catch (err) {
           console.error("Error al llamar al webhook:", err);
         }
-      }} className={`${userIn.email == 'aa@gmail.com' ? '' : 'hidden'}`}> prueba 2</div>
+      }} className={`${userIn?.email == 'aa@gmail.com' ? '' : 'hidden'}`}> prueba 3</div>
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 270)}px` }}
         className={`w-full rounded-md`}
