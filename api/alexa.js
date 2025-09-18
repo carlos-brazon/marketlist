@@ -21,14 +21,16 @@ export default async function handler(req, res) {
 
     // Validar que haya un item
     if (!item || (Array.isArray(item) && item.length === 0)) {
-      return res.status(400).json({ fulfillmentText: "No se recibió ningún item." });
+      return res
+        .status(400)
+        .json({ fulfillmentText: "No se recibió ningún item." });
     }
 
     // Si viene en array, tomar el primer elemento
     item = Array.isArray(item) ? item[0] : item;
 
     // Guardar en Firestore
-    const docRef = db.collection("dataItemsMarketList").doc(); // genera un ID
+    const docRef = db.collection("dataItemsMarketList2").doc(); // genera un ID
     const docId = docRef.id;
 
     await docRef.set({
@@ -47,10 +49,8 @@ export default async function handler(req, res) {
       fulfillmentText: `¡Agregué "${item}" a tu lista de compras!`,
       source: "vercel-webhook",
     });
-
   } catch (err) {
     console.error("Error en el webhook:", err);
     res.status(500).json({ fulfillmentText: "Ocurrió un error interno." });
   }
 }
-

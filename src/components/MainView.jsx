@@ -98,6 +98,7 @@ const MainView = () => {
       } */}
 
       <ListControls amount={amount} />
+      <div className={`${userIn.email == 'aa@gmail.com' ? '' : 'hidden'}`}> prueba 1</div>
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 270)}px` }}
         className={`w-full rounded-md`}
