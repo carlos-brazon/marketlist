@@ -56,75 +56,71 @@
 // }
 // hasta aqui funciona con dialogflow 18/09/2025
 
-import admin from "firebase-admin";
-
-// Inicializar Firebase Admin
-if (!admin.apps.length) {
-  const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  });
-}
-
-const db = admin.firestore();
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Solo POST permitido" });
   }
 
   try {
-    // Tomar los valores de los slots de Alexa
-    const slots = req.body.request?.intent?.slots;
-    const name = slots?.name?.value;
-    const tags = slots?.tags?.value || "compras"; // Si no viene, por defecto "compras"
+    let item;
 
-    if (!name) {
-      return res.status(400).json({
+    // Detectar si viene de Dialogflow
+    if (req.body.queryResult?.parameters) {
+      item = req.body.queryResult.parameters;
+    }
+    // Detectar si viene de Alexa
+    else if (req.body.request?.intent?.slots) {
+      const slots = req.body.request.intent.slots;
+      item = {
+        name: slots.ItemName?.value || "",
+        tags: slots.Tags?.value || "general",
+        uid: req.body.session?.user?.userId || "alexa_user",
+      };
+    } else {
+      return res
+        .status(400)
+        .json({ fulfillmentText: "No se recibió ningún item." });
+    }
+
+    // Guardar en Firestore
+    const docRef = db.collection("dataItemsMarketList2").doc();
+    const docId = docRef.id;
+
+    await docRef.set({
+      userUid: item.uid,
+      isDone: false,
+      priority: false,
+      id: docId,
+      name: item.name.toLowerCase(),
+      tags: item.tags.toLowerCase(),
+      create_at: new Date(),
+      amount: 0,
+    });
+
+    // Respuesta compatible con Alexa y Dialogflow
+    const responseText = `¡Agregué "${item.name}" a tu lista de compras!`;
+
+    // Alexa espera un formato diferente
+    if (req.body.request?.type) {
+      return res.status(200).json({
         version: "1.0",
         response: {
           outputSpeech: {
             type: "PlainText",
-            text: "No se recibió ningún item.",
+            text: responseText,
           },
           shouldEndSession: true,
         },
       });
     }
 
-    // Guardar en Firestore con un ID generado automáticamente
-    const docRef = db.collection("dataItemsMarketList2").doc();
-    await docRef.set({
-      id: docRef.id,
-      name: name.toLowerCase(),
-      tags: tags.toLowerCase(),
-      isDone: false,
-      create_at: new Date(),
-      amount: 0,
-    });
-
-    // Respuesta para Alexa
+    // Dialogflow
     res.status(200).json({
-      version: "1.0",
-      response: {
-        outputSpeech: {
-          type: "PlainText",
-          text: `¡Agregué "${name}" a tu lista de ${tags}!`,
-        },
-        shouldEndSession: true,
-      },
+      fulfillmentText: responseText,
+      source: "vercel-webhook",
     });
   } catch (err) {
     console.error("Error en el webhook:", err);
-    res.status(500).json({
-      version: "1.0",
-      response: {
-        outputSpeech: {
-          type: "PlainText",
-          text: "Ocurrió un error interno.",
-        },
-        shouldEndSession: true,
-      },
-    });
+    res.status(500).json({ fulfillmentText: "Ocurrió un error interno." });
   }
 }
