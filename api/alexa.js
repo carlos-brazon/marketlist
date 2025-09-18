@@ -74,38 +74,57 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Alexa envía slots aquí
-    let slotValue = req.body.request?.intent?.slots?.item?.value;
-    if (!slotValue) {
-      return res
-        .status(400)
-        .json({ fulfillmentText: "No se recibió ningún item." });
+    // Tomar los valores de los slots de Alexa
+    const slots = req.body.request?.intent?.slots;
+    const name = slots?.name?.value;
+    const tags = slots?.tags?.value || "compras"; // Si no viene, por defecto "compras"
+
+    if (!name) {
+      return res.status(400).json({
+        version: "1.0",
+        response: {
+          outputSpeech: {
+            type: "PlainText",
+            text: "No se recibió ningún item.",
+          },
+          shouldEndSession: true,
+        },
+      });
     }
 
-    // Slot viene como JSON string: {"name":"pan","tags":"compras","uid":"usuario123"}
-    const item = JSON.parse(slotValue);
-
-    // Crear documento en Firestore con ID automático
+    // Guardar en Firestore con un ID generado automáticamente
     const docRef = db.collection("dataItemsMarketList2").doc();
-    const docId = docRef.id;
-
     await docRef.set({
-      userUid: item.uid,
+      id: docRef.id,
+      name: name.toLowerCase(),
+      tags: tags.toLowerCase(),
       isDone: false,
-      priority: false,
-      id: docId,
-      name: item.name.toLowerCase(),
-      tags: item.tags.toLowerCase(),
       create_at: new Date(),
       amount: 0,
     });
 
+    // Respuesta para Alexa
     res.status(200).json({
-      fulfillmentText: `¡Agregué "${item.name}" a tu lista de compras!`,
-      source: "vercel-webhook",
+      version: "1.0",
+      response: {
+        outputSpeech: {
+          type: "PlainText",
+          text: `¡Agregué "${name}" a tu lista de ${tags}!`,
+        },
+        shouldEndSession: true,
+      },
     });
   } catch (err) {
     console.error("Error en el webhook:", err);
-    res.status(500).json({ fulfillmentText: "Ocurrió un error interno." });
+    res.status(500).json({
+      version: "1.0",
+      response: {
+        outputSpeech: {
+          type: "PlainText",
+          text: "Ocurrió un error interno.",
+        },
+        shouldEndSession: true,
+      },
+    });
   }
 }
