@@ -46,7 +46,7 @@ export default async function handler(req, res) {
 
   try {
     // Tomar el item desde Dialogflow
-    let item = req.body.queryResult?.parameters?.item;
+    let item = req.body.queryResult?.parameters;
 
     // Validar que haya un item
     if (!item || (Array.isArray(item) && item.length === 0)) {
@@ -57,10 +57,16 @@ export default async function handler(req, res) {
     item = Array.isArray(item) ? item[0] : item;
 
     // Guardar en Firestore
-    await db.collection("dataItemsMarketList2").add({
-      name: item.toLowerCase(),
-      tags: "compras",
+    const docRef = db.collection("dataItemsMarketList2").doc(); // genera un ID
+    const docId = docRef.id;
+
+    await docRef.set({
+      userUid: item.uid,
       isDone: false,
+      priority: false,
+      id: docId,
+      name: item.name.toLowerCase(),
+      tags: item.tags.toLowerCase(),
       create_at: new Date(),
       amount: 0,
     });
