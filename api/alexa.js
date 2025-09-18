@@ -15,7 +15,7 @@ export default async function handler(req, res) {
   const item = req.body.queryResult?.parameters?.item;
   if (!item) return res.status(400).json({ error: "No se recibió item" });
 
-  await db.collection("dataItemsMarketList").add({
+  await db.collection("dataItemsMarketList2").add({
     name: item.toLowerCase(),
     tags: "compras",
     isDone: false,

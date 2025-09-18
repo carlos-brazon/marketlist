@@ -14,8 +14,37 @@ const MainView = () => {
   const [amount, setAmount] = useState(0);
   const [changeIcons, setChangeIcons] = useState(userIn?.control_items);
 
+  async function agregarItem(item) {
+    try {
+      const res = await fetch("https://marketlist-vert.vercel.app/api/alexa", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          queryResult: { parameters: { item } },
+        }),
+      });
+  
+      if (!res.ok) {
+        throw new Error(`Error: ${res.status}`);
+      }
+  
+      const data = await res.json();
+      console.log("Respuesta de la API:", data);
+      return data;
+    } catch (err) {
+      console.error("Error al llamar al webhook:", err);
+    }
+  }
+
   return (
     <div className='flex flex-col items-center gap-2 h-full w-full px-3'>
+      <button className={`${userIn?.email== 'aa@gmail.com'? '': 'hidden'}`} 
+      onClick={() => agregarItem("pancha")}>
+  Agregar Pan
+</button>
+
       <Tags setAmount={setAmount} />
       <div className='flex justify-center items-center gap-3'>
         <h4 className="text-base text-center font-medium leading-none">{userIn?.email == 'aa@gmail.com' ? 'Listuuu' : 'Lista'}</h4>
