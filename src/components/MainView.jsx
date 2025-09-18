@@ -103,7 +103,7 @@ const MainView = () => {
           const res = await fetch("https://marketlist-vert.vercel.app/api/alexa", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ queryResult: { parameters: { name: 'pan2' } } }),
+            body: JSON.stringify({ queryResult: { parameters: { name: 'pan2', tags: 'compras', uid: 9999 } } }),
           });
 
           if (!res.ok) {
@@ -117,7 +117,7 @@ const MainView = () => {
         } catch (err) {
           console.error("Error al llamar al webhook:", err);
         }
-      }} className={`${userIn?.email == 'aa@gmail.com' ? '' : 'hidden'}`}> prueba 3</div>
+      }} className={`${userIn?.email == 'aa@gmail.com' ? '' : 'hidden'}`}> prueba 4</div>
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 270)}px` }}
         className={`w-full rounded-md`}
