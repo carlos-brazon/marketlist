@@ -29,6 +29,7 @@
 
 import admin from "firebase-admin";
 
+// Inicializar Firebase Admin
 if (!admin.apps.length) {
   const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
   admin.initializeApp({
@@ -39,16 +40,21 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).send("Solo POST permitido");
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Solo POST permitido" });
+  }
 
   try {
+    // Tomar el item desde Dialogflow
     let item = req.body.queryResult?.parameters?.item;
-    if (!item) {
-      return res.status(400).json({ error: "No se recibió item" });
+
+    // Validar que haya un item
+    if (!item || (Array.isArray(item) && item.length === 0)) {
+      return res.status(400).json({ fulfillmentText: "No se recibió ningún item." });
     }
 
-    // Dialogflow envía array, tomamos el primero
-    const item = Array.isArray(item) ? item[0] : item;
+    // Si viene en array, tomar el primer elemento
+    item = Array.isArray(item) ? item[0] : item;
 
     // Guardar en Firestore
     await db.collection("dataItemsMarketList2").add({
@@ -59,8 +65,10 @@ export default async function handler(req, res) {
       amount: 0,
     });
 
+    // Respuesta para Dialogflow
     res.status(200).json({
       fulfillmentText: `¡Agregué "${item}" a tu lista de compras!`,
+      source: "vercel-webhook",
     });
 
   } catch (err) {
@@ -68,3 +76,4 @@ export default async function handler(req, res) {
     res.status(500).json({ fulfillmentText: "Ocurrió un error interno." });
   }
 }
+
