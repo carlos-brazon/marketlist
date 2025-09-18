@@ -27,28 +27,17 @@
 // }
 // /////// hasta aqui funciona con postman 18-09-25 04:19h
 
-// archivo: /api/alexa.js
-import admin from "firebase-admin";
-
-// Inicializa Firebase Admin
-if (!admin.apps.length) {
-  const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  });
-}
-const db = admin.firestore();
-
 export default async function handler(req, res) {
-  // Solo POST
   if (req.method !== "POST") return res.status(405).json({ error: "Solo POST permitido" });
 
   try {
-    // Dialogflow envía los parámetros dentro de queryResult.parameters
-    const item = req.body.queryResult?.parameters?.item;
-    if (!item) {
+    let itemParam = req.body.queryResult?.parameters?.item;
+    if (!itemParam || itemParam.length === 0) {
       return res.status(400).json({ fulfillmentText: "No se recibió ningún item." });
     }
+
+    // Dialogflow envía array, tomamos el primero
+    const item = Array.isArray(itemParam) ? itemParam[0] : itemParam;
 
     // Guardar en Firestore
     await db.collection("dataItemsMarketList2").add({
@@ -59,7 +48,6 @@ export default async function handler(req, res) {
       amount: 0,
     });
 
-    // Respuesta que Dialogflow espera
     res.status(200).json({
       fulfillmentText: `¡Agregué "${item}" a tu lista de compras!`,
       source: "vercel-webhook",
