@@ -142,14 +142,10 @@ export default async function handler(req, res) {
     const requestType = req.body.request?.type;
     let responseText = "";
 
-    // Caso 1: LaunchRequest (cuando el usuario abre la skill)
     if (requestType === "LaunchRequest") {
       responseText =
         "Bienvenido a tu lista de compras. Dime qué quieres agregar.";
-    }
-
-    // Caso 2: IntentRequest con slots
-    else if (requestType === "IntentRequest") {
+    } else if (requestType === "IntentRequest") {
       const intent = req.body.request.intent;
       if (intent.name === "AddItemIntent") {
         const itemName = intent.slots?.name?.value || "un producto";
@@ -170,28 +166,27 @@ export default async function handler(req, res) {
       } else {
         responseText = "No entendí qué producto quieres agregar.";
       }
-    }
-
-    // Caso 3: Otro tipo de request
-    else {
+    } else {
       responseText = "Lo siento, no entendí tu solicitud.";
     }
 
-    // Respuesta a Alexa
+    // 🔑 Respuesta Alexa con sessionAttributes
     return res.status(200).json({
       version: "1.0",
+      sessionAttributes: {}, // importante aunque esté vacío
       response: {
         outputSpeech: {
           type: "PlainText",
           text: responseText,
         },
-        shouldEndSession: false, // no cerramos sesión, para que el usuario pueda seguir hablando
+        shouldEndSession: false,
       },
     });
   } catch (err) {
     console.error("Error en el webhook:", err);
     res.status(500).json({
       version: "1.0",
+      sessionAttributes: {},
       response: {
         outputSpeech: {
           type: "PlainText",
