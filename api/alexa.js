@@ -1,5 +1,7 @@
 // import admin from "firebase-admin";
 
+import { db } from "../src/utils/firebase";
+
 // // Inicializar Firebase Admin
 // if (!admin.apps.length) {
 //   const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
@@ -73,8 +75,8 @@ export default async function handler(req, res) {
       const slots = req.body.request.intent.slots;
       item = {
         name: slots.name?.value || "",
-        tags: slots.ListName?.value || "general",
-        uid: slots.uid?.id || "alexa_user",
+        // tags: slots.ListName?.value || "general",
+        // uid: slots.uid?.id || "alexa_user",
       };
     } else {
       return res
@@ -86,12 +88,12 @@ export default async function handler(req, res) {
     const docId = docRef.id;
 
     await docRef.set({
-      userUid: item.uid,
+      userUid: 90909090,
       isDone: false,
       priority: false,
       id: docId,
       name: item.name.toLowerCase(),
-      tags: item.tags.toLowerCase(),
+      tags: "compras",
       create_at: new Date(),
       amount: 0,
     });

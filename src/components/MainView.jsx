@@ -137,12 +137,12 @@ const MainView = () => {
               "slots": {
                 "name": { "name": "name", "value": "pan" },
                 "ListName": { "name": "ListName", "value": "compras" },
-                "uid": { "name": "uid", "value": "personal", "id":"mgkO6FaacRXi4BCOzqKDRL7DQUn2" }
+                "uid": { "name": "uid", "value": "personal", "id": "kjjhvh" }
               }
             }
           }
         }
-        
+
         console.log(item);
 
 
@@ -152,7 +152,7 @@ const MainView = () => {
           uid: item.request.intent.slots.uid?.id || "alexa_user",
         };
         console.log(itemfinal);
-      }} className={`${userIn?.email == 'aa@gmail.com' ? '' : 'hidden'}`}> prueba 8</div>
+      }} className={`${userIn?.email == 'aa@gmail.com' ? '' : 'hidden'}`}> prueba 9</div>
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 270)}px` }}
         className={`w-full rounded-md`}
