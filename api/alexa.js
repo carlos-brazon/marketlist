@@ -142,11 +142,16 @@ export default async function handler(req, res) {
     const requestType = req.body.request?.type;
     let responseText = "";
 
+    // Caso 1: LaunchRequest
     if (requestType === "LaunchRequest") {
       responseText =
         "Bienvenido a tu lista de compras. Dime qué quieres agregar.";
-    } else if (requestType === "IntentRequest") {
+    }
+
+    // Caso 2: IntentRequest
+    else if (requestType === "IntentRequest") {
       const intent = req.body.request.intent;
+
       if (intent.name === "AddItemIntent") {
         const itemName = intent.slots?.name?.value || "un producto";
         responseText = `¡Agregué "${itemName}" a tu lista de compras!`;
@@ -154,7 +159,7 @@ export default async function handler(req, res) {
         // Guardar en Firestore
         const docRef = db.collection("dataItemsMarketList2").doc();
         await docRef.set({
-          userUid: 90909090,
+          userUid: 90909090, // lo puedes cambiar por el userId real
           isDone: false,
           priority: false,
           id: docRef.id,
@@ -166,18 +171,27 @@ export default async function handler(req, res) {
       } else {
         responseText = "No entendí qué producto quieres agregar.";
       }
-    } else {
+    }
+
+    // Caso 3: Otro tipo de request
+    else {
       responseText = "Lo siento, no entendí tu solicitud.";
     }
 
-    // 🔑 Respuesta Alexa con sessionAttributes
+    // 🔑 Respuesta a Alexa
     return res.status(200).json({
       version: "1.0",
-      sessionAttributes: {}, // importante aunque esté vacío
+      sessionAttributes: {},
       response: {
         outputSpeech: {
           type: "PlainText",
           text: responseText,
+        },
+        reprompt: {
+          outputSpeech: {
+            type: "PlainText",
+            text: "¿Quieres agregar algo más a tu lista?",
+          },
         },
         shouldEndSession: false,
       },
