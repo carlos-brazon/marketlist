@@ -142,14 +142,10 @@ export default async function handler(req, res) {
     const requestType = req.body.request?.type;
     let responseText = "";
 
-    // Caso 1: LaunchRequest
     if (requestType === "LaunchRequest") {
       responseText =
         "Bienvenido a tu lista de compras. Dime qué quieres agregar.";
-    }
-
-    // Caso 2: IntentRequest
-    else if (requestType === "IntentRequest") {
+    } else if (requestType === "IntentRequest") {
       const intent = req.body.request.intent;
 
       if (intent.name === "AddItemIntent") {
@@ -159,7 +155,7 @@ export default async function handler(req, res) {
         // Guardar en Firestore
         const docRef = db.collection("dataItemsMarketList2").doc();
         await docRef.set({
-          userUid: 90909090, // lo puedes cambiar por el userId real
+          userUid: 90909090,
           isDone: false,
           priority: false,
           id: docRef.id,
@@ -171,21 +167,19 @@ export default async function handler(req, res) {
       } else {
         responseText = "No entendí qué producto quieres agregar.";
       }
-    }
-
-    // Caso 3: Otro tipo de request
-    else {
+    } else {
       responseText = "Lo siento, no entendí tu solicitud.";
     }
 
-    // 🔑 Respuesta a Alexa
+    // Respuesta correcta a Alexa
     return res.status(200).json({
       version: "1.0",
       sessionAttributes: {},
       response: {
         outputSpeech: {
           type: "PlainText",
-          text: responseText,
+          text:
+            responseText || "Lo siento, hubo un error al generar la respuesta.",
         },
         reprompt: {
           outputSpeech: {
@@ -198,7 +192,7 @@ export default async function handler(req, res) {
     });
   } catch (err) {
     console.error("Error en el webhook:", err);
-    res.status(500).json({
+    return res.status(500).json({
       version: "1.0",
       sessionAttributes: {},
       response: {
