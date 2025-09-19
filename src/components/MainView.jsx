@@ -99,25 +99,60 @@ const MainView = () => {
 
       <ListControls amount={amount} />
       <div onClick={async () => {
-        try {
-          const res = await fetch("https://marketlist-vert.vercel.app/api/alexa", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ queryResult: { parameters: { name: 'pan2', tags: 'compras', uid: 9999 } } }),
-          });
+        // try {
+        //   const res = await fetch("https://marketlist-vert.vercel.app/api/alexa", {
+        //     method: "POST",
+        //     headers: { "Content-Type": "application/json" },
+        //     body: JSON.stringify({ queryResult: { parameters: { name: 'pan2', tags: 'compras', uid: 9999 } } }),
+        //   });
 
-          if (!res.ok) {
-            const errorText = await res.text();
-            throw new Error(`Error ${res.status}: ${errorText}`);
+        //   if (!res.ok) {
+        //     const errorText = await res.text();
+        //     throw new Error(`Error ${res.status}: ${errorText}`);
+        //   }
+
+        //   const data = await res.json();
+        //   console.log("Respuesta de la API:", data);
+        //   return data;
+        // } catch (err) {
+        //   console.error("Error al llamar al webhook:", err);
+        // }
+        const item = {
+          "version": "1.0",
+          "session": {
+            "new": true,
+            "sessionId": "SessionId.12345",
+            "application": {
+              "applicationId": "amzn1.ask.skill.XXXX"
+            },
+            "user": {
+              "userId": "amzn1.ask.account.YYYYY"
+            }
+          },
+          "request": {
+            "type": "IntentRequest",
+            "requestId": "EdwRequestId.12345",
+            "intent": {
+              "name": "AddItemIntent",
+              "slots": {
+                "name": { "name": "name", "value": "pan" },
+                "ListName": { "name": "ListName", "value": "compras" },
+                "uid": { "name": "uid", "value": "personal", "id":"mgkO6FaacRXi4BCOzqKDRL7DQUn2" }
+              }
+            }
           }
-
-          const data = await res.json();
-          console.log("Respuesta de la API:", data);
-          return data;
-        } catch (err) {
-          console.error("Error al llamar al webhook:", err);
         }
-      }} className={`${userIn?.email == 'aa@gmail.com' ? '' : 'hidden'}`}> prueba 7</div>
+        
+        console.log(item);
+
+
+        const itemfinal = {
+          name: item.request.intent.slots.name?.value || "",
+          tags: item.request.intent.slots.ListName?.value || "general",
+          uid: item.request.intent.slots.uid?.id || "alexa_user",
+        };
+        console.log(itemfinal);
+      }} className={`${userIn?.email == 'aa@gmail.com' ? '' : 'hidden'}`}> prueba 8</div>
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 270)}px` }}
         className={`w-full rounded-md`}

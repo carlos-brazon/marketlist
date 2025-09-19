@@ -72,16 +72,15 @@ export default async function handler(req, res) {
     else if (req.body.request?.intent?.slots) {
       const slots = req.body.request.intent.slots;
       item = {
-        name: slots.ItemName?.value || "",
-        tags: slots.Tags?.value || "general",
-        uid: req.body.session?.user?.userId || "alexa_user",
+        name: slots.name?.value || "",
+        tags: slots.ListName?.value || "general",
+        uid: slots.uid?.id || "alexa_user",
       };
     } else {
       return res
         .status(400)
         .json({ fulfillmentText: "No se recibió ningún item." });
     }
-
     // Guardar en Firestore
     const docRef = db.collection("dataItemsMarketList2").doc();
     const docId = docRef.id;
