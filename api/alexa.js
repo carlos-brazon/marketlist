@@ -58,17 +58,80 @@ import { db } from "../src/utils/firebase";
 // }
 // hasta aqui funciona con dialogflow 18/09/2025
 
-import admin from "firebase-admin";
+// import admin from "firebase-admin";
 
-// Inicializar Firebase Admin
-if (!admin.apps.length) {
-  const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  });
-}
+// // Inicializar Firebase Admin
+// if (!admin.apps.length) {
+//   const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+//   admin.initializeApp({
+//     credential: admin.credential.cert(serviceAccount),
+//   });
+// }
 
-const db = admin.firestore();
+// const db = admin.firestore();
+
+// export default async function handler(req, res) {
+//   if (req.method !== "POST") {
+//     return res.status(405).json({ error: "Solo POST permitido" });
+//   }
+
+//   try {
+//     let item;
+
+//     // Detectar si viene de Alexa
+//     if (req.body.response?.directives[0]?.updatedIntent?.slots) {
+//       const slots = req.body.response?.directives[0]?.updatedIntent?.slots;
+
+//       // Solo tomamos el name que el usuario dijo
+//       item = {
+//         name: slots.name?.value || "",
+//       };
+
+//       // Si Alexa está delegando, solo devuelve la directiva para que siga llenando slots
+//       if (
+//         req.body.body?.response?.directives?.[0]?.type === "Dialog.Delegate"
+//       ) {
+//         return res.status(200).json(req.body.body);
+//       }
+//     } else {
+//       return res
+//         .status(400)
+//         .json({ fulfillmentText: "No se recibió ningún item." });
+//     }
+
+//     // Guardar en Firestore con valores manuales
+//     const docRef = db.collection("dataItemsMarketList2").doc();
+//     const docId = docRef.id;
+
+//     await docRef.set({
+//       userUid: "pdfvkdsnv kgfb9546y999", // valor manual
+//       isDone: false,
+//       priority: false,
+//       id: docId,
+//       name: item.name.toLowerCase(),
+//       tags: "compras", // valor manual
+//       create_at: new Date(),
+//       amount: 0,
+//     });
+
+//     // Respuesta compatible con Alexa
+//     const responseText = `¡Agregué "${item.name}" a tu lista de compras!`;
+
+//     return res.status(200).json({
+//       version: "1.0",
+//       response: {
+//         outputSpeech: {
+//           type: "PlainText",
+//           text: responseText,
+//         },
+//         shouldEndSession: true,
+//       },
+//     });
+//   } catch (err) {
+//     console.error("Error en el webhook:", err);
+//     res.status(500).json({ fulfillmentText: "Ocurrió un error interno." });
+//   }
+// }
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -76,47 +139,45 @@ export default async function handler(req, res) {
   }
 
   try {
-    let item;
+    const requestType = req.body.request?.type;
+    let responseText = "";
 
-    // Detectar si viene de Alexa
-    if (req.body.response?.directives[0]?.updatedIntent?.slots) {
-      const slots = req.body.response?.directives[0]?.updatedIntent?.slots;
-
-      // Solo tomamos el name que el usuario dijo
-      item = {
-        name: slots.name?.value || "",
-      };
-
-      // Si Alexa está delegando, solo devuelve la directiva para que siga llenando slots
-      if (
-        req.body.body?.response?.directives?.[0]?.type === "Dialog.Delegate"
-      ) {
-        return res.status(200).json(req.body.body);
-      }
-    } else {
-      return res
-        .status(400)
-        .json({ fulfillmentText: "No se recibió ningún item." });
+    // Caso 1: LaunchRequest (cuando el usuario abre la skill)
+    if (requestType === "LaunchRequest") {
+      responseText =
+        "Bienvenido a tu lista de compras. Dime qué quieres agregar.";
     }
 
-    // Guardar en Firestore con valores manuales
-    const docRef = db.collection("dataItemsMarketList2").doc();
-    const docId = docRef.id;
+    // Caso 2: IntentRequest con slots
+    else if (requestType === "IntentRequest") {
+      const intent = req.body.request.intent;
+      if (intent.name === "AddItemIntent") {
+        const itemName = intent.slots?.name?.value || "un producto";
+        responseText = `¡Agregué "${itemName}" a tu lista de compras!`;
 
-    await docRef.set({
-      userUid: "pdfvkdsnv kgfb9546y999", // valor manual
-      isDone: false,
-      priority: false,
-      id: docId,
-      name: item.name.toLowerCase(),
-      tags: "compras", // valor manual
-      create_at: new Date(),
-      amount: 0,
-    });
+        // Guardar en Firestore
+        const docRef = db.collection("dataItemsMarketList2").doc();
+        await docRef.set({
+          userUid: 90909090,
+          isDone: false,
+          priority: false,
+          id: docRef.id,
+          name: itemName.toLowerCase(),
+          tags: "compras",
+          create_at: new Date(),
+          amount: 0,
+        });
+      } else {
+        responseText = "No entendí qué producto quieres agregar.";
+      }
+    }
 
-    // Respuesta compatible con Alexa
-    const responseText = `¡Agregué "${item.name}" a tu lista de compras!`;
+    // Caso 3: Otro tipo de request
+    else {
+      responseText = "Lo siento, no entendí tu solicitud.";
+    }
 
+    // Respuesta a Alexa
     return res.status(200).json({
       version: "1.0",
       response: {
@@ -124,11 +185,20 @@ export default async function handler(req, res) {
           type: "PlainText",
           text: responseText,
         },
-        shouldEndSession: true,
+        shouldEndSession: false, // no cerramos sesión, para que el usuario pueda seguir hablando
       },
     });
   } catch (err) {
     console.error("Error en el webhook:", err);
-    res.status(500).json({ fulfillmentText: "Ocurrió un error interno." });
+    res.status(500).json({
+      version: "1.0",
+      response: {
+        outputSpeech: {
+          type: "PlainText",
+          text: "Ocurrió un error interno.",
+        },
+        shouldEndSession: true,
+      },
+    });
   }
 }
