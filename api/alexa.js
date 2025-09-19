@@ -58,6 +58,18 @@ import { db } from "../src/utils/firebase";
 // }
 // hasta aqui funciona con dialogflow 18/09/2025
 
+import admin from "firebase-admin";
+
+// Inicializar Firebase Admin
+if (!admin.apps.length) {
+  const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+}
+
+const db = admin.firestore();
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Solo POST permitido" });
@@ -66,59 +78,54 @@ export default async function handler(req, res) {
   try {
     let item;
 
-    // Detectar si viene de Dialogflow
-    if (req.body.queryResult?.parameters) {
-      item = req.body.queryResult.parameters;
-    }
     // Detectar si viene de Alexa
-    else if (req.body.request?.intent?.slots) {
+    if (req.body.request?.intent?.slots) {
       const slots = req.body.request.intent.slots;
+
+      // Solo tomamos el name que el usuario dijo
       item = {
         name: slots.name?.value || "",
-        // tags: slots.ListName?.value || "general",
-        // uid: slots.uid?.id || "alexa_user",
       };
+
+      // Si Alexa está delegando, solo devuelve la directiva para que siga llenando slots
+      if (
+        req.body.body?.response?.directives?.[0]?.type === "Dialog.Delegate"
+      ) {
+        return res.status(200).json(req.body.body);
+      }
     } else {
       return res
         .status(400)
         .json({ fulfillmentText: "No se recibió ningún item." });
     }
-    // Guardar en Firestore
+
+    // Guardar en Firestore con valores manuales
     const docRef = db.collection("dataItemsMarketList2").doc();
     const docId = docRef.id;
 
     await docRef.set({
-      userUid: 90909090,
+      userUid: "pdfvkdsnv kgfb9546y999", // valor manual
       isDone: false,
       priority: false,
       id: docId,
       name: item.name.toLowerCase(),
-      tags: "compras",
+      tags: "compras", // valor manual
       create_at: new Date(),
       amount: 0,
     });
 
-    // Respuesta compatible con Alexa y Dialogflow
+    // Respuesta compatible con Alexa
     const responseText = `¡Agregué "${item.name}" a tu lista de compras!`;
 
-    // Alexa espera un formato diferente
-    if (req.body.request?.type) {
-      return res.status(200).json({
-        version: "1.0",
-        response: {
-          outputSpeech: {
-            type: "PlainText",
-            text: responseText,
-          },
-          shouldEndSession: true,
+    return res.status(200).json({
+      version: "1.0",
+      response: {
+        outputSpeech: {
+          type: "PlainText",
+          text: responseText,
         },
-      });
-    }
-
-    // Dialogflow
-    res.status(200).json({
-      fulfillmentText: responseText,
-      source: "vercel-webhook",
+        shouldEndSession: true,
+      },
     });
   } catch (err) {
     console.error("Error en el webhook:", err);
