@@ -118,28 +118,31 @@ const MainView = () => {
         //   console.error("Error al llamar al webhook:", err);
         // }
         const item = {
-          "version": "1.0",
-          "session": {
-            "new": true,
-            "sessionId": "SessionId.12345",
-            "application": {
-              "applicationId": "amzn1.ask.skill.XXXX"
+          "body": {
+            "version": "1.0",
+            "response": {
+              "directives": [
+                {
+                  "type": "Dialog.Delegate",
+                  "updatedIntent": {
+                    "name": "AddItemIntent",
+                    "confirmationStatus": "NONE",
+                    "slots": {
+                      "name": {
+                        "name": "name",
+                        "value": "cafeina",
+                        "confirmationStatus": "NONE"
+                      }
+                    }
+                  }
+                }
+              ],
+              "type": "_DEFAULT_RESPONSE"
             },
-            "user": {
-              "userId": "amzn1.ask.account.YYYYY"
-            }
-          },
-          "request": {
-            "type": "IntentRequest",
-            "requestId": "EdwRequestId.12345",
-            "intent": {
-              "name": "AddItemIntent",
-              "slots": {
-                "name": { "name": "name", "value": "pan" },
-                "ListName": { "name": "ListName", "value": "compras" },
-                "uid": { "name": "uid", "value": "personal", "id": "kjjhvh" }
-              }
-            }
+            "sessionAttributes": {
+              "locale": "es-ES"
+            },
+            "userAgent": "ask-node/2.0.7 Node/v10.24.1"
           }
         }
 
@@ -147,12 +150,12 @@ const MainView = () => {
 
 
         const itemfinal = {
-          name: item.request.intent.slots.name?.value || "",
-          tags: item.request.intent.slots.ListName?.value || "general",
-          uid: item.request.intent.slots.uid?.id || "alexa_user",
+          name: item.body.response?.directives[0]?.updatedIntent?.slots.name.value || "",
+          // tags: item.request.intent.slots.ListName?.value || "general",
+          // uid: item.request.intent.slots.uid?.id || "alexa_user",
         };
         console.log(itemfinal);
-      }} className={`${userIn?.email == 'aa@gmail.com' ? '' : 'hidden'}`}> prueba 10</div>
+      }} className={`${userIn?.email == 'aa@gmail.com' ? '' : 'hidden'}`}> prueba 11</div>
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 270)}px` }}
         className={`w-full rounded-md`}

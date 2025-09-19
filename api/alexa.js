@@ -79,7 +79,7 @@ export default async function handler(req, res) {
     let item;
 
     // Detectar si viene de Alexa
-    if (req.body.request?.intent?.slots) {
+    if (req.body.response?.directives[0]?.updatedIntent?.slots) {
       const slots = req.body.request.intent.slots;
 
       // Solo tomamos el name que el usuario dijo
