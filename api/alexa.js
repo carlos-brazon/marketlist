@@ -1,6 +1,5 @@
 import admin from "firebase-admin";
 
-// Inicializar Firebase Admin solo si no hay apps activas
 if (!admin.apps.length) {
   const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
   admin.initializeApp({
@@ -41,7 +40,7 @@ export default async function handler(req, res) {
 
       if (intent.name === "AddItemIntent") {
         const dataFromFirebase = await db
-          .collection("dataItemsMarketList2")
+          .collection("dataItemsMarketList")
           .where("userUid", "==", item.uid)
           .where("tags", "==", item.tags)
           .get();
@@ -65,7 +64,7 @@ export default async function handler(req, res) {
             },
           });
         }
-        const docRef = db.collection("dataItemsMarketList2").doc();
+        const docRef = db.collection("dataItemsMarketList").doc();
         await docRef.set({
           userUid: item.uid,
           isDone: false,
