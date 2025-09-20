@@ -10,36 +10,31 @@ if (!admin.apps.length) {
 
 const db = admin.firestore();
 
+function safeSlotId(slot) {
+  return slot?.resolutions?.resolutionsPerAuthority?.[0]?.values?.[0]?.value?.id || "anonimo";
+}
+
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    res.setHeader("Content-Type", "application/json");
-    return res.status(405).json({ error: "Solo POST permitido" });
-  }
+  if (req.method !== "POST") return res.status(405).json({ error: "Solo POST permitido" });
 
   try {
-    const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
+    const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body || {};
     const requestType = body?.request?.type;
     let responseText = "No entendí tu solicitud.";
 
     if (requestType === "LaunchRequest") {
-      // Mensaje de bienvenida
-      responseText = "Bienvenido a tu lista de compras. Dime qué quieres agregar.";
       responseText = "Bienvenido a Super Lista. Dime qué quieres agregar.";
-    } 
-    else if (requestType === "IntentRequest") {
+    } else if (requestType === "IntentRequest") {
       const intent = body.request?.intent;
       if (!intent) throw new Error("No hay intent en el request");
 
       const item = {
         name: intent.slots?.name?.value || "producto desconocido",
-        tags: intent.slots?.tags?.value || "",
-        uid: intent.slots?.user?.resolutions?.resolutionsPerAuthority?.[0]?.values?.[0]?.value?.id || "anonimo"
+        tags: intent.slots?.tags?.value || "general",
+        uid: safeSlotId(intent.slots?.user)
       };
 
       if (intent.name === "AddItemIntent") {
-        responseText = `¡Agregué "${item.name}" a tu lista de ${item.tags}!`;
-
-        // Guardar en Firestore
         const docRef = db.collection("dataItemsMarketList2").doc();
         await docRef.set({
           userUid: item.uid,
@@ -51,40 +46,38 @@ export default async function handler(req, res) {
           create_at: new Date(),
           amount: 0,
         });
+
+        responseText = `¡Agregué "${item.name}" a tu lista de ${item.tags}!`;
       } else {
         responseText = "No reconozco ese intento.";
       }
     }
 
-    res.setHeader("Content-Type", "application/json");
     return res.status(200).json({
       version: "1.0",
       sessionAttributes: {},
       response: {
         outputSpeech: { type: "PlainText", text: responseText },
         reprompt: {
-          outputSpeech: {
-            type: "PlainText",
-            text: "¿Quieres agregar algo más a tu lista?",
-          },
+          outputSpeech: { type: "PlainText", text: "¿Quieres agregar algo más a tu lista?" }
         },
         shouldEndSession: false,
-      },
+      }
     });
 
   } catch (err) {
     console.error("Error en handler Alexa:", err);
-    res.setHeader("Content-Type", "application/json");
     return res.status(200).json({
       version: "1.0",
       sessionAttributes: {},
       response: {
         outputSpeech: { type: "PlainText", text: "Ocurrió un error interno." },
         shouldEndSession: true,
-      },
+      }
     });
   }
 }
+
 
 // // api/alexa.js
 // import { db } from "../src/utils/firebaseNode.js"; // Firestore modular
