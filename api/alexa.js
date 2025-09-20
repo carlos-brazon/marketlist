@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     if (requestType === "LaunchRequest") {
       // Mensaje de bienvenida
       responseText = "Bienvenido a Super Lista. Dime qué quieres agregar.";
-    } 
+    }
     else if (requestType === "IntentRequest") {
       const intent = body.request?.intent;
       if (!intent) throw new Error("No hay intent en el request");
@@ -35,17 +35,22 @@ export default async function handler(req, res) {
         uid: intent.slots?.user?.resolutions?.resolutionsPerAuthority?.[0]?.values?.[0]?.value?.id || "anonimo"
       };
 
-      const dataFromFirebase = await getDocs(query(collection(db, "dataItemsMarketList2"), where("userUid", "==", item.uid)));
-        let dataUser=[]
-        dataFromFirebase.forEach(item => {
-          dataUser.push(item.data());
-        })
-        const arrayItemFilterByTags = dataUser.filter(itemUser => itemUser.tags === item.tags);
-        const itemFound = arrayItemFilterByTags.find(element => element.name.toLowerCase() === item.name.toLowerCase())
-        if (itemFound) {
-          responseText = `¡"${item.name}" ya se encuentra en tu lista ${item.tags}!`;
-          return
+      const dataFromFirebase = await db
+        .collection("dataItemsMarketList2")
+        .where("userUid", "==", item.uid)
+        .where("tags", "==", item.tags)
+        .get();
+      let itemFoun = []
+      dataFromFirebase.forEach(itemUser => {
+        if ( itemUser.name.toLowerCase() === item.name.toLowerCase()) {
+          itemFoun.push(item.data());          
         }
+      })
+
+      if (itemFound) {
+        responseText = `¡"${item.name}" ya se encuentra en tu lista ${item.tags}!`;
+        return
+      }
 
       if (intent.name === "AddItemIntent") {
         responseText = `¡Agregué "${item.name}" a tu lista de ${item.tags}!`;
