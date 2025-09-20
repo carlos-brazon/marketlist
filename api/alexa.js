@@ -43,22 +43,25 @@ export default async function handler(req, res) {
         const dataFromFirebase = await db
           .collection("dataItemsMarketList2")
           .where("userUid", "==", item.uid)
+          .where("tags", "==", item.tags)
           .get();
 
         let dataUser = [];
-        dataFromFirebase.forEach((item) => {
-          dataUser.push(item.data());
+        dataFromFirebase.forEach((itemUser) => {
+          if (itemUser.data().name.toLowerCase() === item.name.toLowerCase()) {
+            dataUser.push(itemUser.data());
+          }
         });
 
-        const arrayItemFilterByTags = dataUser.filter(
-          (itemUser) => itemUser.tags === item.tags
-        );
+        // const arrayItemFilterByTags = dataUser.filter(
+        //   (itemUser) => itemUser.tags === item.tags
+        // );
 
-        const itemFound = arrayItemFilterByTags.find(
-          (element) => element.name.toLowerCase() === item.name.toLowerCase()
-        ); // aqui verifico si el tiem nuevo existe dentro de ese array de etiquetas
+        // const itemFound = arrayItemFilterByTags.find(
+        //   (element) => element.name.toLowerCase() === item.name.toLowerCase()
+        // ); // aqui verifico si el tiem nuevo existe dentro de ese array de etiquetas
 
-        if (itemFound) {
+        if (dataUser.l > 0) {
           responseText = `"${item.name}" ya se encuentra tu lista de ${item.tags}`;
 
           return res.status(200).json({
