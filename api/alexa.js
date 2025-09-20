@@ -1,6 +1,6 @@
 // import admin from "firebase-admin";
 
-import { db } from "../src/utils/firebaseNode";
+// import { db } from "../src/utils/firebaseNode";
 
 // // Inicializar Firebase Admin
 // if (!admin.apps.length) {
@@ -273,7 +273,20 @@ import { db } from "../src/utils/firebaseNode";
 //   }
 // }
 
+import admin from "firebase-admin";
+import { db } from "../src/utils/firebaseNode";
+// Inicializar Firebase Admin
+if (!admin.apps.length) {
+  const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+}
+
+const db = admin.firestore();
+
 export default async function handler(req, res) {
+
   if (req.method !== "POST") {
     res.setHeader("Content-Type", "application/json");
     return res.status(405).json({ error: "Solo POST permitido" });
