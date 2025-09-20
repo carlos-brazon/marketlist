@@ -102,16 +102,16 @@ const MainView = () => {
       <ListControls amount={amount} />
       <div onClick={async () => {
 
-        const dataFromFirebase = await getDocs(query(collection(db, "dataItemsMarketList2"), where("userUid", "==",'mgkO6FaacRXi4BCOzqKDRL7DQUn2')));
-        let dataUser=[]
+        const dataFromFirebase = await getDocs(query(collection(db, "dataItemsMarketList2"), where("userUid", "==", 'mgkO6FaacRXi4BCOzqKDRL7DQUn2')));
+        let dataUser = []
         dataFromFirebase.forEach(item => {
           dataUser.push(item.data());
         })
         const arrayItemFilterByTags = dataUser.filter(item => item.tags === tagsFinal);
         const itemFound = arrayItemFilterByTags.find(element => element.name.toLowerCase() === user.name.toLowerCase()) // aqui verifico si el tiem nuevo existe dentro de ese array de etiquetas
-  
 
-      }} className={`${userIn?.email == 'aa@gmail.com' ? '' : 'hidden'}`}> prueba 7</div>
+
+      }} className={`${userIn?.email == 'aa@gmail.com' ? '' : 'hidden'}`}> prueba 8</div>
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 270)}px` }}
         className={`w-full rounded-md`}
