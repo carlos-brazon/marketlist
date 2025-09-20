@@ -1,4 +1,4 @@
-// // api/utils/firebaseNode.js
+// api/utils/firebaseNode.js
 // import { initializeApp } from "firebase/app";
 // import { getFirestore } from "firebase/firestore";
 // import { getAuth } from "firebase/auth";
