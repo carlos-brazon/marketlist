@@ -286,7 +286,6 @@ if (!admin.apps.length) {
 const db = admin.firestore();
 
 export default async function handler(req, res) {
-
   if (req.method !== "POST") {
     res.setHeader("Content-Type", "application/json");
     return res.status(405).json({ error: "Solo POST permitido" });
@@ -294,40 +293,37 @@ export default async function handler(req, res) {
 
   try {
     const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
-
     const requestType = body?.request?.type;
     let responseText = "No entendí tu solicitud.";
 
     if (requestType === "LaunchRequest") {
       responseText = "Bienvenido a tu lista de compras. Dime qué quieres agregar.";
-    } else if (requestType === "IntentRequest") {
+    } 
+    else if (requestType === "IntentRequest") {
       const intent = body.request?.intent;
+      if (!intent) throw new Error("No hay intent en el request");
 
       const item = {
-        name: intent?.slots.name.value,
-        tags: intent?.slots.tags.value,
-        uid: intent?.slots.user?.resolutions?.resolutionsPerAuthority?.[0]?.values?.[0]?.value?.id
+        name: intent.slots?.name?.value || "producto desconocido",
+        tags: intent.slots?.tags?.value || "",
+        uid: intent.slots?.user?.resolutions?.resolutionsPerAuthority?.[0]?.values?.[0]?.value?.id || "anonimo"
       };
 
-      if (intent && intent.name === "AddItemIntent") {
+      if (intent.name === "AddItemIntent") {
         responseText = `¡Agregué "${item.name}" a tu lista de compras!`;
 
         // Guardar en Firestore
-        const docRef = db.collection("dataItemsMarketList2").doc(); // genera un ID
-        const docId = docRef.id;
-
+        const docRef = db.collection("dataItemsMarketList2").doc();
         await docRef.set({
           userUid: item.uid,
           isDone: false,
           priority: false,
-          id: docId,
+          id: docRef.id,
           name: item.name.toLowerCase(),
           tags: item.tags.toLowerCase(),
           create_at: new Date(),
           amount: 0,
         });
-
-        // console.log("Item guardado en Firestore:", item);
       }
     }
 
@@ -346,6 +342,7 @@ export default async function handler(req, res) {
         shouldEndSession: false,
       },
     });
+
   } catch (err) {
     console.error("Error en handler Alexa:", err);
     res.setHeader("Content-Type", "application/json");
