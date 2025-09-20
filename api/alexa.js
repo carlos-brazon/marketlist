@@ -40,14 +40,14 @@ export default async function handler(req, res) {
         .where("userUid", "==", item.uid)
         .where("tags", "==", item.tags)
         .get();
-      let itemFoun = []
+      let itemFound = []
       dataFromFirebase.forEach(itemUser => {
-        if ( itemUser.name.toLowerCase() === item.name.toLowerCase()) {
-          itemFoun.push(item.data());          
+        if ( itemUser.data().name.toLowerCase() === item.name.toLowerCase()) {
+          itemFound.push(itemUser.data());          
         }
       })
 
-      if (itemFound) {
+      if (itemFound.length > 0) {
         responseText = `¡"${item.name}" ya se encuentra en tu lista ${item.tags}!`;
         return
       }
