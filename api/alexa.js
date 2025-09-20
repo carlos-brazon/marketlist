@@ -1,5 +1,4 @@
 import admin from "firebase-admin";
-import { doc, getDocs, updateDoc, query, collection, where } from 'firebase/firestore';
 
 // Inicializar Firebase Admin solo si no hay apps activas
 if (!admin.apps.length) {
@@ -41,10 +40,11 @@ export default async function handler(req, res) {
         dataFromFirebase.forEach(item => {
           dataUser.push(item.data());
         })
-        const arrayItemFilterByTags = dataUser.filter(item => item.tags === item.tags);
+        const arrayItemFilterByTags = dataUser.filter(itemUser => itemUser.tags === item.tags);
         const itemFound = arrayItemFilterByTags.find(element => element.name.toLowerCase() === item.name.toLowerCase())
         if (itemFound) {
           responseText = `¡"${item.name}" ya se encuentra en tu lista ${item.tags}!`;
+          return
         }
 
       if (intent.name === "AddItemIntent") {
