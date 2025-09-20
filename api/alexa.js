@@ -1,6 +1,6 @@
 // import admin from "firebase-admin";
 
-import { db } from "../src/utils/firebase";
+import { db } from "../src/utils/firebaseNode";
 
 // // Inicializar Firebase Admin
 // if (!admin.apps.length) {
@@ -133,27 +133,192 @@ import { db } from "../src/utils/firebase";
 //   }
 // }
 
+// import { db } from "../src/utils/firebase";
+// import { db } from "../src/utils/firebase.js";
+
+
+// alexa.js
+// export default async function handler(req, res) {
+//   //pon harina en mi lista comprando
+//   if (req.method !== "POST") {
+//     res.setHeader("Content-Type", "application/json");
+//     return res.status(405).json({ error: "Solo POST permitido" });
+//   }
+  
+//   console.log("Body recibido de Alexa:", req.body.request.intent.slots); // 👈 así ves lo que llega
+//   console.log('holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa carlosm')
+
+//   try {
+//     const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
+//     const requestType = body?.request?.type;
+//     let responseText = "No entendí tu solicitud.";
+
+//     if (requestType === "LaunchRequest") {
+//       responseText = "Bienvenido a tu lista de compras. Dime qué quieres agregar.";
+//     } else if (requestType === "IntentRequest") {
+//       const intent = body.request.intent;
+//       if (intent.name === "AddItemIntent") {
+//         const itemName = intent.slots?.name?.value || "un producto";
+//         console.log(itemName);
+//         responseText = `¡Agregué "${itemName}" a tu lista de compras!`;
+//       }
+//     }
+
+//     res.setHeader("Content-Type", "application/json");
+//     return res.status(200).json({
+//       version: "1.0",
+//       sessionAttributes: {},
+//       response: {
+//         outputSpeech: { type: "PlainText", text: responseText },
+//         reprompt: {
+//           outputSpeech: {
+//             type: "PlainText",
+//             text: "¿Quieres agregar algo más a tu lista?",
+//           },
+//         },
+//         shouldEndSession: false,
+//       },
+//     });
+//   } catch (err) {
+//     console.error(err);
+//     res.setHeader("Content-Type", "application/json");
+//     return res.status(200).json({
+//       version: "1.0",
+//       sessionAttributes: {},
+//       response: {
+//         outputSpeech: { type: "PlainText", text: "Ocurrió un error interno." },
+//         shouldEndSession: true,
+//       },
+//     });
+//   }
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// export default async function handler(req, res) {
+//   if (req.method !== "POST") {
+//     res.setHeader("Content-Type", "application/json");
+//     return res.status(405).json({ error: "Solo POST permitido" });
+//   }
+
+//   try {
+//     const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
+    
+//     // pon leche en mi lista de compras hogar
+
+//     const requestType = body?.request?.type;
+//     let responseText = "No entendí tu solicitud.";
+
+//     if (requestType === "LaunchRequest") {
+//       responseText = "Bienvenido a tu lista de compras. Dime qué quieres agregar.";
+//     } else if (requestType === "IntentRequest") {
+//       const intent = body.request?.intent;
+    
+      
+//       const item={
+//         name:intent?.slots.name.value,
+//         tags:intent?.slots.tags.value,
+//         uid:intent?.slots.user.resolutions.resolutionsPerAuthority[0].values[0].value.id
+//       } 
+      
+//       if (intent) {
+//         if (intent.name === "AddItemIntent") {
+//           const itemName = intent.slots?.name?.value || "un producto";
+//           responseText = `¡Agregué "${itemName}" a tu lista de compras!`;
+//         } else {
+//           responseText = "No reconozco ese intento.";
+//         }
+//       } else {
+//         responseText = "No se encontró información del intent.";
+//       }
+//     }
+
+//     res.setHeader("Content-Type", "application/json");
+//     return res.status(200).json({
+//       version: "1.0",
+//       sessionAttributes: {},
+//       response: {
+//         outputSpeech: { type: "PlainText", text: responseText },
+//         reprompt: {
+//           outputSpeech: {
+//             type: "PlainText",
+//             text: "¿Quieres agregar algo más a tu lista?",
+//           },
+//         },
+//         shouldEndSession: false,
+//       },
+//     });
+//   } catch (err) {
+//     console.error("Error en handler Alexa:", err);
+//     res.setHeader("Content-Type", "application/json");
+//     return res.status(200).json({
+//       version: "1.0",
+//       sessionAttributes: {},
+//       response: {
+//         outputSpeech: { type: "PlainText", text: "Ocurrió un error interno." },
+//         shouldEndSession: true,
+//       },
+//     });
+//   }
+// }
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
+    res.setHeader("Content-Type", "application/json");
     return res.status(405).json({ error: "Solo POST permitido" });
   }
 
   try {
-    const requestType = req.body.request?.type;
+    const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
+
+    const requestType = body?.request?.type;
     let responseText = "No entendí tu solicitud.";
 
     if (requestType === "LaunchRequest") {
-      responseText =
-        "Bienvenido a tu lista de compras. Dime qué quieres agregar.";
+      responseText = "Bienvenido a tu lista de compras. Dime qué quieres agregar.";
     } else if (requestType === "IntentRequest") {
-      const intent = req.body.request.intent;
-      if (intent.name === "AddItemIntent") {
-        const itemName = intent.slots?.name?.value || "un producto";
-        responseText = `¡Agregué "${itemName}" a tu lista de compras!`;
-        // Omitimos Firestore temporalmente para probar
+      const intent = body.request?.intent;
+
+      const item = {
+        name: intent?.slots.name.value,
+        tags: intent?.slots.tags.value,
+        uid: intent?.slots.user?.resolutions?.resolutionsPerAuthority?.[0]?.values?.[0]?.value?.id
+      };
+
+      if (intent && intent.name === "AddItemIntent") {
+        responseText = `¡Agregué "${item.name}" a tu lista de compras!`;
+
+        // Guardar en Firestore
+        const docRef = db.collection("dataItemsMarketList2").doc(); // genera un ID
+        const docId = docRef.id;
+
+        await docRef.set({
+          userUid: item.uid,
+          isDone: false,
+          priority: false,
+          id: docId,
+          name: item.name.toLowerCase(),
+          tags: item.tags.toLowerCase(),
+          create_at: new Date(),
+          amount: 0,
+        });
+
+        // console.log("Item guardado en Firestore:", item);
       }
     }
 
+    res.setHeader("Content-Type", "application/json");
     return res.status(200).json({
       version: "1.0",
       sessionAttributes: {},
@@ -169,15 +334,13 @@ export default async function handler(req, res) {
       },
     });
   } catch (err) {
-    console.error(err);
+    console.error("Error en handler Alexa:", err);
+    res.setHeader("Content-Type", "application/json");
     return res.status(200).json({
       version: "1.0",
       sessionAttributes: {},
       response: {
-        outputSpeech: {
-          type: "PlainText",
-          text: "Ocurrió un error interno.",
-        },
+        outputSpeech: { type: "PlainText", text: "Ocurrió un error interno." },
         shouldEndSession: true,
       },
     });
