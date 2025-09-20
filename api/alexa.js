@@ -59,7 +59,7 @@ export default async function handler(req, res) {
         ); // aqui verifico si el tiem nuevo existe dentro de ese array de etiquetas
 
         if (itemFound) {
-          responseText = `¡"${item.name}" ya se encuentra tu lista de ${item.tags}!`;
+          responseText = `"${item.name}" ya se encuentra tu lista de ${item.tags}`;
 
           return res.status(200).json({
             version: "1.0",

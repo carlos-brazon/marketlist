@@ -111,7 +111,7 @@ const MainView = () => {
         const itemFound = arrayItemFilterByTags.find(element => element.name.toLowerCase() === user.name.toLowerCase()) // aqui verifico si el tiem nuevo existe dentro de ese array de etiquetas
 
 
-      }} className={`${userIn?.email == 'aa@gmail.com' ? '' : 'hidden'}`}> prueba 9</div>
+      }} className={`${userIn?.email == 'aa@gmail.com' ? '' : 'hidden'}`}> prueba 10</div>
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 270)}px` }}
         className={`w-full rounded-md`}
