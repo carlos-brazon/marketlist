@@ -274,8 +274,8 @@
 // }
 
 import admin from "firebase-admin";
-import { db } from "../src/utils/firebaseNode";
-// Inicializar Firebase Admin
+
+// Inicializar Firebase Admin solo si no hay apps activas
 if (!admin.apps.length) {
   const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
   admin.initializeApp({
@@ -297,6 +297,7 @@ export default async function handler(req, res) {
     let responseText = "No entendí tu solicitud.";
 
     if (requestType === "LaunchRequest") {
+      // Mensaje de bienvenida
       responseText = "Bienvenido a tu lista de compras. Dime qué quieres agregar.";
     } 
     else if (requestType === "IntentRequest") {
@@ -324,6 +325,8 @@ export default async function handler(req, res) {
           create_at: new Date(),
           amount: 0,
         });
+      } else {
+        responseText = "No reconozco ese intento.";
       }
     }
 

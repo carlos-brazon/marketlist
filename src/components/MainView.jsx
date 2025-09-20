@@ -125,7 +125,7 @@ const MainView = () => {
         //   uid: "998989898899hgasfshg",
         // };
         // console.log(itemfinal);
-      }} className={`${userIn?.email == 'aa@gmail.com' ? '' : 'hidden'}`}> prueba 19</div>
+      }} className={`${userIn?.email == 'aa@gmail.com' ? '' : 'hidden'}`}> prueba 2</div>
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 270)}px` }}
         className={`w-full rounded-md`}
