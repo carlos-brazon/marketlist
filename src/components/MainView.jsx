@@ -98,34 +98,6 @@ const MainView = () => {
       } */}
 
       <ListControls amount={amount} />
-      <div onClick={async () => {
-        try {
-          const res = await fetch("https://marketlist-vert.vercel.app/api/alexa", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ queryResult: { parameters: { name: 'pan233', tags: 'compras', uid: 9999 } } }),
-          });
-
-          if (!res.ok) {
-            const errorText = await res.text();
-            throw new Error(`Error ${res.status}: ${errorText}`);
-          }
-
-          const data = await res.json();
-          console.log("Respuesta de la API:", data);
-          return data;
-        } catch (err) {
-          console.error("Error al llamar al webhook:", err);
-        }
-
-
-        // const itemfinal = {
-        //   name: leche,
-        //   tags: 'compras',
-        //   uid: "998989898899hgasfshg",
-        // };
-        // console.log(itemfinal);
-      }} className={`${userIn?.email == 'aa@gmail.com' ? '' : 'hidden'}`}> prueba 2</div>
       <ScrollArea
         style={{ height: `${Math.round(window.innerHeight - 270)}px` }}
         className={`w-full rounded-md`}
