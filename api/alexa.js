@@ -60,7 +60,15 @@ export default async function handler(req, res) {
 
         if (itemFound) {
           responseText = `¡"${item.name}" ya se encuentra tu lista de ${item.tags}!`;
-          return;
+
+          return res.status(200).json({
+            version: "1.0",
+            sessionAttributes: {},
+            response: {
+              outputSpeech: { type: "PlainText", text: responseText },
+              shouldEndSession: false,
+            },
+          });
         }
         const docRef = db.collection("dataItemsMarketList2").doc();
         await docRef.set({
