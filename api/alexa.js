@@ -30,7 +30,7 @@ function getIdByTypeAdd(slot) {
 }
 
 async function addItemToFirebase(itemName, userUid, tags) {
-  const docRef = db.collection("dataItemsMarketList2").doc();
+  const docRef = db.collection("dataItemsMarketList").doc();
   await docRef.set({
     userUid,
     isDone: false,

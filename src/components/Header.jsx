@@ -49,20 +49,20 @@ const Header = () => {
     await setUserIn(null)
     await signOut(auth);
   }
-  const copyEmailClipboard = () => {
+  const copyTextClipboard = (textToCopy, action) => {
 
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(userIn.email)
+      navigator.clipboard.writeText(textToCopy)
         .then(() => {
           toast({
             className: "p-0",
-            title: <div className='p-1 flex gap-1 items-center justify-center font-light'><span>Email copiado en clipboard</span></div>,
+            title: <div className='p-1 flex gap-1 items-center justify-center font-light'><span>{action} copiado en clipboard</span></div>,
             duration: '1300',
           })
         })
         .catch(err => {
-          console.error("Error al copiar el correo:", err);
-          alert("No se pudo copiar el correo. Por favor, intenta de nuevo.");
+          console.error(`Error al copiar el ${action}:`, err);
+          alert(`No se pudo copiar el ${action}. Por favor, intenta de nuevo.`);
         });
     } else {
       console.warn("Clipboard API no es compatible con este navegador.");
@@ -164,7 +164,10 @@ const Header = () => {
                     </SheetDescription>
                   </SheetHeader>
                   <div className={`pl-2 gap-3 pb-10 flex flex-col relative`}>
-                    {userIn && <SheetClose onClick={() => copyEmailClipboard()} className="flex items-start">
+                    {userIn && <SheetClose onClick={() => copyTextClipboard(userIn.uid, 'Id')} className="flex items-start">
+                      {'Copiar Id'}
+                    </SheetClose>}
+                    {userIn && <SheetClose onClick={() => copyTextClipboard(userIn.email, 'Email')} className="flex items-start">
                       {userIn.email}
                     </SheetClose>}
                     <Link to={userIn ? '/' : '/singin'}>

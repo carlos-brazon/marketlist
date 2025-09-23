@@ -1,11 +1,10 @@
 //firebaseNode.js
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-//menuraiz/src/utils/firebase<node.js
 import { getAuth } from "firebase/auth";
 import dotenv from "dotenv";
 
-dotenv.config(); // carga variables del .env
+dotenv.config();
 
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
