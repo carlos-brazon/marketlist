@@ -94,7 +94,7 @@ export default async function handler(req, res) {
           .get();
 
         const namesFromFirebas = new Set(
-          dataFromFirebase.docs.map((doc) => doc.data().name.toLowerCase())
+          dataFromFirebase.docs.map((doc) => doc.data().name.toLowerCase().trim())
         );
 
         // para verificar con combina (varios items)
