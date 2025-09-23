@@ -1,4 +1,18 @@
 import admin from "firebase-admin";
+//------------------para usar con node index.js------------------
+// import dotenv from "dotenv";
+
+// dotenv.config({ path: ".env.local" }); // fuerza la carga del archivo correcto
+// const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+// serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, "\n");
+
+// if (!admin.apps.length) {
+//   admin.initializeApp({
+//     credential: admin.credential.cert(serviceAccount),
+//   });
+// }
+// const db = admin.firestore();
+//-----------------------------------------------------------------
 
 if (!admin.apps.length) {
   const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
@@ -6,14 +20,45 @@ if (!admin.apps.length) {
     credential: admin.credential.cert(serviceAccount),
   });
 }
-
 const db = admin.firestore();
 
-function safeSlotId(slot) {
+function getIdByTypeAdd(slot) {
   return (
-    slot?.resolutions?.resolutionsPerAuthority?.[0]?.values?.[0]?.value?.id ||
+    slot.resolutions?.resolutionsPerAuthority?.[0]?.values?.[0]?.value?.id ||
     "anonimo"
   );
+}
+
+async function addItemToFirebase(itemName, userUid, tags) {
+  const docRef = db.collection("dataItemsMarketList2").doc();
+  await docRef.set({
+    userUid,
+    isDone: false,
+    priority: false,
+    id: docRef.id,
+    name: itemName.toLowerCase(),
+    tags: tags.toLowerCase(),
+    create_at: new Date(),
+    amount: 0,
+  });
+  return docRef.id;
+}
+
+function alexaResponse(res, text, endSession = false) {
+  return res.status(200).json({
+    version: "1.0",
+    sessionAttributes: {},
+    response: {
+      outputSpeech: { type: "PlainText", text },
+      reprompt: {
+        outputSpeech: {
+          type: "PlainText",
+          text: "¿Quieres agregar algo más a tu lista?",
+        },
+      },
+      shouldEndSession: endSession,
+    },
+  });
 }
 
 export default async function handler(req, res) {
@@ -24,87 +69,72 @@ export default async function handler(req, res) {
     const body =
       typeof req.body === "string" ? JSON.parse(req.body) : req.body || {};
     const requestType = body?.request?.type;
-    let responseText = "No entendí tu solicitud.";
 
     if (requestType === "LaunchRequest") {
-      responseText = "Bienvenido a Super Lista. Dime qué quieres agregar.";
-    } else if (requestType === "IntentRequest") {
+      return alexaResponse(res, "Bienvenido a Super Lista. Dime qué quieres agregar.");
+    }
+
+    if (requestType === "IntentRequest") {
       const intent = body.request?.intent;
       if (!intent) throw new Error("No hay intent en el request");
 
-      const item = {
+      const itemAlexa = {
         name: intent.slots?.name?.value || "producto desconocido",
-        tags: intent.slots?.tags?.value || "general",
-        uid: safeSlotId(intent.slots?.user),
+        tags: intent.slots?.tags?.value || "compras",
+        uid: getIdByTypeAdd(
+          intent.slots?.user.value === "pon" ? intent.slots?.user : intent.slots?.usercom
+        ),
       };
 
       if (intent.name === "AddItemIntent") {
         const dataFromFirebase = await db
-          .collection("dataItemsMarketList")
-          .where("userUid", "==", item.uid)
-          .where("tags", "==", item.tags)
+          .collection("dataItemsMarketList2")
+          .where("userUid", "==", itemAlexa.uid)
+          .where("tags", "==", itemAlexa.tags)
           .get();
 
-        let dataUser = [];
-        dataFromFirebase.forEach((itemUser) => {
-          if (itemUser.data().name.toLowerCase() === item.name.toLowerCase()) {
-            dataUser.push(itemUser.data());
+        const namesFromFirebas = new Set(
+          dataFromFirebase.docs.map((doc) => doc.data().name.toLowerCase())
+        );
+
+        // para verificar con combina (varios items)
+        if (intent.slots?.usercom?.value === "combina") {
+          const arrayNamesFromAlexa = (itemAlexa.name || "").split(" ").filter(Boolean);
+
+          let addedItem = [];
+          let duplicateItem = [];
+
+          for (const nameFromAlexa of arrayNamesFromAlexa) {
+            if (namesFromFirebas.has(nameFromAlexa.toLowerCase())) {
+              duplicateItem.push(nameFromAlexa);
+            } else {
+              await addItemToFirebase(nameFromAlexa, itemAlexa.uid, itemAlexa.tags);
+              addedItem.push(nameFromAlexa);
+            }
           }
-        });
 
-        if (dataUser.length > 0) {
-          responseText = `"${item.name}" ya se encuentra tu lista de ${item.tags}`;
-
-          return res.status(200).json({
-            version: "1.0",
-            sessionAttributes: {},
-            response: {
-              outputSpeech: { type: "PlainText", text: responseText },
-              shouldEndSession: false,
-            },
-          });
+          if (addedItem.length > 0 && duplicateItem.length > 0) {
+            return alexaResponse(res, `Agregué ${addedItem.join(", ")}. Pero ${duplicateItem.join(", ")} ya estaba en tu lista de ${itemAlexa.tags}.`);
+          } else if (addedItem.length > 0) {
+            return alexaResponse(res, `¡Agregué ${addedItem.join(", ")} a tu lista de ${itemAlexa.tags}!`);
+          } else {
+            return alexaResponse(res, `Todos los productos ya estaban en tu lista de ${itemAlexa.tags}.`);
+          }
         }
-        const docRef = db.collection("dataItemsMarketList").doc();
-        await docRef.set({
-          userUid: item.uid,
-          isDone: false,
-          priority: false,
-          id: docRef.id,
-          name: item.name.toLowerCase(),
-          tags: item.tags.toLowerCase(),
-          create_at: new Date(),
-          amount: 0,
-        });
+        // para verificar con pon (item individual)
+        if (namesFromFirebas.has(itemAlexa.name.toLowerCase())) {
+          return alexaResponse(res, `"${itemAlexa.name}" ya se encuentra en tu lista de ${itemAlexa.tags}`);
+        }
 
-        responseText = `¡Agregué "${item.name}" a tu lista de ${item.tags}!`;
-      } else {
-        responseText = "No reconozco ese intento.";
+        await addItemToFirebase(itemAlexa.name, itemAlexa.uid, itemAlexa.tags);
+        return alexaResponse(res, `¡Agregué "${itemAlexa.name}" a tu lista de ${itemAlexa.tags}!`);
       }
-    }
 
-    return res.status(200).json({
-      version: "1.0",
-      sessionAttributes: {},
-      response: {
-        outputSpeech: { type: "PlainText", text: responseText },
-        reprompt: {
-          outputSpeech: {
-            type: "PlainText",
-            text: "¿Quieres agregar algo más a tu lista?",
-          },
-        },
-        shouldEndSession: false,
-      },
-    });
+      return alexaResponse(res, "No reconozco ese intento.");
+    }
+    return alexaResponse(res, "No entendí tu solicitud.");
   } catch (err) {
     console.error("Error en handler Alexa:", err);
-    return res.status(200).json({
-      version: "1.0",
-      sessionAttributes: {},
-      response: {
-        outputSpeech: { type: "PlainText", text: "Ocurrió un error interno." },
-        shouldEndSession: true,
-      },
-    });
+    return alexaResponse(res, "Ocurrió un error interno.", true);
   }
 }
