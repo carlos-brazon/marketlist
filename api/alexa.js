@@ -88,7 +88,7 @@ export default async function handler(req, res) {
 
       if (intent.name === "AddItemIntent") {
         const dataFromFirebase = await db
-          .collection("dataItemsMarketList2")
+          .collection("dataItemsMarketList")
           .where("userUid", "==", itemAlexa.uid)
           .where("tags", "==", itemAlexa.tags)
           .get();
