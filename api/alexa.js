@@ -64,10 +64,13 @@ function alexaResponse(res, text, endSession = false) {
 export default async function handler(req, res) {
   if (req.method !== "POST")
     return res.status(405).json({ error: "Solo POST permitido" });
-
-  if (req.headers['x-my-secret'] !== process.env.MY_SECRET_TOKEN) {
-    return res.status(403).json({ error: "No autorizado" });
-  }
+//     console.log(dotenv);
+// console.log(process.env.MY_SECRET_TOKEN);
+// console.log(req.headers['x-my-secret']);
+//   if (req.headers['x-my-secret'] !== process.env.MY_SECRET_TOKEN) {
+//     console.log('aquiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii');
+//     return res.status(403).json({ error: "No autorizado" });
+//   }
 
   try {
     const body =
