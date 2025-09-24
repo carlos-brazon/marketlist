@@ -13,6 +13,7 @@ import verifier from "alexa-verifier-middleware";
 //   });
 // }
 // const db = admin.firestore();
+// // para probar con este metodo hay que comentar: verifier(req, res, async () => { y });
 //-----------------------------------------------------------------
 
 if (!admin.apps.length) {
@@ -67,10 +68,7 @@ export default async function handler(req, res) {
   if (req.method !== "POST")
     return res.status(405).json({ error: "Solo POST permitido" });
 
-    console.log('aqui');
-
-    verifier(req, res, async () => {
-    console.log('aqui2');
+  verifier(req, res, async () => {
     try {
       const body =
         typeof req.body === "string" ? JSON.parse(req.body) : req.body || {};
@@ -84,39 +82,34 @@ export default async function handler(req, res) {
         const intent = body.request?.intent;
         if (!intent) throw new Error("No hay intent en el request");
 
-        const uidFromAlexa = getIdByTypeAdd(
+        const uidFromIntent = getIdByTypeAdd(
           intent.slots?.user.value === "pon" ? intent.slots?.user : intent.slots?.usercom
         )
+        
+        const uidFromUserAlexa = 'body?.session?.user.userId';
 
-        const idAppFromUserAlexa = body?.session?.application?.applicationId;
-        console.log('idAppFromUserAlexa:', idAppFromUserAlexa);
-
-        if (!uidFromAlexa) {
+        if (!uidFromIntent) {
           return alexaResponse(res, "No se proporcionó UID de usuario.", true);
         }
 
-        const userDoc = await db.collection("userMarketList").doc(uidFromAlexa).get();
+        const userDoc = await db.collection("userMarketList").doc(uidFromIntent).get();
         if (!userDoc.exists) {
-          console.log('usuario no registrado');
           return alexaResponse(res, "Usuario no registrado.", true);
         }
 
         const userFromFirebase = userDoc.data();
-        console.log('userFromFirebase:', userFromFirebase);
-        
-        if (!userFromFirebase.idUserAlexa) {
-          console.log('se agrega el id al usuario en firebase');
-          await db.collection("userMarketList").doc(uidFromAlexa).set({ idUserAlexa: idAppFromUserAlexa }, { merge: true });
-        } else if (userFromFirebase.idUserAlexa !== idAppFromUserAlexa) {
+
+        if (!userFromFirebase.uidUserAlexa) {
+          await db.collection("userMarketList").doc(uidFromIntent).set({ uidUserAlexa: uidFromUserAlexa }, { merge: true });
+        } else if (userFromFirebase.uidUserAlexa !== uidFromUserAlexa) {
           return alexaResponse(res, "Esta skill no está autorizada para este usuario.", true);
         }
 
         const itemAlexa = {
           name: intent.slots?.name?.value || "producto desconocido",
           tags: intent.slots?.tags?.value || "compras",
-          uid: uidFromAlexa
+          uid: uidFromIntent
         };
-console.log('item:',itemAlexa);
         if (intent.name === "AddItemIntent") {
           const dataFromFirebase = await db
             .collection("dataItemsMarketList2")
