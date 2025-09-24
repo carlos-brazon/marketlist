@@ -38,12 +38,12 @@ const ItemsList = ({ setAmount }) => {
               setButton(onlyOneTags);//aqui cambio el nombre de la etiqueta con el set
               setValueInputNewTags(onlyOneTags);// aqui hago el set para cambiar el valor del input de las tags
               setAddTags(false);// aqui hago el set para que se cierre el input de las tags
-              await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: onlyOneTags });
+              await updateDoc(doc(db, "userMarketList2", userIn.uid), { last_tags: onlyOneTags });
             } else {
               setButton(itemSelected.tags.toLowerCase());
             }
 
-            await deleteDoc(doc(db, "dataItemsMarketList", itemSelected.id));
+            await deleteDoc(doc(db, "dataItemsMarketList2", itemSelected.id));
           } catch (error) {
             console.error("Error al eliminar el producto:", error);
           }
@@ -56,7 +56,7 @@ const ItemsList = ({ setAmount }) => {
         clickTimeoutRef.current = setTimeout(async () => {//click normal
           if (tapCountRef.current === 1) {
             try {
-              await updateDoc(doc(db, "dataItemsMarketList", itemSelected.id), {
+              await updateDoc(doc(db, "dataItemsMarketList2", itemSelected.id), {
                 isDone: newIsDoneValue,
                 isDone_at: serverTimestamp()
               });
