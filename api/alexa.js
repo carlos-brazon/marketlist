@@ -85,8 +85,8 @@ export default async function handler(req, res) {
         const uidFromIntent = getIdByTypeAdd(
           intent.slots?.user.value === "pon" ? intent.slots?.user : intent.slots?.usercom
         )
-        
-        const uidFromUserAlexa = 'body?.session?.user.userId';
+
+        const uidFromUserAlexa = body?.session?.user.userId;
 
         if (!uidFromIntent) {
           return alexaResponse(res, "No se proporcionó UID de usuario.", true);
