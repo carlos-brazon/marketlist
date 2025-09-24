@@ -32,7 +32,7 @@ function getIdByTypeAdd(slot) {
 }
 
 async function addItemToFirebase(itemName, userUid, tags) {
-  const docRef = db.collection("dataItemsMarketList2").doc();
+  const docRef = db.collection("dataItemsMarketList").doc();
   await docRef.set({
     userUid,
     isDone: false,
@@ -87,6 +87,7 @@ export default async function handler(req, res) {
         )
 
         const uidFromUserAlexa = body?.session?.user.userId;
+        const appIdFromAlexa = body.session.application.applicationId;
 
         if (!uidFromIntent) {
           return alexaResponse(res, "No se proporcionó UID de usuario.", true);
@@ -99,9 +100,9 @@ export default async function handler(req, res) {
 
         const userFromFirebase = userDoc.data();
 
-        if (!userFromFirebase.uidUserAlexa) {
-          await db.collection("userMarketList").doc(uidFromIntent).set({ uidUserAlexa: uidFromUserAlexa }, { merge: true });
-        } else if (userFromFirebase.uidUserAlexa !== uidFromUserAlexa) {
+        if (!userFromFirebase.uidUserAlexa || !userFromFirebase.appIdAlexa) {
+          await db.collection("userMarketList").doc(uidFromIntent).set({ uidUserAlexa: uidFromUserAlexa, appIdAlexa: appIdFromAlexa  }, { merge: true });
+        } else if (userFromFirebase.uidUserAlexa !== uidFromUserAlexa || userFromFirebase.appIdAlexa !== appIdFromAlexa) {
           return alexaResponse(res, "Esta skill no está autorizada para este usuario.", true);
         }
 
@@ -112,7 +113,7 @@ export default async function handler(req, res) {
         };
         if (intent.name === "AddItemIntent") {
           const dataFromFirebase = await db
-            .collection("dataItemsMarketList2")
+            .collection("dataItemsMarketList")
             .where("userUid", "==", itemAlexa.uid)
             .where("tags", "==", itemAlexa.tags)
             .get();

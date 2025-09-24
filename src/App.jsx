@@ -26,7 +26,7 @@ function App() {
       if (loadingSingIn) {
         if (user) {
           const userFirebase = await getDocs(query(collection(db, 'userMarketList'), where('email', '==', user.email)));
-          const dataFromFirebase = await getDocs(query(collection(db, "dataItemsMarketList2"), where("userUid", "==", user.uid)));
+          const dataFromFirebase = await getDocs(query(collection(db, "dataItemsMarketList"), where("userUid", "==", user.uid)));
           let userConected;
           let dataUser = [];
 
