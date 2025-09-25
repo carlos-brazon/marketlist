@@ -170,7 +170,7 @@ console.log(inputSearch);
 
 <Input onChange={(event)=>{
 
-  const filterSearch= productsFromMercadona.filter(elemnt => elemnt.name.include(event.target.value))
+  const filterSearch= productsFromMercadona.filter(elemnt => elemnt.name.includes(event.target.value))
 setInputSearch(filterSearch);
 
 }}/>
