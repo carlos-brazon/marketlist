@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "node server.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -33,6 +34,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "cmdk": "^1.0.0",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "emailjs-com": "^3.2.0",
     "express": "^5.1.0",
@@ -41,6 +43,7 @@
     "lodash": "^4.17.21",
     "lucide-react": "^0.292.0",
     "node": "^22.19.0",
+    "node-fetch": "^3.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.3.5",
@@ -76,5 +79,18 @@
         "./src/*"
       ]
     }
-  }
+  },
+  "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/carlos-brazon/marketlist.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/carlos-brazon/marketlist/issues"
+  },
+  "homepage": "https://github.com/carlos-brazon/marketlist#readme"
 }
