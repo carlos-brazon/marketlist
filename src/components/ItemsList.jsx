@@ -7,6 +7,7 @@ import { db } from '../utils/firebase'
 import PropTypes from 'prop-types';
 import AmountDialog from './AmountDialog'
 import { useToast } from "@/components/ui/use-toast"
+import MercadonaDialog from './MercadonaDialog'
 
 const ItemsList = ({ setAmount }) => {
     ItemsList.propTypes = {
@@ -151,7 +152,7 @@ const ItemsList = ({ setAmount }) => {
                 list.map((item, index) => {
                     return <div
                         key={index}
-                        className={`break-normal items-center justify-end min-h-[30px] flex gap-2 m-0.5 rounded px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-200'}`}
+                        className={` break-normal w-full items-center  justify-between min-h-[30px] flex gap-2 m-0.5 rounded px-2 ${item.priority ? 'bg-red-400' : index % 2 === 0 ? 'bg-blue-100' : 'bg-blue-200'}`}
                     >
                         <div
                             className={`flex w-full text-xs items-center ${item.isDone && 'line-through'}`}
@@ -165,32 +166,36 @@ const ItemsList = ({ setAmount }) => {
                         >
                             <div>{firstLetterUpperCase(item.name)}</div>
                         </div>
-                        <div className='flex gap-1 items-center'>
+                        <div className='flex gap-1 items-center justify-end'>
+
+
+                          <MercadonaDialog/>
+
                             {item.isDone && item.create_at && item.isDone_at && userIn?.email === 'carlosbrazon.sp3@gmail.com' && (
                                 <div className=" flex w-12 text-[10px] justify-start items-start">
-                                    {(() => {// esto es para medir el tiempo de las horas de limpieza en la oficina 4-3
-                                        const startTime = new Date(item.create_at && item.create_at.toDate ? item.create_at.toDate() : item.create_at);
-                                        const endTime = new Date(item.isDone_at && item.isDone_at.toDate ? item.isDone_at.toDate() : item.isDone_at);
-                                        const diffMs = endTime - startTime; // Diferencia en milisegundos
-                                        const diffHours = Math.floor(diffMs / (1000 * 60 * 60)); // Horas
-                                        const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60)); // Minutos
-                                        return `${diffHours} h ${diffMinutes} m`;
-                                    })()}
+                                {(() => {// esto es para medir el tiempo de las horas de limpieza en la oficina 4-3
+                                const startTime = new Date(item.create_at && item.create_at.toDate ? item.create_at.toDate() : item.create_at);
+                                const endTime = new Date(item.isDone_at && item.isDone_at.toDate ? item.isDone_at.toDate() : item.isDone_at);
+                                const diffMs = endTime - startTime; // Diferencia en milisegundos
+                                const diffHours = Math.floor(diffMs / (1000 * 60 * 60)); // Horas
+                                const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60)); // Minutos
+                                return `${diffHours} h ${diffMinutes} m`;
+                                })()}
                                 </div>
-                            )}
-                            <div className=' whitespace-nowrap justify-center text-[9px] w-auto'>
-                                {userIn?.isDateControl && <div className="flex flex-col h-6">
+                                )}
+                            {userIn?.isDateControl &&  <div className=' flex whitespace-nowrap text-[9px] w-auto'>
+                                <div className="flex flex-col items-center justify-center h-6">
                                     <div>
                                         {formatDate(item.create_at)}
                                     </div>
 
                                     {item.isDone && <div className="line-through">{formatDate(item.isDone_at)}</div>}
-                                </div>}
-                            </div>
-                            <AmountDialog item={item} setAmount={setAmount} />
+                                </div>
+                            </div>}
+                            {<AmountDialog item={item} setAmount={setAmount} />}
 
                             {userIn?.isDoneControl &&
-                                <div onClick={() => handlePriority(item)} className="flex items-center w-auto h-5 z-50 rounded-md text-[10px] text-center px-0.5 py-0.5 bg-slate-100 border border-gray-900">Urgente</div>}
+                                <div onClick={() => handlePriority(item)} className="flex items-center justify-center w-auto h-5 z-50 rounded-md text-[10px] text-center px-0.5 py-0.5 bg-slate-100 border border-gray-900">Urgente</div>} 
                             <EditDialog item={item} />
                         </div>
                     </div>

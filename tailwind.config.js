@@ -1,12 +1,12 @@
-/** @type {import('tailwindcss').Config} */
+// /** @type {import('tailwindcss').Config} */
 module.exports = {
-  plugins: [require("tailwindcss-animated")],
-  darkMode: ["class"],
+  darkMode: "class", // modo oscuro activado por clase
   content: [
-    "./pages/**/*.{js,jsx}",
-    "./components/**/*.{js,jsx}",
-    "./app/**/*.{js,jsx}",
-    "./src/**/*.{js,jsx}",
+    "./index.html", // incluye tu html principal
+    "./src/**/*.{js,ts,jsx,tsx}", // incluye todos los archivos dentro de src
+    "./pages/**/*.{js,jsx,ts,tsx}",
+    "./components/**/*.{js,jsx,ts,tsx}",
+    "./app/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
     container: {
@@ -18,7 +18,7 @@ module.exports = {
     },
     extend: {
       colors: {
-        imgBorder: "#002162", // Agregamos el color como "primary"
+        imgBorder: "#002162",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -53,7 +53,6 @@ module.exports = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
-
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -75,4 +74,5 @@ module.exports = {
       },
     },
   },
+  plugins: [require("tailwindcss-animated")],
 };

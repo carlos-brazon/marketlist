@@ -8,8 +8,6 @@ import chevUp from "../assets/chevron-up-item.svg";
 import chevDown from "../assets/chevron-down-item.svg";
 import { doc, getDocs, updateDoc, query, collection, where } from 'firebase/firestore';
 import { db } from '../utils/firebase';
-import Input from './Input';
-
 
 
 const MainView = () => {
@@ -18,7 +16,8 @@ const MainView = () => {
   const [changeIcons, setChangeIcons] = useState(userIn?.control_items);
   const [productsFromMercadona, setProductsFromMercadona] = useState(null);
   const [inputSearch, setInputSearch] = useState(null);
-console.log(inputSearch);
+  const [inputSearch2, setInputSearch2] = useState('');
+  console.log(inputSearch);
   return (
     <div className='flex flex-col items-center gap-2 h-full w-full px-3'>
       <Tags setAmount={setAmount} />
@@ -103,88 +102,7 @@ console.log(inputSearch);
       } */}
 
       <ListControls amount={amount} />
-      <div
-        onClick={async () => {
-          try {
-            const res = await fetch("http://localhost:3001/categories");
-            const products = await res.json();
 
-            console.log(products.results);
-
-            // Extraemos todos los IDs de subcategorías
-            const ids = products.results.flatMap(cat =>
-              cat.categories.map(sub => sub.id)
-            );
-
-            console.log("Todos los IDs:", ids);
-
-            // Hacer fetch para cada categoría y acumular resultados
-            try {
-              const allData = await Promise.all(
-                ids.map(id =>
-                  fetch(`http://localhost:3001/category/${id}/`)
-                    .then(res => {
-                      if (!res.ok) throw new Error(`Error al obtener categoría ${id}`);
-                      return res.json();
-                    })
-                    .catch(err => {
-                      console.error(err);
-                      return null; // para que no rompa Promise.all
-                    })
-                )
-              );
-              const filteredData = allData.filter(item => item !== null);
-              const allProducts = filteredData.flatMap(category => {
-                let products = category.products ? [...category.products] : [];
-              
-                if (category.categories) {
-                  category.categories.forEach(sub => {
-                    if (sub.products) {
-                      products.push(...sub.products);
-                    }
-                  });
-                }
-              
-                return products;
-              });
-              
-              console.log(allProducts);
-              setProductsFromMercadona(allProducts);
-              setInputSearch(allProducts);
-              console.log("Datos de todas las subcategorías:", filteredData);
-                 } catch (error) {
-              console.error("Error al obtener productos:", error);
-            }
-
-            // Filtramos los nulls
-            
-
-          } catch (err) {
-            console.error("Error al obtener productos:", err);
-          }
-        }}
-        className={`${userIn?.email === 'aa@gmail.com' ? '' : 'hidden'}`}
-      >
-        Obtener productos
-</div>
-
-<Input onChange={(event)=>{
-
-  const filterSearch= productsFromMercadona.filter(elemnt => elemnt.name.includes(event.target.value))
-setInputSearch(filterSearch);
-
-}}/>
-<div className='flex items-center justify-center border gap-2 flex-wrap'>
-  {inputSearch?.map((itemFromMercadona, i) =>{
-    return <div key={i} className='flex w-48 h-52 flex-col border border-red items-center justify-center p-2 rounded-md'>
-      <div>{itemFromMercadona.display_name}</div>
-      <div className='flex items-center'>
-      <img className='w-16 h-16' src={itemFromMercadona.thumbnail} alt=""/>
-      <div>precio: {itemFromMercadona.price_instructions.unit_price}</div>
-      </div>
-    </div>
-  })}
-</div>
 
 
       {/* <div

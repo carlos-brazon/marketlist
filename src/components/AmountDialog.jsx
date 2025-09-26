@@ -48,9 +48,9 @@ const AmountDialog = ({ item, setAmount }) => {
     }
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogTrigger>
-                {userIn?.addControl && <div onClick={() => setIsOpen(true)} className={`cursor-text text-center p-px text-xs w-14 border border-black rounded-md`}>{item.amount?.toFixed(2) || 0}</div>}
-            </DialogTrigger>
+            {userIn?.addControl && <DialogTrigger>
+                 <div onClick={() => setIsOpen(true)} className={`cursor-text text-center p-px text-xs w-14 border border-black rounded-md`}>{item.amount?.toFixed(2) || 0}</div>
+            </DialogTrigger>}
             <DialogContent className="flex flex-col items-center gap-6 justify-center rounded-lg">
                 <DialogHeader>
                     <DialogTitle className="text-base">Agrega el monto deseado</DialogTitle>

@@ -4,7 +4,8 @@ import react from "file:///C:/Users/meimo/OneDrive/Escritorio/react/marketlist/n
 import { defineConfig } from "file:///C:/Users/meimo/OneDrive/Escritorio/react/marketlist/node_modules/vite/dist/node/index.js";
 var __vite_injected_original_dirname = "C:\\Users\\meimo\\OneDrive\\Escritorio\\react\\marketlist";
 var vite_config_default = defineConfig({
-  plugins: [react()],
+  plugins: [react(),
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__vite_injected_original_dirname, "./src")
