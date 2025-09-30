@@ -25,7 +25,8 @@ const MercadonaDialog = () => {
 
     if (!itemsFromLocalStorage) {
       try {
-        const res = await fetch("http://localhost:3001/categories");
+        const res = await fetch("api/categories");
+        // const res = await fetch("http://localhost:3001/categories");
         const products = await res.json();
 
         console.log(products.results);
@@ -42,7 +43,8 @@ const MercadonaDialog = () => {
           const allData = await Promise.all(
             ids.map(id =>
               // fetch(`/api/${id}/`)
-              fetch(`http://localhost:3001/category/${id}/`)
+              fetch(`api/category/${id}/`)
+              // fetch(`http://localhost:3001/category/${id}/`)
                 .then(res => {
                   if (!res.ok) throw new Error(`Error al obtener categoría ${id}`);
                   return res.json();
@@ -137,6 +139,9 @@ const MercadonaDialog = () => {
 }
 
 export default MercadonaDialog
+
+
+
 
 
 // import React, { useContext, useState } from 'react';
