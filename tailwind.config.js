@@ -53,6 +53,9 @@ module.exports = {
           foreground: "hsl(var(--card-foreground))",
         },
       },
+       screens: {
+        xs: "574px",
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -74,5 +77,8 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animated")],
+  plugins: [
+    require("tailwindcss-animated"),
+    require('@tailwindcss/line-clamp'),
+  ],
 };

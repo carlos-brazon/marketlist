@@ -68,7 +68,7 @@ const EditDialog = ({ item }) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       {userIn?.isEditControl && <DialogTrigger onClick={() => setIsOpen(true)} className="flex items-center w-auto h-5 z-50 rounded-md text-[10px] text-center px-0.5 bg-slate-100 border border-gray-900">Editar</DialogTrigger>}
-      <DialogContent className={'rounded-lg top-1/3 md:top-1/2'}>
+      <DialogContent className={'rounded-lg top-1/3 md:top-1/2 md:w-[800px] '}>
         <DialogHeader className={'flex flex-col gap-5'}>
           <DialogTitle className={'text-base'}>¿Estás seguro que deseas editar este Item?</DialogTitle>
           <DialogDescription asChild>
@@ -76,7 +76,7 @@ const EditDialog = ({ item }) => {
               <div className='flex flex-col gap-2'>
                 <div className={`relative ease-in-out duration-1000 flex items-start gap-1`} style={{ height: `${amoundPixel}px` }}>
                   <Textarea
-                    className={`w-[330px] md:w-full rounded-md border border-gray-500  focus:border-black focus:border-[3px] focus-visible:ring-0 focus:outline-0 focus:ring-offset-0 focus-visible:ring-offset-0 h-full break-words resize-none pr-8 overflow-hidden`}
+                    className={`rounded-md border border-gray-500  focus:border-black focus:border-[3px] focus-visible:ring-0 focus:outline-0 focus:ring-offset-0 focus-visible:ring-offset-0 h-full break-words resize-none pr-8 overflow-hidden`}
                     type={'text'}
                     name={'name'}
                     onChange={handleInput}

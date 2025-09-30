@@ -1,33 +1,3 @@
-// // server.js
-// import express from "express";
-// import fetch from "node-fetch";
-// import cors from "cors";
-
-// const app = express();
-
-// // Permitir peticiones desde tu frontend
-// app.use(cors({
-//   origin: "http://localhost:5173"
-// }));
-
-// // Endpoint para obtener categorías
-// app.get("/categories", async (req, res) => {
-//   try {
-//     const response = await fetch("https://tienda.mercadona.es/api/categories/");
-//     if (!response.ok) {
-//       return res.status(response.status).json({ error: "Error al obtener datos de Mercadona" });
-//     }
-//     const data = await response.json();
-//     res.json(data);
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ error: "Error en el servidor" });
-//   }
-// });
-
-// // Iniciamos el servidor
-// const PORT = 3001;
-// app.listen(PORT, () => console.log(`Proxy server corriendo en http://localhost:${PORT}`));
 
 // server.js
 import express from "express";

@@ -21,7 +21,7 @@ const DialogOverlay = React.forwardRef(({ className, ...props }, ref) => (
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 const DialogContent = React.forwardRef(({ className, children, ...props }, ref) => (
-  <DialogPortal>
+  <DialogPortal className>
     <DialogOverlay />
     <DialogPrimitive.Content
       ref={ref}
@@ -30,13 +30,13 @@ const DialogContent = React.forwardRef(({ className, children, ...props }, ref) 
       //   className
       // )}
       className={cn(
-        "fixed left-[50%] top-20 z-50 grid w-[380px] max-w-lg translate-x-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200",
+        "fixed left-[50%] w-11/12 top-20 z-50 grid translate-x-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200",
         "max-h-[80vh] overflow-y-auto",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
         "data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
-        "sm:rounded-lg md:w-full",
+        "sm:rounded-lg",
         className
       )}
       {...props}
