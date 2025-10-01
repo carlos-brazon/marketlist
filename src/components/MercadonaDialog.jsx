@@ -29,7 +29,7 @@ const MercadonaDialog = () => {
         // const res = await fetch("http://localhost:3001/categories");
         const products = await res.json();
 
-        console.log(products.results);
+        console.log('productos',products.results);
 
         // Extraemos todos los IDs de subcategorías
         const ids = products.results.flatMap(cat =>
@@ -40,20 +40,26 @@ const MercadonaDialog = () => {
 
         // Hacer fetch para cada categoría y acumular resultados
         try {
-          const allData = await Promise.all(
-            ids.map(id =>
-              fetch(`api/category/${id}/`)
-              // fetch(`http://localhost:3001/category/${id}/`)
-                .then(res => {
-                  if (!res.ok) throw new Error(`Error al obtener categoría ${id}`);
-                  return res.json();
-                })
-                .catch(err => {
-                  console.error(err);
-                  return null; // para que no rompa Promise.all
-                })
-            )
-          );
+          // const allData = await Promise.all(
+          //   ids.map(id =>
+          //     fetch(`api/category/${id}/`)
+          //     // fetch(`http://localhost:3001/category/${id}/`)
+          //       .then(res => {
+          //         if (!res.ok) throw new Error(`Error al obtener categoría ${id}`);
+          //         return res.json();
+          //       })
+          //       .catch(err => {
+          //         console.error(err);
+          //         return null; // para que no rompa Promise.all
+          //       })
+          //   )
+          // );
+const idd='115'
+console.log(idd);
+
+          const response= await fetch(`http://localhost:3001/category/${idd}/`)
+          const text = await response.text(); // en vez de response.json()
+console.log(text.slice(0, 1000)); // solo los primeros 1000 caracteres
           const filteredData = allData.filter(item => item !== null);
           const allProducts = filteredData.flatMap(category => {
             let products = category.products ? [...category.products] : [];
@@ -103,7 +109,7 @@ const MercadonaDialog = () => {
               onClick={() => getAllItems()}
               className={`${userIn?.email === 'aa@gmail.com' ? '' : 'hidden'}`}
             >
-              Obtener productos
+              Obtener productos1
             </div>
 
             <Input placeholder={"Buscar"} className={'w-fit'} onChange={(event) => {
