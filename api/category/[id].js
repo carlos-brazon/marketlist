@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
- const { id } = req.params;
+ const { id } = req.query;
   console.log(id);
   try {
     const response = await fetch(`https://tienda.mercadona.es/api/categories/${id}/`);

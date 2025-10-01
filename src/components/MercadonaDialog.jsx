@@ -42,7 +42,6 @@ const MercadonaDialog = () => {
         try {
           const allData = await Promise.all(
             ids.map(id =>
-              // fetch(`/api/${id}/`)
               fetch(`api/category/${id}/`)
               // fetch(`http://localhost:3001/category/${id}/`)
                 .then(res => {
