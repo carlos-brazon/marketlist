@@ -55,7 +55,6 @@ const MercadonaDialog = () => {
           //   )
           // );
 const idd='115'
-console.log(idd);
 
           const response= await fetch(`api/category/${idd}/`)
           const text = await response.text(); // en vez de response.json()
@@ -109,7 +108,7 @@ console.log(text.slice(0, 1000)); // solo los primeros 1000 caracteres
               onClick={() => getAllItems()}
               className={`${userIn?.email === 'aa@gmail.com' ? '' : 'hidden'}`}
             >
-              Obtener productos2
+              Obtener productos3
             </div>
 
             <Input placeholder={"Buscar"} className={'w-fit'} onChange={(event) => {
