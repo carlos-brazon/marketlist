@@ -29,7 +29,8 @@ const MercadonaDialog = () => {
         // const res = await fetch("http://localhost:3001/categories");
         const products = await res.json();
 
-        console.log('productos',products.results);
+        console.log('productos',products);
+        console.log('productos',products.subcategories);
 
         // Extraemos todos los IDs de subcategorías
         const ids = products.results.flatMap(cat =>
@@ -108,7 +109,7 @@ console.log(text.slice(0, 1000)); // solo los primeros 1000 caracteres
               onClick={() => getAllItems()}
               className={`${userIn?.email === 'aa@gmail.com' ? '' : 'hidden'}`}
             >
-              Obtener productos6
+              Obtener productos7
             </div>
 
             <Input placeholder={"Buscar"} className={'w-fit'} onChange={(event) => {

@@ -34,6 +34,8 @@ export default async function handler(req, res) {
     );
     console.log("Todos los IDs categories:", ids);
 
+    const testId = ['112', '115', '156', '89']
+
     // 2️⃣ Obtener datos de cada subcategoría con Promise.allSettled
     const allDataResults = await Promise.allSettled(
       ids.map(id =>
