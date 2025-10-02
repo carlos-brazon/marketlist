@@ -22,11 +22,16 @@ export default async function handler(req, res) {
 const ids = data.results.flatMap(cat =>
           cat.categories.map(sub => sub.id)
         );
-    console.log("Todos los IDs:", ids);
+    console.log("Todos los IDs categories:", ids);
 
     const allData = await Promise.all(
             ids.map(id =>
-              fetch(`https://tienda.mercadona.es/api/categories/${id}/`)
+              fetch(`https://tienda.mercadona.es/api/categories/${id}/`), {
+                headers: {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Accept": "application/json"
+          }
+              }
               // fetch(`http://localhost:3001/category/${id}/`)
                 .then(res => {
                   if (!res.ok) throw new Error(`Error al obtener categoría ${id}`);

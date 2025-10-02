@@ -108,7 +108,7 @@ console.log(text.slice(0, 1000)); // solo los primeros 1000 caracteres
               onClick={() => getAllItems()}
               className={`${userIn?.email === 'aa@gmail.com' ? '' : 'hidden'}`}
             >
-              Obtener productos4
+              Obtener productos5
             </div>
 
             <Input placeholder={"Buscar"} className={'w-fit'} onChange={(event) => {
