@@ -12,7 +12,7 @@ app.use(cors({
 }));
 
 // Endpoint para obtener todas las categorías
-app.get("/categories", async (req, res) => {
+app.get("/categories", async (req, res) => {  
   try {
     const response = await fetch("https://tienda.mercadona.es/api/categories/");
     if (!response.ok) {
@@ -29,7 +29,6 @@ app.get("/categories", async (req, res) => {
 // Endpoint para obtener los datos de una categoría por ID
 app.get("/category/:id", async (req, res) => {
   const { id } = req.params;
-  console.log(id);
   try {
     const response = await fetch(`https://tienda.mercadona.es/api/categories/${id}/`);
     if (!response.ok) {

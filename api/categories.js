@@ -2,17 +2,13 @@
 
 // export default async function handler(req, res) {
 //   const response = await fetch("https://tienda.mercadona.es/api/categories/");
-//   const data = await response.json();
-
-
-  
+//   const data = await response.json();  
 //   res.status(200).json(data);
 // }
 
-      
 import fetch from "node-fetch";
 
-export default async function handler(req, res) {
+export default async function handler(req, res) {    
   try {
     // 1️⃣ Obtener todas las categorías principales
     const response = await fetch("https://tienda.mercadona.es/api/categories/", {
@@ -32,13 +28,12 @@ export default async function handler(req, res) {
     const ids = data.results.flatMap(cat =>
       cat.categories.map(sub => sub.id)
     );
-    console.log("Todos los IDs categories:", ids);
 
-    const testId = ['112', '115', '156', '89']
+    const testId = ['112', '115']
 
     // 2️⃣ Obtener datos de cada subcategoría con Promise.allSettled
     const allDataResults = await Promise.allSettled(
-      ids.map(id =>
+      testId.map(id =>
         fetch(`https://tienda.mercadona.es/api/categories/${id}/`, {
           headers: {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -60,7 +55,6 @@ export default async function handler(req, res) {
 
     // 3️⃣ Enviar la respuesta final
     res.status(200).json({
-      categories: data.results,
       subcategories: allData,
     });
 
