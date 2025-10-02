@@ -55,12 +55,8 @@ const MercadonaDialog = () => {
           //       })
           //   )
           // );
-const idd='115'
 
-          const response= await fetch(`api/category/${idd}/`)
-          const text = await response.text(); // en vez de response.json()
-console.log(text.slice(0, 1000)); // solo los primeros 1000 caracteres
-          const filteredData = allData.filter(item => item !== null);
+          const filteredData = products.subcategories.filter(item => item !== null);
           const allProducts = filteredData.flatMap(category => {
             let products = category.products ? [...category.products] : [];
 
