@@ -14,10 +14,7 @@ const MainView = () => {
   const { userIn, setUserIn } = useContext(AllItemsContext);
   const [amount, setAmount] = useState(0);
   const [changeIcons, setChangeIcons] = useState(userIn?.control_items);
-  const [productsFromMercadona, setProductsFromMercadona] = useState(null);
-  const [inputSearch, setInputSearch] = useState(null);
-  const [inputSearch2, setInputSearch2] = useState('');
-  console.log(inputSearch);
+
   return (
     <div className='flex flex-col items-center gap-2 h-full w-full px-3'>
       <Tags setAmount={setAmount} />
@@ -102,8 +99,6 @@ const MainView = () => {
       } */}
 
       <ListControls amount={amount} />
-
-
 
       {/* <div
         onClick={async () => {

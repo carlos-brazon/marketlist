@@ -1,12 +1,10 @@
 export default async function handler(req, res) {
-  console.log('req', req);
   
  const { idd } = req.query;
  const { idd2 } = req.params;
- console.log('idd',idd);
- console.log('idd2',idd2);
+
   try {
-    const response = await fetch(`https://tienda.mercadona.es/api/categories/${id2}/`);
+    const response = await fetch(`https://tienda.mercadona.es/api/categories/${idd2}/`);
     if (!response.ok) {
       return res.status(response.status).json({ error: "Error al obtener datos de la categoría" });
     }

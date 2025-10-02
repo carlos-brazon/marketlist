@@ -169,7 +169,7 @@ const ItemsList = ({ setAmount }) => {
                         <div className='flex gap-1 items-center justify-end'>
 
 
-                          <MercadonaDialog/>
+                          <MercadonaDialog item={item}/>
 
                             {item.isDone && item.create_at && item.isDone_at && userIn?.email === 'carlosbrazon.sp3@gmail.com' && (
                                 <div className=" flex w-12 text-[10px] justify-start items-start">
