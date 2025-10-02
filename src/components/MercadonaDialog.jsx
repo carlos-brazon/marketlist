@@ -36,7 +36,7 @@ const MercadonaDialog = () => {
           cat.categories.map(sub => sub.id)
         );
 
-        console.log("Todos los IDs:", ids);
+        // console.log("Todos los IDs:", ids);
 
         // Hacer fetch para cada categoría y acumular resultados
         try {
@@ -108,7 +108,7 @@ console.log(text.slice(0, 1000)); // solo los primeros 1000 caracteres
               onClick={() => getAllItems()}
               className={`${userIn?.email === 'aa@gmail.com' ? '' : 'hidden'}`}
             >
-              Obtener productos5
+              Obtener productos6
             </div>
 
             <Input placeholder={"Buscar"} className={'w-fit'} onChange={(event) => {
