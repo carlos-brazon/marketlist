@@ -57,10 +57,13 @@ async function main() {
     allDataResults.filter((r) => r.status === "rejected").length
   );
 
-  fs.writeFileSync(
-    "./data/mercadonaProducts.json",
-    JSON.stringify(allData, null, 2)
-  );
+  // fs.writeFileSync(
+  //   "./data/mercadonaProducts.json",
+  //   JSON.stringify(allData, null, 2)
+  // );
+   res.status(200).json({
+      subcategories: allData,
+    });
   console.log("Archivo JSON generado: ./data/mercadonaProducts.json");
 }
 

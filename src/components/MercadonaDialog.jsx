@@ -30,6 +30,8 @@ const MercadonaDialog = ({ item }) => {
         // tiempo menor a 4 dias
         setProductsFromMercadona(itemsFromLocalStorage);
         doFetch = false;
+        console.log('no fetch, viene de local');
+        
       }
     }
 
