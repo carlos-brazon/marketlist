@@ -142,7 +142,7 @@ async function fetchWithRetry(url, options, retries = 2) {
     } catch (err) {
       if (i === retries - 1) throw err;
       console.warn(`Retry ${i + 1} for ${url}`);
-      await new Promise((r) => setTimeout(r, 300)); // espera 300ms antes de reintentar
+      await new Promise((r) => setTimeout(r, 50)); // espera 300ms antes de reintentar
     }
   }
 }
