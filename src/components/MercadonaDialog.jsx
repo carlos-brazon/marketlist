@@ -18,7 +18,7 @@ const MercadonaDialog = ({ item }) => {
   const [rotate, setRotate] = useState(false);
 
   const getAllItems = async () => {
-    const itemsFromLocalStorage = JSON.parse(localStorage.getItem('allItemsMercadona2'));
+    const itemsFromLocalStorage = JSON.parse(localStorage.getItem('allItemsMercadona'));
     const timeLatsFetch = JSON.parse(localStorage.getItem('timestamp'));
 
     const timeNow = Date.now();
@@ -30,9 +30,8 @@ const MercadonaDialog = ({ item }) => {
         // tiempo menor a 4 dias
         setProductsFromMercadona(itemsFromLocalStorage);
         doFetch = false;
-      }
+      } 
     }
-
 
     if (doFetch) {
       try {
@@ -56,7 +55,7 @@ const MercadonaDialog = ({ item }) => {
           return products;
         });
 
-        localStorage.setItem('allItemsMercadona2', JSON.stringify(allProducts))// para set en localstorage
+        localStorage.setItem('allItemsMercadona', JSON.stringify(allProducts))// para set en localstorage
         localStorage.setItem('timestamp', JSON.stringify(Date.now()))// para set en localstorage
         setProductsFromMercadona(allProducts);
       } catch (err) {
@@ -64,6 +63,7 @@ const MercadonaDialog = ({ item }) => {
       }
     }
   }
+// console.log(item.idMercadona);
 
   const ItemMercadonaToPrint = productsFromMercadona?.find(itemMercadona => itemMercadona.id === item.idMercadona)
 
@@ -75,7 +75,8 @@ const MercadonaDialog = ({ item }) => {
       }
     }}>
       <DialogTrigger>
-        <div onClick={() => { setIsOpen(true), getAllItems() }} className={`w-[27px] h-[27px] flex items-center justify-center rounded-full bg-gray-300`}>
+        <div onClick={() => { setIsOpen(true), getAllItems(), console.log(item);
+         }} className={`w-[27px] h-[27px] flex items-center justify-center rounded-full bg-gray-300`}>
           <img className='w-6 h-6 rounded-full' src={item.urlMercadona?.length > 0 ? item.urlMercadona : mercadonaIcon} alt="" />
         </div>
       </DialogTrigger>

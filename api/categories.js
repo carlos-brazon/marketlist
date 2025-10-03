@@ -22,11 +22,11 @@ export default async function handler(req, res) {
       cat.categories.map(sub => sub.id)
     );
 
-    const testId = ['112','161']
+    // const testId = ['112','161']
 
     // 2️⃣ Obtener datos de cada subcategoría con Promise.allSettled
     const allDataResults = await Promise.allSettled(
-      testId.map(id =>
+      ids.map(id =>
         fetch(`https://tienda.mercadona.es/api/categories/${id}/`, {
           headers: {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",

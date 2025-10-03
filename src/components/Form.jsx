@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { AllItemsContext } from './Contex';
 import { useContext } from 'react';
-import { doc, collection, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, collection, serverTimestamp, setDoc, updateDoc, where, getDocs, query } from 'firebase/firestore';
 import { db } from '../utils/firebase';
 import Input from './Input';
 import { Button } from './ui/button';
@@ -42,7 +42,6 @@ const Form = () => {
                 if (itemFound) {// si existe me indica repetido, sino lo agrego a la base detas
                     setButton(tagsFinal)
                     setValueInputNewTags(tagsFinal)
-                    setList(arrayItemFilterByTags)
                     toast({
                         title: <div className='flex gap-2 items-center justify-center'><span>Repetido</span> <img className='h-8 w-8' src={Cancel} alt="" /></div>,
                         duration: '1000',
@@ -60,8 +59,19 @@ const Form = () => {
                         amount: 0
                     };
                     setButton(tagsFinal)
-                    setTemporalCloud(prev => [...prev, { ...itemToMarketList, create_at: new Date() }])
-                    await setDoc(doc(db, "dataItemsMarketList", itemId), itemToMarketList); //aqui lo agrego a firebase
+                    
+                    const dataFromFrequentItems = await getDocs(query(collection(db, "frequentItems"), where("userUid", "==", userIn.uid), where("name", "==",  user.name.toLowerCase()) , where("tags", "==",  tagsFinal.toLowerCase())));
+                    console.log(dataFromFrequentItems?.docs[0]?.data());
+                    
+                    const itemAlready = dataFromFrequentItems?.docs[0]?.data()
+                    if (itemAlready?.name.length > 0) {
+                        
+                        setTemporalCloud(prev => [...prev, { ...itemToMarketList, create_at: new Date(), amount:itemAlready.amount, idMercadona: itemAlready.idMercadona, urlMercadona:itemAlready.urlMercadona}])
+                        await setDoc(doc(db, "dataItemsMarketList", itemId), {...itemToMarketList, amount:itemAlready.amount, idMercadona: itemAlready.idMercadona, urlMercadona:itemAlready.urlMercadona  }); //aqui lo agrego a firebase
+                    } else{
+                        setTemporalCloud(prev => [...prev, { ...itemToMarketList, create_at: new Date() }])
+                        await setDoc(doc(db, "dataItemsMarketList", itemId), itemToMarketList); //aqui lo agrego a firebase
+                    }
                     if (user.tags) {
                         await updateDoc(doc(db, "userMarketList", userIn.uid), { last_tags: user.tags.toLowerCase() })
                     }

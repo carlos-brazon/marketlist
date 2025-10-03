@@ -23,7 +23,7 @@ app.get("/categories", async (req, res) => {
     const ids = data.results.flatMap(cat =>
       cat.categories.map(sub => sub.id)
     );
-    const testId = ['161']    
+    const testId = ["112",'161']    
 
     // Endpoint para obtener los datos de una categoría por ID
 
