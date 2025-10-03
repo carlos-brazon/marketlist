@@ -133,7 +133,7 @@ async function fetchWithRetry(url, options, retries = 2) {
 
 
 // 🔹 Fetch en lotes (batching)
-async function fetchInBatches(ids, batchSize = 10, delay = 500) {
+async function fetchInBatches(ids, batchSize = 5, delay = 200) {
   let results = [];
 
   for (let i = 0; i < ids.length; i += batchSize) {
