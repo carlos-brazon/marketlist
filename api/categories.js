@@ -109,21 +109,27 @@ async function fetchWithRetry(url, options, retries = 2) {
   for (let i = 0; i < retries; i++) {
     try {
       const res = await fetch(url, options);
-      if (!res.ok) throw new Error(`Error al obtener ${url} (status ${res.status})`);
 
-      const contentType = res.headers.get("content-type") || "";
-      if (!contentType.includes("application/json")) {
-        throw new Error(`Respuesta no JSON en ${url}`);
+      if (!res.ok) {
+        throw new Error(`Error HTTP ${res.status} al obtener ${url}`);
       }
 
-      return await res.json();
+      // leer la respuesta como texto
+      const text = await res.text();
+      try {
+        return JSON.parse(text); // intentar parsear
+      } catch {
+        throw new Error(`Respuesta no JSON de ${url}: ${text.slice(0, 100)}...`);
+      }
+
     } catch (err) {
       if (i === retries - 1) throw err;
-      console.warn(`Retry ${i + 1} for ${url}`);
-      await new Promise((r) => setTimeout(r, 300));
+      console.warn(`Retry ${i + 1} para ${url}: ${err.message}`);
+      await new Promise((r) => setTimeout(r, 500)); // espera más antes de reintentar
     }
   }
 }
+
 
 
 // 🔹 Fetch en lotes (batching)
