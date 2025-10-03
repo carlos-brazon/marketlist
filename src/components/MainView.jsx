@@ -19,7 +19,7 @@ const MainView = () => {
     <div className='flex flex-col items-center gap-2 h-full w-full px-3'>
       <Tags setAmount={setAmount} />
       <div className='flex justify-center items-center gap-3'>
-        <h4 className="text-base text-center font-medium leading-none">{userIn?.email == 'aa@gmail.com' ? 'Listuuuo' : 'Lista'}</h4>
+        <h4 className="text-base text-center font-medium leading-none">{userIn?.email == 'aa@gmail.com' ? 'Listuuua' : 'Lista'}</h4>
         <img onClick={() => {
           setUserIn(prev => ({ ...prev, control_items: !userIn.control_items })), setTimeout(async () => {
             setChangeIcons(prev => !prev)
