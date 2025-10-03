@@ -30,31 +30,35 @@ export default async function handler(req, res) {
     // const testId = ['112','161']
 
     // 2️⃣ Obtener datos de cada subcategoría con Promise.allSettled
-    const allDataResults = await Promise.allSettled(
-      ids.map(
-        async (id) =>
-          await fetch(`https://tienda.mercadona.es/api/categories/${id}/`, {
-            headers: {
-              "User-Agent":
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-              Accept: "application/json",
-            },
-          }).then((res) => {
-            if (!res.ok) throw new Error(`Error al obtener categoría ${id}`);
-            return res.json();
-          })
-      )
-    );
+    try {
+      const allDataResults = await Promise.allSettled(
+        ids.map(
+          async (id) =>
+            await fetch(`https://tienda.mercadona.es/api/categories/${id}/`, {
+              headers: {
+                "User-Agent":
+                  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                Accept: "application/json",
+              },
+            }).then((res) => {
+              if (!res.ok) throw new Error(`Error al obtener categoría ${id}`);
+              return res.json();
+            })
+        )
+      );
+      // Filtrar las respuestas exitosas
+      const allData = allDataResults
+        .filter((r) => r.status === "fulfilled")
+        .map((r) => r.value);
 
-    // Filtrar las respuestas exitosas
-    const allData = allDataResults
-      .filter((r) => r.status === "fulfilled")
-      .map((r) => r.value);
-
-    // 3️⃣ Enviar la respuesta final
-    res.status(200).json({
-      subcategories: allData,
-    });
+      // 3️⃣ Enviar la respuesta final
+      res.status(200).json({
+        subcategories: allData,
+      });
+    } catch (error) {
+      console.error("Error general en handler ids:", error);
+      res.status(500).json({ error: "Error en el servidor ids" });
+    }
   } catch (err) {
     console.error("Error general en handler:", err);
     res.status(500).json({ error: "Error en el servidor" });

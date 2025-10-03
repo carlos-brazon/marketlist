@@ -59,16 +59,15 @@ const Form = () => {
                         amount: 0
                     };
                     setButton(tagsFinal)
-                    
-                    const dataFromFrequentItems = await getDocs(query(collection(db, "frequentItems"), where("userUid", "==", userIn.uid), where("name", "==",  user.name.toLowerCase()) , where("tags", "==",  tagsFinal.toLowerCase())));
-                    console.log(dataFromFrequentItems?.docs[0]?.data());
-                    
+
+                    const dataFromFrequentItems = await getDocs(query(collection(db, "frequentItems"), where("userUid", "==", userIn.uid), where("name", "==", user.name.toLowerCase()), where("tags", "==", tagsFinal.toLowerCase())));
+
                     const itemAlready = dataFromFrequentItems?.docs[0]?.data()
                     if (itemAlready?.name.length > 0) {
-                        
-                        setTemporalCloud(prev => [...prev, { ...itemToMarketList, create_at: new Date(), amount:itemAlready.amount, idMercadona: itemAlready.idMercadona, urlMercadona:itemAlready.urlMercadona}])
-                        await setDoc(doc(db, "dataItemsMarketList", itemId), {...itemToMarketList, amount:itemAlready.amount, idMercadona: itemAlready.idMercadona, urlMercadona:itemAlready.urlMercadona  }); //aqui lo agrego a firebase
-                    } else{
+
+                        setTemporalCloud(prev => [...prev, { ...itemToMarketList, create_at: new Date(), amount: itemAlready.amount, idMercadona: itemAlready.idMercadona, urlMercadona: itemAlready.urlMercadona }])
+                        await setDoc(doc(db, "dataItemsMarketList", itemId), { ...itemToMarketList, amount: itemAlready.amount, idMercadona: itemAlready.idMercadona, urlMercadona: itemAlready.urlMercadona }); //aqui lo agrego a firebase
+                    } else {
                         setTemporalCloud(prev => [...prev, { ...itemToMarketList, create_at: new Date() }])
                         await setDoc(doc(db, "dataItemsMarketList", itemId), itemToMarketList); //aqui lo agrego a firebase
                     }

@@ -76,7 +76,7 @@ const MercadonaDialog = ({ item }) => {
     }}>
       <DialogTrigger>
         <div onClick={() => {
-          setIsOpen(true), getAllItems(), console.log(item);
+          setIsOpen(true), getAllItems();
         }} className={`w-[27px] h-[27px] flex items-center justify-center rounded-full bg-gray-300`}>
           <img className='w-6 h-6 rounded-full' src={item.urlMercadona?.length > 0 ? item.urlMercadona : mercadonaIcon} alt="" />
         </div>
