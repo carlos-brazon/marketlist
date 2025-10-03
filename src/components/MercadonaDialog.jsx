@@ -30,16 +30,16 @@ const MercadonaDialog = ({ item }) => {
         // tiempo menor a 4 dias
         setProductsFromMercadona(itemsFromLocalStorage);
         doFetch = false;
-      } 
+      }
     }
 
     if (doFetch) {
       try {
         //se debe hacer node server.js en bash   
-        // const res = await fetch("http://localhost:3001/categories"); 
+        const res = await fetch("http://localhost:3001/categories");
 
         //se debe hacer vercel dev en bash
-        const res = await fetch("/api/categories"); 
+        // const res = await fetch("/api/categories"); 
         const products = await res.json();
         const filteredData = products.subcategories.filter(item => item !== null);
         const allProducts = filteredData.flatMap(category => {
@@ -63,7 +63,7 @@ const MercadonaDialog = ({ item }) => {
       }
     }
   }
-// console.log(item.idMercadona);
+  // console.log(item.idMercadona);
 
   const ItemMercadonaToPrint = productsFromMercadona?.find(itemMercadona => itemMercadona.id === item.idMercadona)
 
@@ -75,8 +75,9 @@ const MercadonaDialog = ({ item }) => {
       }
     }}>
       <DialogTrigger>
-        <div onClick={() => { setIsOpen(true), getAllItems(), console.log(item);
-         }} className={`w-[27px] h-[27px] flex items-center justify-center rounded-full bg-gray-300`}>
+        <div onClick={() => {
+          setIsOpen(true), getAllItems(), console.log(item);
+        }} className={`w-[27px] h-[27px] flex items-center justify-center rounded-full bg-gray-300`}>
           <img className='w-6 h-6 rounded-full' src={item.urlMercadona?.length > 0 ? item.urlMercadona : mercadonaIcon} alt="" />
         </div>
       </DialogTrigger>
