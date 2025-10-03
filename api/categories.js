@@ -1,11 +1,3 @@
-// import fetch from "node-fetch";
-
-// export default async function handler(req, res) {
-//   const response = await fetch("https://tienda.mercadona.es/api/categories/");
-//   const data = await response.json();  
-//   res.status(200).json(data);
-// }
-
 import fetch from "node-fetch";
 
 export default async function handler(req, res) {    
@@ -16,7 +8,8 @@ export default async function handler(req, res) {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
         "Accept": "application/json",
       },
-    });
+    }
+  );
 
     if (!response.ok) {
       return res.status(response.status).json({ error: "Error al obtener categorías principales" });
@@ -29,7 +22,7 @@ export default async function handler(req, res) {
       cat.categories.map(sub => sub.id)
     );
 
-    const testId = ['112', '115']
+    const testId = ['112','161']
 
     // 2️⃣ Obtener datos de cada subcategoría con Promise.allSettled
     const allDataResults = await Promise.allSettled(
