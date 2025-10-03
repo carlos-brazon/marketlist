@@ -64,7 +64,7 @@ export default async function handler(req, res) {
     );
 
     // 2️⃣ Obtener datos de cada subcategoría con concurrencia limitada
-    const limit = pLimit(20); // más concurrencia que 5
+    const limit = pLimit(3); // más concurrencia que 5
 
     const allDataResults = await Promise.allSettled(
       ids.map((id) =>
