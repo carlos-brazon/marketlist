@@ -182,11 +182,59 @@ const array4 = ids.slice(90, 120);
 const array5 = ids.slice(120); // lo que sobra
 console.log(array1, array2, array3, array4, array5);
 
-    // 2️⃣ Obtener datos de cada subcategoría con concurrencia limitada
+    // array1 Obtener datos de cada subcategoría con concurrencia limitada
     const limit = pLimit(1); // más concurrencia que 5
 
-    const allDataResults = await Promise.allSettled(
+    const oneFetch = await Promise.allSettled(
       array1.map((id) =>
+        limit(() =>
+          fetchWithRetry(`https://tienda.mercadona.es/api/categories/${id}/`, {
+            headers: {
+              "User-Agent": "Mozilla/5.0",
+              Accept: "application/json",
+            },
+          })
+        )
+      )
+    );
+    const twoFetch = await Promise.allSettled(
+      array2.map((id) =>
+        limit(() =>
+          fetchWithRetry(`https://tienda.mercadona.es/api/categories/${id}/`, {
+            headers: {
+              "User-Agent": "Mozilla/5.0",
+              Accept: "application/json",
+            },
+          })
+        )
+      )
+    );
+    const threeFetch = await Promise.allSettled(
+      array3.map((id) =>
+        limit(() =>
+          fetchWithRetry(`https://tienda.mercadona.es/api/categories/${id}/`, {
+            headers: {
+              "User-Agent": "Mozilla/5.0",
+              Accept: "application/json",
+            },
+          })
+        )
+      )
+    );
+    const fourFetch = await Promise.allSettled(
+      array4.map((id) =>
+        limit(() =>
+          fetchWithRetry(`https://tienda.mercadona.es/api/categories/${id}/`, {
+            headers: {
+              "User-Agent": "Mozilla/5.0",
+              Accept: "application/json",
+            },
+          })
+        )
+      )
+    );
+    const fiveFetch = await Promise.allSettled(
+      array5.map((id) =>
         limit(() =>
           fetchWithRetry(`https://tienda.mercadona.es/api/categories/${id}/`, {
             headers: {
@@ -199,21 +247,21 @@ console.log(array1, array2, array3, array4, array5);
     );
 
     // Filtrar las respuestas exitosas
-    const allData = allDataResults
+    const allData = [...oneFetch, ...twoFetch, ...threeFetch, ...fourFetch, ...fiveFetch]
       .filter((r) => r.status === "fulfilled")
       .map((r) => r.value);
 
     // 📊 Logs en consola de Vercel
     console.log("Total IDs:", ids.length);
     console.log("Fulfilled:", allData.length);
-    console.log(
-      "Rejected:",
-      allDataResults.filter((r) => r.status === "rejected").length
-    );
+    // console.log(
+    //   "Rejected:",
+    //   allData.filter((r) => r.status === "rejected").length
+    // );
 
     // 3️⃣ Enviar la respuesta final
     res.status(200).json({
-      subcategories: [...allData],
+      subcategories: allData,
     });
   } catch (error) {
     console.error("Error general en handler:", error);
