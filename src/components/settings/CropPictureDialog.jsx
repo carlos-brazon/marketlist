@@ -4,7 +4,7 @@ import { useContext, useState } from 'react';
 import getCroppedImg from "../../utils/cropImage";
 import Cropper from "react-easy-crop";
 import { AllItemsContext } from '../Contex';
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../utils/firebase';
 import PropTypes from 'prop-types';
 import { uploadFile } from '../../utils/util';
@@ -31,7 +31,8 @@ const CropPictureDialog = ({ setProfilePictureState, profilePictureState, imgFro
 
     const handleSaveImage = async () => {
         const croppedImage = await getCroppedImg(profilePictureState.urlBlob, croppedAreaPixels);
-        setProfilePictureState(prev => ({ ...prev, isLoading: true, urlBlob: croppedImage}));
+
+        setProfilePictureState(prev => ({ ...prev, isLoading: true, urlBlob: croppedImage }));
         let recentsCopy = [...(imgFromFirebase?.recents || [])];
         if (recentsCopy.length === 6) recentsCopy.pop();
         const fromGoogle = userIn.url_img_google === profilePictureState.urlBlob
@@ -51,20 +52,20 @@ const CropPictureDialog = ({ setProfilePictureState, profilePictureState, imgFro
                 },
                 { merge: true }
             )
-                setUserIn(prev => ({ ...prev, super_list_img_selected: !fromGoogle, ...(fromGoogle && { url_img_google: profilePictureState.urlBlob }), url_img_super_list: fromGoogle ? '' : croppedImageRecived }));
-                setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false, isNormalUrl: false }))
-                setImgFromFirebase(prev => ({
-                    ...prev,
-                    recents: [{ url, crop_area_: croppedAreaPixels, crop_img_recent: croppedImageRecived }, ...recentsCopy]
-                }));
+            setUserIn(prev => ({ ...prev, super_list_img_selected: !fromGoogle, ...(fromGoogle && { url_img_google: profilePictureState.urlBlob }), url_img_super_list: fromGoogle ? '' : croppedImageRecived }));
+            setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false, isNormalUrl: false }))
+            setImgFromFirebase(prev => ({
+                ...prev,
+                recents: [{ url, crop_area_: croppedAreaPixels, crop_img_recent: croppedImageRecived }, ...recentsCopy]
+            }));
         };
         const updateImage = async (url) => {
             await updateDoc(doc(db, "userMarketList", userIn.uid), {
                 url_img_super_list: fromGoogle ? '' : url,
                 super_list_img_selected: !fromGoogle // esto es para no hacer condicional. 
             });
-                setUserIn(prev => ({ ...prev, url_img_super_list: croppedImage, super_list_img_selected: !fromGoogle }));
-                setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false, isNormalUrl: false }));
+            setUserIn(prev => ({ ...prev, url_img_super_list: croppedImage, super_list_img_selected: !fromGoogle }));
+            setProfilePictureState(prev => ({ ...prev, isCrop: false, isChange: false, isLoading: false, isNormalUrl: false }));
         };
 
         // ---- Caso normal url (url Google y url Dog)----
