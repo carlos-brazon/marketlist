@@ -31,7 +31,7 @@ const CropPictureDialog = ({ setProfilePictureState, profilePictureState, imgFro
 
     const handleSaveImage = async () => {
         const croppedImage = await getCroppedImg(profilePictureState.urlBlob, croppedAreaPixels);
-        setProfilePictureState(prev => ({ ...prev, isLoading: true, urlBlob: croppedImage }));
+        setProfilePictureState(prev => ({ ...prev, isLoading: true, urlBlob: croppedImage}));
         let recentsCopy = [...(imgFromFirebase?.recents || [])];
         if (recentsCopy.length === 6) recentsCopy.pop();
         const fromGoogle = userIn.url_img_google === profilePictureState.urlBlob
