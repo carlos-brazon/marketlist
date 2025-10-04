@@ -36,6 +36,8 @@ const MercadonaDialog = ({ item }) => {
     }
 
     if (doFetch) {
+      console.log('si fetch');
+      
       try {
         //se debe hacer node server.js en bash   
         // const res = await fetch("http://localhost:3001/categories");
@@ -43,9 +45,9 @@ const MercadonaDialog = ({ item }) => {
         //se debe hacer vercel dev en bash
         const res = await fetch("/api/categories");
         const products = await res.json();
-        const filteredData = products.subcategories.filter(item => item !== null);
-        const allProducts = filteredData.flatMap(category => {
-          let products = category.products ? [...category.products] : [];
+        const filteredData = products?.subcategories?.filter(item => item !== null);
+        const allProducts = filteredData?.flatMap(category => {
+          let products = category?.products ? [...category?.products] : [];
 
           if (category.categories) {
             category.categories.forEach(sub => {

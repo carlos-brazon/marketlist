@@ -8,11 +8,13 @@ import CardProduct from './CardProduct';
 const CardList = ({ productsFromMercadona, item, setIsOpen, setRotate }) => {
   const { temporalCloud, setTemporalCloud, userIn, setUserIn } = useContext(AllItemsContext);
   const [inputSearch, setInputSearch] = useState([]);
+  const [inputValue, setInputValue] = useState([]);
 
   const handleInput = (event) => {
+    setInputValue(event.target.value.toLowerCase())
     const filterSearch = [...productsFromMercadona].filter((elemnt) => {
       const textName = elemnt.display_name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
-      if (textName.includes(event.target.value.toLowerCase())) {
+      if (textName.includes(event.target.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""))) {
         return elemnt
       }
     })
@@ -29,7 +31,7 @@ const CardList = ({ productsFromMercadona, item, setIsOpen, setRotate }) => {
       isDone: false,
       priority: false,
       id: item.id,
-      name: item.name.toLowerCase(),
+      name: item.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim(),
       tags: item.tags.toLowerCase(),
       create_at: serverTimestamp(),
       amount: priceFromMercadona,
@@ -53,12 +55,20 @@ const CardList = ({ productsFromMercadona, item, setIsOpen, setRotate }) => {
     setIsOpen(false)
   }
   useEffect(() => {
-    setInputSearch(productsFromMercadona)
+    const filterSearch = [...productsFromMercadona].filter((elemnt) => {
+      const textName = elemnt.display_name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim()
+      if (textName.includes(item.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim())) {
+        return elemnt
+      }
+    })
+    setInputValue(item.name)
+    
+    setInputSearch(filterSearch)
   }, [productsFromMercadona]);
   return (
     <div className='flex flex-col gap-2 animate-fade animate-once animate-duration-[2000ms]'>
       <div>
-        <Input placeholder={"Buscar"} className={'w-fit'} onChange={() => handleInput(event)} />
+        <Input placeholder={"Buscar"} className={'w-fit'} onChange={() => handleInput(event)} value={inputValue} />
         <div>
           cantidad productos: {inputSearch?.length}
         </div>

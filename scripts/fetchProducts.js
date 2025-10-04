@@ -10,9 +10,11 @@ async function fetchWithRetry(url, options, retries = 3) {
       if (!res.ok) throw new Error(`Error al obtener ${url}`);
       return await res.json();
     } catch (err) {
+      console.error(`Error en ${url}:`, err.message);
       if (i === retries - 1) throw err;
       console.warn(`Retry ${i + 1} for ${url}`);
-      await new Promise((r) => setTimeout(r, 300));
+      await new Promise((r) => setTimeout(r, 300 * (i + 1)));
+
     }
   }
 }
@@ -32,7 +34,7 @@ async function main() {
     cat.categories.map((sub) => sub.id)
   );
 
-  const limit = pLimit(20);
+  const limit = pLimit(10);
   const allDataResults = await Promise.allSettled(
     ids.map((id) =>
       limit(() =>
@@ -57,13 +59,10 @@ async function main() {
     allDataResults.filter((r) => r.status === "rejected").length
   );
 
-  // fs.writeFileSync(
-  //   "./data/mercadonaProducts.json",
-  //   JSON.stringify(allData, null, 2)
-  // );
-   res.status(200).json({
-      subcategories: allData,
-    });
+  fs.writeFileSync(
+    "./data/mercadonaProducts.json",
+    JSON.stringify(allData, null, 2)
+  );
   console.log("Archivo JSON generado: ./data/mercadonaProducts.json");
 }
 

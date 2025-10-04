@@ -23,7 +23,7 @@ const Form = () => {
     const handleInput = () => {
         const inputName = event.target.name;
         const inputValue = cleanInputValueWithNumberOrLetters(event.target.value)
-        setUser(prev => ({ ...prev, [inputName]: inputValue }));
+        setUser(prev => ({ ...prev, [inputName]: inputValue}));
         if (inputName == 'tags') {
             setValueInputNewTags(inputValue);
         }
@@ -37,7 +37,7 @@ const Form = () => {
                 setUser(prev => ({ ...prev, name: '', tags: '' }));
                 // aqui busco todos los items de la misma etiqueta (compras)
                 const arrayItemFilterByTags = temporalCloud.filter(item => item.tags === tagsFinal);
-                const itemFound = arrayItemFilterByTags.find(element => element.name.toLowerCase() === user.name.toLowerCase()) // aqui verifico si el tiem nuevo existe dentro de ese array de etiquetas
+                const itemFound = arrayItemFilterByTags.find(element => element.name.toLowerCase().trim() === user.name.toLowerCase().trim()) // aqui verifico si el tiem nuevo existe dentro de ese array de etiquetas
 
                 if (itemFound) {// si existe me indica repetido, sino lo agrego a la base detas
                     setButton(tagsFinal)
@@ -53,20 +53,20 @@ const Form = () => {
                         isDone: false,
                         priority: false,
                         id: itemId,
-                        name: user.name.toLowerCase(),
-                        tags: tagsFinal.toLowerCase(),
+                        name: user.name.toLowerCase().trim(),
+                        tags: tagsFinal.toLowerCase().trim(),
                         create_at: serverTimestamp(),
                         amount: 0
                     };
                     setButton(tagsFinal)
 
-                    const dataFromFrequentItems = await getDocs(query(collection(db, "frequentItems"), where("userUid", "==", userIn.uid), where("name", "==", user.name.toLowerCase()), where("tags", "==", tagsFinal.toLowerCase())));
+                    const dataFromFrequentItems = await getDocs(query(collection(db, "frequentItems"), where("userUid", "==", userIn.uid), where("name", "==", user.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim()), where("tags", "==", tagsFinal.toLowerCase())));
 
-                    const itemAlready = dataFromFrequentItems?.docs[0]?.data()
+                    const itemAlready = dataFromFrequentItems?.docs[0]?.data();
                     if (itemAlready?.name.length > 0) {
 
                         setTemporalCloud(prev => [...prev, { ...itemToMarketList, create_at: new Date(), amount: itemAlready.amount, idMercadona: itemAlready.idMercadona, urlMercadona: itemAlready.urlMercadona }])
-                        await setDoc(doc(db, "dataItemsMarketList", itemId), { ...itemToMarketList, amount: itemAlready.amount, idMercadona: itemAlready.idMercadona, urlMercadona: itemAlready.urlMercadona }); //aqui lo agrego a firebase
+                        await setDoc(doc(db, "dataItemsMarketList", itemId), { ...itemToMarketList, amount: itemAlready.amount, idMercadona: itemAlready.idMercadona, urlMercadona: itemAlready.urlMercadona }); //aqui lo agrego a firebase frecuentes
                     } else {
                         setTemporalCloud(prev => [...prev, { ...itemToMarketList, create_at: new Date() }])
                         await setDoc(doc(db, "dataItemsMarketList", itemId), itemToMarketList); //aqui lo agrego a firebase
