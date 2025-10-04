@@ -10,7 +10,7 @@ import { auth, db } from './utils/firebase'
 import Form from './components/Form'
 import Contex from './components/Contex'
 import HowUse from './components/HowUse'
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/toaster"
 import RootLayout from './components/Toaster'
 import getCroppedImg from './utils/cropImage'
 import SettingPage from './components/settings/SettingPage'

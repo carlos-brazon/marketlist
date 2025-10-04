@@ -30,7 +30,7 @@ const DialogContent = React.forwardRef(({ className, children, ...props }, ref) 
       //   className
       // )}
       className={cn(
-        "fixed left-[50%] w-11/12 top-20 z-50 grid translate-x-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200",
+        "fixed left-[50%] top-20 z-50 grid translate-x-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200",
         "max-h-[80vh] overflow-y-auto",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
@@ -46,7 +46,7 @@ const DialogContent = React.forwardRef(({ className, children, ...props }, ref) 
         className="absolute right-2 top-2 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
 
       >
-        <X className="h-6 w-6" />
+        <X className="h-5 w-5" />
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
