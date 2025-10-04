@@ -158,7 +158,7 @@ const SettingPage = () => {
                             </div>
                         </div>
                     </DialogTrigger>
-                    <DialogContent aria-describedby={undefined} className='rounded-md flex flex-col max-w-96 w-full'>
+                    <DialogContent aria-describedby={undefined} className='rounded-md flex flex-col max-w-[360px] w-full'>
                         {renderDialogContent()}
                     </DialogContent>
                 </Dialog>
