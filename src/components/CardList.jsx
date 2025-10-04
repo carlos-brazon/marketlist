@@ -55,7 +55,7 @@ const CardList = ({ productsFromMercadona, item, setIsOpen, setRotate }) => {
     setIsOpen(false)
   }
   useEffect(() => {
-    const filterSearch = [...productsFromMercadona].filter((elemnt) => {
+    const filterSearch = productsFromMercadona?.filter((elemnt) => {
       const textName = elemnt.display_name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim()
       if (textName.includes(item.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim())) {
         return elemnt
