@@ -2,10 +2,11 @@ import { createImage } from "./createImage";
 
 const getCroppedImg = async (imageSrc, pixelCrop) => {
   if (!imageSrc) return null;
-const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(imageSrc)}`;
+  const isRemote = imageSrc.startsWith("http");
+  const finalUrl = isRemote ? `/api/image-proxy?url=${imageSrc}` : imageSrc;
   let image;
   try {
-    image = await createImage(proxyUrl);
+    image = await createImage(finalUrl);
   } catch (error) {
     console.error(" Error al crear la imagen:", error);
     return null;
@@ -44,4 +45,3 @@ const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(imageS
 };
 
 export default getCroppedImg;
-

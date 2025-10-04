@@ -85,7 +85,7 @@ const SettingPage = () => {
             setImgFromFirebase({ url: arrrayX6Dogs });
             return
         }
-        
+
         const arrayUrlsWithBlobUrl = await Promise.all(
             Array.isArray(urlArrayDogsAndRecents.data()?.recents)
                 ? urlArrayDogsAndRecents.data()?.recents.map(async (item) => {
@@ -158,7 +158,7 @@ const SettingPage = () => {
                             </div>
                         </div>
                     </DialogTrigger>
-                    <DialogContent aria-describedby={undefined} className='rounded-md flex flex-col'>
+                    <DialogContent aria-describedby={undefined} className='rounded-md flex flex-col max-w-[360px] w-full'>
                         {renderDialogContent()}
                     </DialogContent>
                 </Dialog>
