@@ -1,6 +1,8 @@
 import { createImage } from "./createImage";
 
 const getCroppedImg = async (imageSrc, pixelCrop) => {
+  console.log(imageSrc);
+
   if (!imageSrc) return null;
   const isRemote = imageSrc.startsWith("http");
   const finalUrl = isRemote ? `/api/image-proxy?url=${imageSrc}` : imageSrc;
