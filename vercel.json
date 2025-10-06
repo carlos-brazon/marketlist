@@ -5,6 +5,10 @@
     { "src": "package.json", "use": "@vercel/static-build" }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1.js" }
+    { "src": "/api/(.*)", "dest": "/api/$1.js" },
+    {
+      "src": "/((?!api|assets|favicon\\.ico|robots\\.txt|.*\\..*).*)",
+      "dest": "/"
+    }
   ]
 }
