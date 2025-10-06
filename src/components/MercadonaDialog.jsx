@@ -95,7 +95,7 @@ const MercadonaDialog = ({ item }) => {
               ?
               <CardList productsFromMercadona={productsFromMercadona} item={item} setIsOpen={setIsOpen} setRotate={setRotate} />
               :
-              <div className='relative flex xs:w-72 xs:h-72 w-[250px] h-[250px] flex-col justify-between border items-center p-1 rounded-md'>
+              <div className='relative flex xs:w-[310px] xs:h-[310px] w-[290px] h-[290px] flex-col justify-between border items-center p-1 rounded-md'>
                 <CardProduct oneItem={ItemMercadonaToPrint} />
                 <img onClick={() => { setRotate(true) }} className='absolute bottom-0 right-2 w-8 h-8' src={rotateIcon} alt="" />
               </div>
