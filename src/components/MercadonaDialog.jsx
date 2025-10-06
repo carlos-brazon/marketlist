@@ -30,19 +30,19 @@ const MercadonaDialog = ({ item }) => {
         // tiempo menor a 4 dias
         setProductsFromMercadona(itemsFromLocalStorage);
         doFetch = false;
-        console.log('no fetch, viene de local');
-        
       }
     }
 
     if (doFetch) {
-      console.log('si fetch');
-      
       try {
         //se debe hacer node server.js en bash   
         // const res = await fetch("http://localhost:3001/categories");
 
-        //se debe hacer vercel dev en bash
+        //se debe hacer vercel dev en bash y eliminar del vercel.json:
+        //         {
+        //   "src": "/((?!api|assets|favicon\\.ico|robots\\.txt|.*\\..*).*)",
+        //   "dest": "/"
+        // }
         const res = await fetch("/api/categories");
         const products = await res.json();
         const filteredData = products?.subcategories?.filter(item => item !== null);
@@ -67,9 +67,8 @@ const MercadonaDialog = ({ item }) => {
       }
     }
   }
-  // console.log(item.idMercadona);
 
-  const ItemMercadonaToPrint = productsFromMercadona?.find(itemMercadona => itemMercadona.id === item.idMercadona)
+  const ItemMercadonaToPrint = productsFromMercadona?.find(itemMercadona => itemMercadona.id === item.idMercadona);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => {
@@ -85,7 +84,7 @@ const MercadonaDialog = ({ item }) => {
           <img className='w-6 h-6 rounded-full' src={item.urlMercadona?.length > 0 ? item.urlMercadona : mercadonaIcon} alt="" />
         </div>
       </DialogTrigger>
-      <DialogContent className={`flex flex-col items-center gap-6 justify-start rounded-lg ${rotate || !ItemMercadonaToPrint ? 'w-11/12' : 'w-auto'}`}>
+      <DialogContent className={`flex flex-col items-center gap-6 justify-start rounded-lg ${rotate || !ItemMercadonaToPrint ? 'w-11/12' : 'max-w-[360px] w-full'}`}>
         <DialogHeader>
           <DialogTitle className="text-base">Selecciona el precio para {item.name}</DialogTitle>
         </DialogHeader>
@@ -96,7 +95,7 @@ const MercadonaDialog = ({ item }) => {
               ?
               <CardList productsFromMercadona={productsFromMercadona} item={item} setIsOpen={setIsOpen} setRotate={setRotate} />
               :
-              <div className='relative flex xs:w-52 xs:h-52 w-[180px] h-[180px] flex-col justify-between border items-center p-1 rounded-md'>
+              <div className='relative flex xs:w-72 xs:h-72 w-[250px] h-[250px] flex-col justify-between border items-center p-1 rounded-md'>
                 <CardProduct oneItem={ItemMercadonaToPrint} />
                 <img onClick={() => { setRotate(true) }} className='absolute bottom-0 right-2 w-8 h-8' src={rotateIcon} alt="" />
               </div>
