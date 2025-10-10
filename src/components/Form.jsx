@@ -23,7 +23,7 @@ const Form = () => {
     const handleInput = () => {
         const inputName = event.target.name;
         const inputValue = cleanInputValueWithNumberOrLetters(event.target.value)
-        setUser(prev => ({ ...prev, [inputName]: inputValue}));
+        setUser(prev => ({ ...prev, [inputName]: inputValue }));
         if (inputName == 'tags') {
             setValueInputNewTags(inputValue);
         }
@@ -56,7 +56,8 @@ const Form = () => {
                         name: user.name.toLowerCase().trim(),
                         tags: tagsFinal.toLowerCase().trim(),
                         create_at: serverTimestamp(),
-                        amount: 0
+                        amount: 0,
+                        quantity: 1
                     };
                     setButton(tagsFinal)
 
