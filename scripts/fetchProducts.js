@@ -3,6 +3,7 @@ import fetch from "node-fetch";
 import pLimit from "p-limit";
 
 // Fetch con retry
+//node scripts/fetchProducts.js para hacer el fetch
 async function fetchWithRetry(url, options, retries = 3) {
   for (let i = 0; i < retries; i++) {
     try {
@@ -14,7 +15,6 @@ async function fetchWithRetry(url, options, retries = 3) {
       if (i === retries - 1) throw err;
       console.warn(`Retry ${i + 1} for ${url}`);
       await new Promise((r) => setTimeout(r, 300 * (i + 1)));
-
     }
   }
 }

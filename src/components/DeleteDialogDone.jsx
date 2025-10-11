@@ -48,7 +48,7 @@ const DeleteDialogDone = () => {
             </AlertDialogTrigger>
             <AlertDialogContent className='w-11/12 rounded-md top-1/2'>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>{"¿Deseas borrar todos los elementos tachados de la lista"} {firstLetterUpperCase(button + '?' ?? '')}</AlertDialogTitle>
+                    <AlertDialogTitle>{"¿Deseas borrar todos los elementos tachados de la lista"} {firstLetterUpperCase((button ?? '') + '?')}</AlertDialogTitle>
                     <AlertDialogDescription>
                         Esta acción no se puede deshacer. Esto eliminará permanentemente los elementos tachados.
                     </AlertDialogDescription>
