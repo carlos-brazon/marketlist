@@ -22,7 +22,7 @@ const MercadonaDialog = ({ item }) => {
     const timeLatsFetch = JSON.parse(localStorage.getItem('timestamp'));
 
     const timeNow = Date.now();
-    const timeDuration = 1000 * 60 * 60 * 24 * 4; // intervalos de 4 dias
+    const timeDuration = 1000 * 60 * 60 * 24 * 1; // intervalos de 4 dias
     let doFetch = true;
     if (itemsFromLocalStorage?.length > 0) {
       const lapsedTime = timeNow - timeLatsFetch;
