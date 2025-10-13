@@ -164,6 +164,18 @@ const Header = () => {
                     </SheetDescription>
                   </SheetHeader>
                   <div className={`pl-2 gap-3 pb-10 flex flex-col relative`}>
+                    {userIn && <SheetClose onClick={() => {
+                      if ("share" in navigator) {
+                        navigator.share({
+                          title: "Título a compartir",
+                          url: window.location.href
+                        })
+                          .then(() => console.log("Contenido compartido"))
+                          .catch(console.error);
+                      }
+                    }} className="flex items-start">
+                      {'Compartir'}
+                    </SheetClose>}
                     {userIn && <SheetClose onClick={() => copyTextClipboard(userIn.uid, 'Id')} className="flex items-start">
                       {'Copiar Id'}
                     </SheetClose>}

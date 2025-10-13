@@ -22,6 +22,8 @@ const ItemsList = ({ setAmount }) => {
     const lastTapDataRef = useRef(null);
     const clickTimeoutRef = useRef(null);
 
+    const mercadonaActivator = "compras, compra, mercadona, mercado"
+
     const handleClick = async (itemSelected) => {
         if (longPress) return; // ignorar si se deja presionado mas de 3 segundos para copiar
 
@@ -191,12 +193,14 @@ const ItemsList = ({ setAmount }) => {
                         </div>
                         <div className='flex gap-1 items-center justify-end max-w-[310px] flex-shrink-0 w-auto'>
 
-                            <div className='flex gap-1 items-center justify-center'>
+                         {
+                               mercadonaActivator.includes(item.tags)&&<div className='flex gap-1 items-center justify-center'>
                                 <img onClick={() => handleUpdateQuantity(item, 1)} className='w-7 h-7' src={add} alt="" />
                                 <MercadonaDialog item={item} />
                                 <img onClick={async () => handleUpdateQuantity(item, -1)} className='w-6 h-6' src={less} alt="" />
                             </div>
 
+                         }
                             {item.isDone && item.create_at && item.isDone_at && userIn?.email === 'carlosbrazon.sp3@gmail.com' && (
                                 <div className=" flex w-12 text-[10px] justify-start items-start">
                                     {(() => {// esto es para medir el tiempo de las horas de limpieza en la oficina 4-3
