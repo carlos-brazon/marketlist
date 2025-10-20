@@ -16,6 +16,7 @@ import PropTypes from 'prop-types';
 import { compressAndUpload, ramdomDog } from "../../utils/util"
 import { Input } from "../ui/input"
 import { useDropzone } from "react-dropzone";
+import { Skeleton } from "@/components/ui/skeleton"
 
 const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFromFirebase }) => {
     const MAX_FILE_SIZE = 10000000;
@@ -28,6 +29,8 @@ const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFr
     };
     const { userIn } = useContext(AllItemsContext);
     const [errorFile, setErrorFile] = useState(false)
+    const skeletonaArray = Array.from({ length: 6 });
+    const imgRecentsAndSample = imgFromFirebase?.recents && imgFromFirebase?.url;
     const { getRootProps, getInputProps } = useDropzone({
         accept: ACCEPTED_IMAGE_TYPES,
         maxSize: MAX_FILE_SIZE,
@@ -68,23 +71,27 @@ const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFr
                                     }} />
                             </div>
                             <DropdownMenuSeparator className='bg-black' /></>}
-                        {imgFromFirebase?.recents?.length > 0 && <div className="flex flex-col gap-3">
+                        <div className="flex flex-col gap-3">
                             <div className="flex items-center">
                                 <div className="text-start flex w-full">Imagenes recientes</div>
                             </div>
-                            {imgFromFirebase?.recents?.length > 0 &&
-                                <div className='grid grid-cols-3 gap-2'>
-                                    {imgFromFirebase?.recents?.map((itemUrl, i) => < img
+                            <div className='grid grid-cols-3 gap-2'>
+                                {imgRecentsAndSample
+                                    ?
+                                    imgFromFirebase.recents.map((itemUrl, i) => < img
                                         key={i}
                                         className='w-16 h-16 relative rounded-full' src={itemUrl.crop_img_recent} alt=""
                                         onClick={async () => {
                                             setProfilePictureState(prev => ({ ...prev, isChange: false, isRecentPicture: true, recentImage: itemUrl }))
                                         }} />
-                                    )}
-                                </div>}
+                                    )
+                                    :
+                                    skeletonaArray.map((ele, i) => <Skeleton key={i} className="h-[64px] w-[64px] rounded-full" />)
+                                }
+                            </div>
                         </div>
-                        }
-                        {imgFromFirebase?.recents?.length > 0 && <DropdownMenuSeparator className='bg-black' />}
+
+                        {imgRecentsAndSample && <DropdownMenuSeparator className='bg-black' />}
                         <div className="flex flex-col gap-3">
                             <div className="flex items-center">
                                 <div className="text-start flex w-full">Imagenes muestra</div>
@@ -93,26 +100,32 @@ const ChangePictureDialog = ({ setProfilePictureState, imgFromFirebase, setImgFr
                                         className="w-6 h-6"
                                         src={update} alt=""
                                         onClick={async () => {
-                                            const newArrayUrls = await ramdomDog();
-                                            setImgFromFirebase(prev => ({ ...prev, url: newArrayUrls }));
-                                            await setDoc(
-                                                doc(db, "image_profile", userIn.uid),
-                                                { url_ramdom_dog: newArrayUrls },
-                                                { merge: true }
-                                            );
+                                            if (imgRecentsAndSample) {
+                                                const newArrayUrls = await ramdomDog();
+                                                setImgFromFirebase(prev => ({ ...prev, url: newArrayUrls }));
+                                                await setDoc(
+                                                    doc(db, "image_profile", userIn.uid),
+                                                    { url_ramdom_dog: newArrayUrls },
+                                                    { merge: true }
+                                                );
+                                            }
                                         }} />
                                 </Button>
                             </div>
-                            {imgFromFirebase?.url?.length > 0 &&
-                                <div className='grid grid-cols-3 gap-2'>
-                                    {imgFromFirebase?.url?.map(url =>
+                            <div className='grid grid-cols-3 gap-2'>
+                                {imgRecentsAndSample
+                                    ?
+                                    imgFromFirebase.url.map(url =>
                                         <img
                                             key={url}
                                             className='w-16 h-16 relative rounded-full' src={url} alt=""
                                             onClick={async () => {
                                                 setProfilePictureState(prev => ({ ...prev, isChange: false, isCrop: true, urlBlob: url, isNormalUrl: true }))
-                                            }} />)}
-                                </div>}
+                                            }} />)
+
+                                    :
+                                    skeletonaArray.map((ele, i) => <Skeleton key={i} className="h-[64px] w-[64px] rounded-full" />)}
+                            </div>
                         </div>
                     </TabsContent>
                     <TabsContent className="flex flex-col items-center justify-center" value="galery">

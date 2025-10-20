@@ -9,9 +9,10 @@ const Context = ({ children, userIn, setUserIn, temporalCloud, setTemporalCloud,
   const [button, setButton] = useState(userIn?.last_tags?.length ? userIn?.last_tags.toLowerCase() : 'compras');
   const [valueInputNewTags, setValueInputNewTags] = useState();
   const [tags, setTags] = useState([]);
+  const [imgFromFirebase, setImgFromFirebase] = useState('');
 
   return (
-    <AllItemsContext.Provider value={{ setUserIn, valueInputNewTags, setValueInputNewTags, list, setList, userIn, addTags, setAddTags, button, setButton, tags, setTags, temporalCloud, setTemporalCloud, setLoadingSingIn, setLoading }}>
+    <AllItemsContext.Provider value={{ setUserIn, valueInputNewTags, setValueInputNewTags, list, setList, userIn, addTags, setAddTags, button, setButton, tags, setTags, temporalCloud, setTemporalCloud, setLoadingSingIn, setLoading, imgFromFirebase, setImgFromFirebase }}>
       {children}
     </AllItemsContext.Provider>
   );

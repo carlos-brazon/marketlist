@@ -90,7 +90,6 @@ const MercadonaDialog = ({ item }) => {
         </DialogHeader>
         <DialogDescription className='' asChild>
           <div>
-
             {rotate || !ItemMercadonaToPrint
               ?
               <CardList productsFromMercadona={productsFromMercadona} item={item} setIsOpen={setIsOpen} setRotate={setRotate} />

@@ -26,10 +26,9 @@ import getCroppedImg from "../../utils/cropImage";
 import RecentPictureDialog from "./RecentPictureDialog";
 
 const SettingPage = () => {
-    const { userIn } = useContext(AllItemsContext);
+    const { userIn, imgFromFirebase, setImgFromFirebase } = useContext(AllItemsContext);
     const [searchParams] = useSearchParams();
     const defaultTab = searchParams.get("tab") || "profile";
-    const [imgFromFirebase, setImgFromFirebase] = useState('');
     const [profilePictureState, setProfilePictureState] = useState({
         isProfilePicture: false,
         isRemove: false,
@@ -104,11 +103,11 @@ const SettingPage = () => {
     }
 
     useEffect(() => {
-        if (userIn) {
+        if (userIn && !imgFromFirebase?.recents) {
             urlsFromFirebase();
         }
     }, []);
-
+    
     return (
         <>
             {profilePictureState.picture && <div className="flex items-center justify-center bg-white bg-opacity-20 z-50 p-2 border border-gray-500 h-screen w-screen absolute">
@@ -157,8 +156,7 @@ const SettingPage = () => {
                                 <img className="w-5 h-5 stroke-[6px]" src={editIcon} alt="" />
                             </div>
                         </div>
-                    </DialogTrigger>
-                    <DialogContent aria-describedby={undefined} className='rounded-md flex flex-col max-w-[360px] w-full'>
+                    </DialogTrigger> <DialogContent aria-describedby={undefined} className='rounded-md flex flex-col max-w-[360px] w-full'>
                         {renderDialogContent()}
                     </DialogContent>
                 </Dialog>
